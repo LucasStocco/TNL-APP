@@ -1,0 +1,41 @@
+# --------------------
+# Back-end (Java / Spring Boot)
+# --------------------
+/back-end/target/
+**/*.class
+**/*.jar
+*.log
+*.tmp
+.idea/
+.vscode/
+
+# --------------------
+# Front-end (Flutter)
+# --------------------
+/front-end/build/
+.front-plugins
+.front-plugins-dependencies
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+.idea/
+.vscode/
+
+# Platform folders Flutter (não versionar se não vai usar)
+/front-end/ios/
+/front-end/macos/
+/front-end/linux/
+/front-end/windows/
+
+# --------------------
+# Docker
+# --------------------
+docker-compose.override.yml
+.env
+
+# --------------------
+# Sistema / OS
+# --------------------
+.DS_Store
+Thumbs.db

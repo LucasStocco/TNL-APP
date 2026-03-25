@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.1
+    container_name: tanalista-db
+    environment:
+      MYSQL_ROOT_PASSWORD: Allrsm_2018
+      MYSQL_DATABASE: appcompras
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -pAllrsm_2018"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  backend:
+    container_name: tanalista-back
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/appcompras
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Allrsm_2018
+    ports:
+      - "8088:8088"
+    restart: always
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
