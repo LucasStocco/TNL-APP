@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/lista.dart';
-import '../service/lista_service.dart';
+import '../view_model/lista_view_model.dart';
+import 'package:provider/provider.dart';
 
 class CriarNovaListaScreen extends StatefulWidget {
   final Lista? lista; // parâmetro opcional para edição
@@ -15,13 +16,11 @@ class _CriarNovaListaScreenState extends State<CriarNovaListaScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
 
-  final ListaService _service = ListaService();
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    // Se for edição, preenche o campo
     if (widget.lista != null) {
       _nomeController.text = widget.lista!.nome;
     }
@@ -33,34 +32,33 @@ class _CriarNovaListaScreenState extends State<CriarNovaListaScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final lista = Lista(
-        id: widget.lista?.id, // mantém o id se for edição
+      final viewModel = context.read<ListaViewModel>();
+
+      Lista lista = Lista(
+        id: widget.lista?.id,
         nome: _nomeController.text,
-        dataConclusao:
-            widget.lista?.dataConclusao, // mantém a data original ou null
+        dataConclusao: widget.lista?.dataConclusao,
       );
 
-      Lista listaRetornada;
+      Lista? listaRetornada;
 
       if (widget.lista == null) {
-        // criando nova lista
-        listaRetornada = await _service.create(lista);
+        listaRetornada = await viewModel.criar(lista.nome);
       } else {
-        // atualizando lista existente
-        listaRetornada = await _service.update(lista);
+        listaRetornada = await viewModel.atualizar(lista);
       }
 
-      // Retorna para a tela anterior
-      if (mounted) {
+      if (listaRetornada != null && mounted) {
         Navigator.pop(context, listaRetornada);
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao salvar lista: $e')),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

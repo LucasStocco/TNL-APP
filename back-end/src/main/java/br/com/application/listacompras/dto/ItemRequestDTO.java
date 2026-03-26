@@ -1,20 +1,20 @@
 package br.com.application.listacompras.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 
 public class ItemRequestDTO {
 
-    @NotNull(message = "O produto é obrigatório")
-    private ProdutoRequestDTO produto;
+    private Long produtoId;
 
-    @NotNull(message = "A quantidade é obrigatória")
+    @NotNull(message = "quantidade é obrigatória")
+    @Min(value = 1, message = "quantidade deve ser no mínimo 1")
     private Integer quantidade;
 
-    private Boolean comprado = false; // padrão falso
+    private Boolean comprado = false;
 
-    // Getters e Setters
-    public ProdutoRequestDTO getProduto() { return produto; }
-    public void setProduto(ProdutoRequestDTO produto) { this.produto = produto; }
+    public Long getProdutoId() { return produtoId; }
+    public void setProdutoId(Long produtoId) { this.produtoId = produtoId; }
 
     public Integer getQuantidade() { return quantidade; }
     public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
@@ -22,7 +22,3 @@ public class ItemRequestDTO {
     public Boolean getComprado() { return comprado; }
     public void setComprado(Boolean comprado) { this.comprado = comprado; }
 }
-
-/*
- * Recebe dados do cliente para criar ou atualizar itens.
- */

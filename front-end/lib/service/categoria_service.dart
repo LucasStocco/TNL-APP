@@ -4,13 +4,14 @@ import '../model/categoria.dart';
 import '../config/api_config.dart';
 
 class CategoriaService {
-  /// Buscar todas categorias
+  static const String baseUrl = '${ApiConfig.baseUrl}/categorias';
+
+  /// Listar todas categorias
   Future<List<Categoria>> buscarCategorias() async {
-    final url = Uri.parse('${ApiConfig.baseUrl}/categorias');
-    final response = await http.get(url);
+    final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
+      final List<dynamic> data = jsonDecode(response.body);
       return data
           .map((jsonItem) =>
               Categoria.fromJson(jsonItem as Map<String, dynamic>))
@@ -23,28 +24,26 @@ class CategoriaService {
 
   /// Buscar categoria por ID
   Future<Categoria> buscarPorId(int id) async {
-    final url = Uri.parse('${ApiConfig.baseUrl}/categorias/$id');
-    final response = await http.get(url);
+    final response = await http.get(Uri.parse('$baseUrl/$id'));
 
     if (response.statusCode == 200) {
-      return Categoria.fromJson(json.decode(response.body));
+      return Categoria.fromJson(jsonDecode(response.body));
     } else {
       throw Exception(
           'Erro ao buscar categoria: ${response.statusCode} - ${response.body}');
     }
   }
 
-  /// Criar nova categoria
+  /// Criar categoria
   Future<Categoria> criarCategoria(Categoria categoria) async {
-    final url = Uri.parse('${ApiConfig.baseUrl}/categorias');
     final response = await http.post(
-      url,
+      Uri.parse(baseUrl),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode(categoria.toJson()),
+      body: jsonEncode(categoria.toJson()),
     );
 
-    if (response.statusCode == 201) {
-      return Categoria.fromJson(json.decode(response.body));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return Categoria.fromJson(jsonDecode(response.body));
     } else {
       throw Exception(
           'Erro ao criar categoria: ${response.statusCode} - ${response.body}');
@@ -57,15 +56,14 @@ class CategoriaService {
       throw Exception('ID da categoria é obrigatório para atualizar');
     }
 
-    final url = Uri.parse('${ApiConfig.baseUrl}/categorias/${categoria.id}');
     final response = await http.put(
-      url,
+      Uri.parse('$baseUrl/${categoria.id}'),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode(categoria.toJson()),
+      body: jsonEncode(categoria.toJson()),
     );
 
     if (response.statusCode == 200) {
-      return Categoria.fromJson(json.decode(response.body));
+      return Categoria.fromJson(jsonDecode(response.body));
     } else {
       throw Exception(
           'Erro ao atualizar categoria: ${response.statusCode} - ${response.body}');
@@ -74,8 +72,7 @@ class CategoriaService {
 
   /// Deletar categoria
   Future<void> deletarCategoria(int id) async {
-    final url = Uri.parse('${ApiConfig.baseUrl}/categorias/$id');
-    final response = await http.delete(url);
+    final response = await http.delete(Uri.parse('$baseUrl/$id'));
 
     if (response.statusCode != 204) {
       throw Exception(

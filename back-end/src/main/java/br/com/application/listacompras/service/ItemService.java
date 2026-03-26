@@ -1,24 +1,22 @@
 package br.com.application.listacompras.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import br.com.application.listacompras.dto.CategoriaResponseDTO;
 import br.com.application.listacompras.dto.ItemRequestDTO;
 import br.com.application.listacompras.dto.ItemResponseDTO;
-import br.com.application.listacompras.dto.ProdutoRequestDTO;
 import br.com.application.listacompras.dto.ProdutoResponseDTO;
+import br.com.application.listacompras.dto.CategoriaResponseDTO;
 import br.com.application.listacompras.model.Item;
 import br.com.application.listacompras.model.Lista;
 import br.com.application.listacompras.model.Produto;
-import br.com.application.listacompras.model.Categoria;
 import br.com.application.listacompras.repository.ItemRepository;
 import br.com.application.listacompras.repository.ListaRepository;
-import br.com.application.listacompras.repository.ProdutoRepository;
-import br.com.application.listacompras.repository.CategoriaRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -30,48 +28,37 @@ public class ItemService {
     private ListaRepository listaRepository;
 
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private ProdutoService produtoService;
 
-    @Autowired
-    private CategoriaRepository categoriaRepository;
-
+    // ===============================
     // CRIAR ITEM
+    // ===============================
     public ItemResponseDTO criar(Long listaId, ItemRequestDTO dto) {
+
         Lista lista = listaRepository.findById(listaId)
-                .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lista não encontrada"));
 
-        // Primeiro, cria ou busca o produto
-        Produto produto = new Produto();
-        ProdutoRequestDTO pDto = dto.getProduto();
+        validarItemDto(dto);
 
-        // Buscar categoria
-        Categoria categoria = categoriaRepository.findById(pDto.getCategoriaId())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+        Produto produto = null;
+        if (dto.getProdutoId() != null) {
+            produto = produtoService.buscarEntidadePorId(dto.getProdutoId());
+        }
 
-        produto.setNome(pDto.getNome());
-        produto.setDescricao(pDto.getDescricao());
-        produto.setPreco(pDto.getPreco());
-        produto.setCategoria(categoria);
-
-        Produto produtoSalvo = produtoRepository.save(produto);
-
-        // Criar item
         Item item = new Item();
+        item.setLista(lista);
+        item.setProduto(produto);
         item.setQuantidade(dto.getQuantidade());
         item.setComprado(dto.getComprado() != null ? dto.getComprado() : false);
-        item.setProduto(produtoSalvo);
-        item.setLista(lista);
 
         Item salvo = itemRepository.save(item);
-
-        // Atualiza dataConclusao da lista
-        lista.verificarConclusao();
-        listaRepository.save(lista);
 
         return converterParaDTO(salvo);
     }
 
-    // LISTAR ITENS POR LISTA
+    // ===============================
+    // LISTAR ITENS
+    // ===============================
     public List<ItemResponseDTO> listarPorLista(Long listaId) {
         return itemRepository.findByListaId(listaId)
                 .stream()
@@ -79,72 +66,109 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    // BUSCAR ITEM POR ID
+    // ===============================
+    // BUSCAR POR ID
+    // ===============================
     public ItemResponseDTO buscarPorId(Long listaId, Long itemId) {
-        Item item = itemRepository.findById(itemId).orElse(null);
-        if (item == null || !item.getLista().getId().equals(listaId)) return null;
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item não encontrado"));
+
+        if (!item.getLista().getId().equals(listaId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item não pertence a esta lista");
+        }
+
         return converterParaDTO(item);
     }
 
-    // ATUALIZAR ITEM
-    public ItemResponseDTO atualizar(Long listaId, Long id, ItemRequestDTO dto) {
-        Item item = itemRepository.findById(id).orElse(null);
-        if (item == null || !item.getLista().getId().equals(listaId)) return null;
+    // ===============================
+    // ATUALIZAR
+    // ===============================
+    public ItemResponseDTO atualizar(Long listaId, Long itemId, ItemRequestDTO dto) {
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item não encontrado"));
+
+        if (!item.getLista().getId().equals(listaId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item não pertence a esta lista");
+        }
+
+        validarItemDto(dto);
+
+        Produto produto = null;
+        if (dto.getProdutoId() != null) {
+            produto = produtoService.buscarEntidadePorId(dto.getProdutoId());
+        }
 
         item.setQuantidade(dto.getQuantidade());
-        item.setComprado(dto.getComprado() != null ? dto.getComprado() : item.getComprado());
+        item.setComprado(dto.getComprado() != null ? dto.getComprado() : false);
+        item.setProduto(produto);
 
-        // Atualizar produto
-        ProdutoRequestDTO pDto = dto.getProduto();
-        Categoria categoria = categoriaRepository.findById(pDto.getCategoriaId())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+        Item salvo = itemRepository.save(item);
 
-        Produto produto = item.getProduto();
-        produto.setNome(pDto.getNome());
-        produto.setDescricao(pDto.getDescricao());
-        produto.setPreco(pDto.getPreco());
-        produto.setCategoria(categoria);
-
-        produtoRepository.save(produto);
-        Item atualizado = itemRepository.save(item);
-
-        // Atualiza dataConclusao da lista
-        Lista lista = atualizado.getLista();
-        lista.verificarConclusao();
-        listaRepository.save(lista);
-
-        return converterParaDTO(atualizado);
+        return converterParaDTO(salvo);
     }
 
-    // DELETAR ITEM
-    public boolean deletar(Long listaId, Long id) {
-        Item item = itemRepository.findById(id).orElse(null);
-        if (item == null || !item.getLista().getId().equals(listaId)) return false;
+    // ===============================
+    // DELETAR
+    // ===============================
+    public boolean deletar(Long listaId, Long itemId) {
+        Item item = itemRepository.findById(itemId).orElse(null);
+
+        if (item == null || !item.getLista().getId().equals(listaId)) {
+            return false;
+        }
 
         itemRepository.delete(item);
-
-        // Atualiza dataConclusao da lista
-        Lista lista = item.getLista();
-        lista.verificarConclusao();
-        listaRepository.save(lista);
-
         return true;
     }
 
-    // CONVERTER ITEM PARA DTO
-    private ItemResponseDTO converterParaDTO(Item item) {
-        CategoriaResponseDTO categoriaDTO = new CategoriaResponseDTO(
-                item.getProduto().getCategoria().getId(),
-                item.getProduto().getCategoria().getNome()
-        );
+    // ===============================
+    // VALIDAÇÃO
+    // ===============================
+    private void validarItemDto(ItemRequestDTO dto) {
 
-        ProdutoResponseDTO produtoDTO = new ProdutoResponseDTO(
-                item.getProduto().getId(),
-                item.getProduto().getNome(),
-                item.getProduto().getDescricao(),
-                item.getProduto().getPreco(),
-                categoriaDTO
-        );
+        if (dto.getQuantidade() == null || dto.getQuantidade() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantidade deve ser maior que 0");
+        }
+
+        // comprado default
+        if (dto.getComprado() == null) {
+            dto.setComprado(false);
+        }
+
+        // 🔥 regra opcional (recomendo manter):
+        // se não tem produto, ainda assim permite (item manual)
+        // então NÃO bloqueamos produtoId null
+    }
+
+    // ===============================
+    // CONVERSÃO
+    // ===============================
+    private ItemResponseDTO converterParaDTO(Item item) {
+
+        ProdutoResponseDTO produtoDTO = null;
+
+        if (item.getProduto() != null) {
+
+            Produto p = item.getProduto();
+
+            CategoriaResponseDTO categoriaDTO = null;
+
+            if (p.getCategoria() != null) {
+                categoriaDTO = new CategoriaResponseDTO(
+                        p.getCategoria().getId(),
+                        p.getCategoria().getNome()
+                );
+            }
+
+            produtoDTO = new ProdutoResponseDTO(
+                    p.getId(),
+                    p.getNome(),
+                    p.getDescricao(),
+                    p.getPreco(),
+                    categoriaDTO
+            );
+        }
 
         return new ItemResponseDTO(
                 item.getId(),

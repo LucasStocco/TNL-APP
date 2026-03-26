@@ -6,51 +6,46 @@ import '../config/api_config.dart';
 class ProdutoService {
   static const String baseUrl = '${ApiConfig.baseUrl}/produtos';
 
-  /// LISTAR TODOS OS PRODUTOS
-  Future<List<Produto>> getAll() async {
+  // ---------------------- LISTAR ----------------------
+  Future<List<Produto>> listar() async {
     final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
-      final List jsonData = jsonDecode(response.body);
-      return jsonData.map((e) => Produto.fromJson(e)).toList();
+      final decoded = jsonDecode(response.body);
+
+      if (decoded is List) {
+        return decoded.map((e) => Produto.fromJson(e)).toList();
+      } else if (decoded is Map && decoded.containsKey('content')) {
+        return (decoded['content'] as List)
+            .map((e) => Produto.fromJson(e))
+            .toList();
+      } else {
+        throw Exception('Formato inesperado da resposta');
+      }
     } else {
-      throw Exception(
-          'Erro ao carregar produtos: ${response.statusCode} - ${response.body}');
+      throw Exception('Erro ao listar produtos: ${response.statusCode}');
     }
   }
 
-  /// BUSCAR PRODUTO POR ID
-  Future<Produto> getById(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/$id'));
-
-    if (response.statusCode == 200) {
-      return Produto.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception(
-          'Erro ao buscar produto: ${response.statusCode} - ${response.body}');
-    }
-  }
-
-  /// CRIAR PRODUTO
-  Future<Produto> create(Produto produto) async {
+  // ---------------------- CRIAR ----------------------
+  Future<Produto> criar(Produto produto) async {
     final response = await http.post(
       Uri.parse(baseUrl),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(produto.toJson()),
     );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return Produto.fromJson(jsonDecode(response.body)); // Produto com ID
+    if ([200, 201].contains(response.statusCode)) {
+      return Produto.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(
-          'Erro ao criar produto: ${response.statusCode} - ${response.body}');
+      throw Exception('Erro ao criar produto: ${response.statusCode}');
     }
   }
 
-  /// ATUALIZAR PRODUTO
-  Future<Produto> update(Produto produto) async {
+  // ---------------------- ATUALIZAR ----------------------
+  Future<Produto> atualizar(Produto produto) async {
     if (produto.id == null) {
-      throw Exception('ID do produto é obrigatório para atualizar.');
+      throw Exception('ID obrigatório para atualizar produto');
     }
 
     final response = await http.put(
@@ -62,18 +57,16 @@ class ProdutoService {
     if (response.statusCode == 200) {
       return Produto.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(
-          'Erro ao atualizar produto: ${response.statusCode} - ${response.body}');
+      throw Exception('Erro ao atualizar produto: ${response.statusCode}');
     }
   }
 
-  /// DELETAR PRODUTO
-  Future<void> delete(int id) async {
+  // ---------------------- DELETAR ----------------------
+  Future<void> deletar(int id) async {
     final response = await http.delete(Uri.parse('$baseUrl/$id'));
 
-    if (response.statusCode != 204 && response.statusCode != 200) {
-      throw Exception(
-          'Erro ao deletar produto: ${response.statusCode} - ${response.body}');
+    if (![200, 204].contains(response.statusCode)) {
+      throw Exception('Erro ao deletar produto: ${response.statusCode}');
     }
   }
 }

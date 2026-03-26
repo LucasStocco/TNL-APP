@@ -9,15 +9,23 @@ class CategoriaViewModel extends ChangeNotifier {
   bool isLoading = false;
   String? erro;
 
+  bool _isDisposed = false;
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
   void _startLoading() {
     isLoading = true;
     erro = null;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
   void _stopLoading() {
     isLoading = false;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
   /// Carrega todas as categorias do backend
@@ -36,7 +44,7 @@ class CategoriaViewModel extends ChangeNotifier {
   /// Atualiza a lista manualmente (ex: após criação ou exclusão)
   void atualizarCategorias(List<Categoria> novaLista) {
     categorias = novaLista;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
   /// Reseta o estado
@@ -44,6 +52,6 @@ class CategoriaViewModel extends ChangeNotifier {
     categorias = [];
     isLoading = false;
     erro = null;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 }

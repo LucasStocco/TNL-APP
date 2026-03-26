@@ -6,37 +6,25 @@ import '../config/api_config.dart';
 class ItemService {
   static const String baseUrl = ApiConfig.baseUrl;
 
-  /// ---------------------- LISTAR ----------------------
   Future<List<Item>> listar(int listaId) async {
-    final url = Uri.parse('$baseUrl/listas/$listaId/itens');
-    final response = await http.get(url);
-
+    final response =
+        await http.get(Uri.parse('$baseUrl/listas/$listaId/itens'));
     if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
+      final data = jsonDecode(response.body) as List;
       return data.map((e) => Item.fromJson(e)).toList();
     } else {
-      throw Exception(
-        'Erro ao listar itens: ${response.statusCode} - ${response.body}',
-      );
+      throw Exception('Erro ao listar itens: ${response.statusCode}');
     }
   }
 
-  /// ---------------------- CRIAR ----------------------
   Future<Item> criar(int listaId, Item item) async {
-    if (item.produto.id == null) {
-      throw Exception(
-        'Produto não possui ID. Salve o produto antes de criar o item.',
-      );
-    }
-
     final url = Uri.parse('$baseUrl/listas/$listaId/itens');
+    final body = jsonEncode(item.toJson());
 
-    final body = jsonEncode({
-      'quantidade': item.quantidade,
-      'comprado': item.comprado,
-      'produtoId': item.produto.id,
-      'listaId': listaId,
-    });
+    print('======================');
+    print('CRIANDO ITEM');
+    print('URL: $url');
+    print('BODY: $body');
 
     final response = await http.post(
       url,
@@ -44,60 +32,37 @@ class ItemService {
       body: body,
     );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      return Item.fromJson(data);
+    print('STATUS: ${response.statusCode}');
+    print('RESPONSE: ${response.body}');
+    print('======================');
+
+    if ([200, 201].contains(response.statusCode)) {
+      return Item.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(
-        'Erro ao criar item: ${response.statusCode} - ${response.body}',
-      );
+      throw Exception('Erro ao criar item: ${response.statusCode}');
     }
   }
 
-  /// ---------------------- ATUALIZAR ----------------------
   Future<Item> atualizar(int listaId, Item item) async {
-    if (item.id == null) {
-      throw Exception('Item precisa ter ID para ser atualizado.');
-    }
-    if (item.produto.id == null) {
-      throw Exception('Produto do item não possui ID.');
-    }
-
-    final url = Uri.parse('$baseUrl/listas/$listaId/itens/${item.id}');
-
-    final body = jsonEncode({
-      'quantidade': item.quantidade,
-      'comprado': item.comprado,
-      'produtoId': item.produto.id,
-      'listaId': listaId,
-    });
-
+    if (item.id == null) throw Exception('ID obrigatório para atualizar item');
     final response = await http.put(
-      url,
+      Uri.parse('$baseUrl/listas/$listaId/itens/${item.id}'),
       headers: {'Content-Type': 'application/json'},
-      body: body,
+      body: jsonEncode(item.toJson()),
     );
-
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return Item.fromJson(data);
+      return Item.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception(
-        'Erro ao atualizar item: ${response.statusCode} - ${response.body}',
-      );
+      throw Exception('Erro ao atualizar item: ${response.statusCode}');
     }
   }
 
-  /// ---------------------- DELETAR ----------------------
   Future<void> deletar(int listaId, int itemId) async {
-    final url = Uri.parse('$baseUrl/listas/$listaId/itens/$itemId');
-
-    final response = await http.delete(url);
-
-    if (response.statusCode != 204) {
-      throw Exception(
-        'Erro ao deletar item: ${response.statusCode} - ${response.body}',
-      );
+    final response = await http.delete(
+      Uri.parse('$baseUrl/listas/$listaId/itens/$itemId'),
+    );
+    if (![200, 204].contains(response.statusCode)) {
+      throw Exception('Erro ao deletar item: ${response.statusCode}');
     }
   }
 }

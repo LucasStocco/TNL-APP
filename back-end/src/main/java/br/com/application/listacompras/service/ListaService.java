@@ -1,7 +1,9 @@
 package br.com.application.listacompras.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.application.listacompras.dto.ItemResponseDTO;
 import br.com.application.listacompras.dto.ListaRequestDTO;
@@ -10,7 +12,6 @@ import br.com.application.listacompras.model.Lista;
 import br.com.application.listacompras.repository.ListaRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,40 +23,40 @@ public class ListaService {
     @Autowired
     private ItemService itemService;
 
-    // LISTAR TODAS
-    public List<ListaResponseDTO> listarTodas() {
+    // ---------------- CREATE ----------------
+    public ListaResponseDTO criar(ListaRequestDTO dto) {
+        Lista lista = new Lista();
+        lista.setNome(dto.getNome());
+        Lista listaSalva = listaRepository.save(lista);
+        return toResponseDTO(listaSalva);
+    }
+
+    // ---------------- LIST ALL ----------------
+    public List<ListaResponseDTO> listarTodos() {
         return listaRepository.findAll()
                 .stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    // BUSCAR POR ID
-    public Optional<ListaResponseDTO> buscarPorId(Long id) {
-        return listaRepository.findById(id)
-                .map(this::toResponseDTO);
+    // ---------------- GET BY ID ----------------
+    public ListaResponseDTO buscarPorId(Long id) {
+        Lista lista = listaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lista não encontrada"));
+        return toResponseDTO(lista);
     }
 
-    // CRIAR
-    public ListaResponseDTO criar(ListaRequestDTO dto) {
-        Lista lista = new Lista();
-        lista.setNome(dto.getNome());
-
-        Lista salva = listaRepository.save(lista);
-        return toResponseDTO(salva);
-    }
-
-    // ATUALIZAR
+    // ---------------- UPDATE ----------------
     public ListaResponseDTO atualizar(Long id, ListaRequestDTO dto) {
-        return listaRepository.findById(id)
+        Lista listaAtualizada = listaRepository.findById(id)
                 .map(lista -> {
                     lista.setNome(dto.getNome());
-                    Lista atualizada = listaRepository.save(lista);
-                    return toResponseDTO(atualizada);
-                }).orElse(null);
+                    return listaRepository.save(lista);
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lista não encontrada"));
+        return toResponseDTO(listaAtualizada);
     }
 
-    // DELETAR
+    // ---------------- DELETE ----------------
     public boolean deletar(Long id) {
         return listaRepository.findById(id)
                 .map(lista -> {
@@ -64,7 +65,7 @@ public class ListaService {
                 }).orElse(false);
     }
 
-    // CONVERTER PARA RESPONSE
+    // ---------------- CONVERTER PARA RESPONSE ----------------
     private ListaResponseDTO toResponseDTO(Lista lista) {
         List<ItemResponseDTO> itensDTO = lista.getItens()
                 .stream()

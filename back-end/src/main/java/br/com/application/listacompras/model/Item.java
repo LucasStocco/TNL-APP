@@ -25,7 +25,7 @@ public class Item {
 
     // --- Relacionamento com Produto ---
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id", nullable = false)
+    @JoinColumn(name = "produto_id", nullable = true)
     private Produto produto;
 
     public Item() {}

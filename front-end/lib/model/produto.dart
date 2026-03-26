@@ -15,27 +15,31 @@ class Produto {
     required this.categoria,
   });
 
-  /// Construtor a partir de JSON (ResponseDTO do backend)
+  // DESSERIALIZAÇÃO
   factory Produto.fromJson(Map<String, dynamic> json) {
     return Produto(
-      id: json['id'] as int? ?? int.tryParse(json['id']?.toString() ?? ''),
-      nome: json['nome'] ?? '',
+      id: json['id'] as int?,
+      nome: json['nome'] as String? ?? 'Produto Inválido',
       preco: (json['preco'] as num?)?.toDouble() ?? 0.0,
-      descricao: json['descricao'],
-      // se o backend retornar apenas categoriaId, podemos criar Categoria com fallback
+      descricao: json['descricao'] as String?,
+
+      // IMPORTANTE: Backend manda OBJETO categoria → então chamamos fromJson
       categoria: json['categoria'] != null
           ? Categoria.fromJson(json['categoria'])
-          : Categoria(id: json['categoriaId'] ?? 0, nome: 'Sem Categoria'),
+          : Categoria(id: 0, nome: 'Sem Categoria'),
     );
   }
 
-  /// Converte para JSON compatível com ProdutoRequestDTO
+  // SERIALIZAÇÃO
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'nome': nome,
       'preco': preco,
-      if (descricao != null && descricao!.isNotEmpty) 'descricao': descricao,
-      'categoriaId': categoria.id, // backend espera apenas o ID
+      'descricao': descricao ?? '',
+
+      // IMPORTANTE: Backend espera apenas o ID da categoria
+      'categoriaId': categoria.id,
     };
   }
 

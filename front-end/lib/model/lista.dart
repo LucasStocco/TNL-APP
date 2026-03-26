@@ -1,59 +1,69 @@
+import 'item.dart';
+
 class Lista {
   final int? id;
   final String nome;
+  final List<Item> itens;
   final DateTime? dataConclusao;
 
   Lista({
     this.id,
     required this.nome,
+    this.itens = const [],
     this.dataConclusao,
   });
 
-  /// Construtor a partir de JSON (backend -> Dart)
-  factory Lista.fromJson(Map<String, dynamic> json) {
+  // DESSERIALIZAÇÃO
+  factory Lista.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return Lista(
+        id: 0,
+        nome: 'Lista Inválida',
+        itens: [],
+        dataConclusao: null,
+      );
+    }
+
     return Lista(
-      id: json['id'] as int?,
-      nome: json['nome'] as String? ?? 'Sem Nome',
+      id: json['id'] as int? ?? 0,
+      nome: json['nome'] as String? ?? 'Lista Inválida',
+
+      // IMPORTANTE: Lista de itens → precisa mapear cada um
+      itens: (json['itens'] as List<dynamic>?)
+              ?.map((i) => Item.fromJson(i as Map<String, dynamic>))
+              .toList() ??
+          [],
+
       dataConclusao: json['dataConclusao'] != null
-          ? DateTime.tryParse(json['dataConclusao'] as String)
+          ? DateTime.parse(json['dataConclusao'])
           : null,
     );
   }
 
-  /// Converte para JSON (Dart -> backend)
+  // SERIALIZAÇÃO
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'nome': nome,
+
+      // Converte lista de objetos → lista de JSON
+      'itens': itens.map((i) => i.toJson()).toList(),
+
       if (dataConclusao != null)
         'dataConclusao': dataConclusao!.toIso8601String(),
     };
   }
 
-  /// Comparação de objetos
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Lista &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          nome == other.nome &&
-          dataConclusao == other.dataConclusao;
-
-  @override
-  int get hashCode =>
-      id.hashCode ^ nome.hashCode ^ (dataConclusao?.hashCode ?? 0);
-
-  /// Para debugging
-  @override
-  String toString() =>
-      'Lista{id: $id, nome: $nome, dataConclusao: $dataConclusao}';
-
-  /// Retorna uma nova instância com dataConclusao atualizada
   Lista concluir() {
     return Lista(
       id: id,
       nome: nome,
+      itens: itens,
       dataConclusao: DateTime.now(),
     );
   }
+
+  @override
+  String toString() =>
+      'Lista{id: $id, nome: $nome, itens: $itens, dataConclusao: $dataConclusao}';
 }

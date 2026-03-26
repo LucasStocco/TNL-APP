@@ -59,8 +59,8 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
               final categoria =
                   viewModel.categorias[index]; // pega a categoria atual
               final icone = CategoriaHelper.iconeParaCategoria(
-                categoria.id,
-              ); // pega o ícone via helper
+                categoria.id ?? 0, // se for nulo, usa 0 ou outro id padrão
+              );
 
               return GestureDetector(
                 // Ao clicar no card, navega para a tela de detalhes

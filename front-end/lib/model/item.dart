@@ -9,56 +9,52 @@ class Item {
   Item({
     this.id,
     required this.quantidade,
-    required this.comprado,
+    this.comprado = false,
     required this.produto,
   });
 
-  /// Construtor a partir de JSON (Response do backend)
+  // DESSERIALIZAÇÃO (CRÍTICA)
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       id: json['id'] as int?,
       quantidade: json['quantidade'] as int? ?? 0,
       comprado: json['comprado'] as bool? ?? false,
-      produto: json['produto'] != null
-          ? Produto.fromJson(json['produto'])
-          : throw Exception('Produto inválido no item'),
+
+      // ESSENCIAL: Backend manda produto COMPLETO → precisa converter corretamente
+      produto: Produto.fromJson(json['produto'] as Map<String, dynamic>),
     );
   }
 
-  /// Converte para JSON compatível com o backend (RequestDTO)
+  // SERIALIZAÇÃO
   Map<String, dynamic> toJson() {
+    if (produto.id == null) {
+      throw Exception("Produto precisa ter ID antes de criar um Item");
+    }
+
     return {
       'quantidade': quantidade,
       'comprado': comprado,
-      'produto': produto.toJson(), // objeto completo do produto
+
+      // MPORTANTE: Backend espera apenas o ID do produto
+      'produtoId': produto.id,
     };
   }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Item &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          quantidade == other.quantidade &&
-          comprado == other.comprado &&
-          produto == other.produto;
-
-  @override
-  int get hashCode =>
-      id.hashCode ^ quantidade.hashCode ^ comprado.hashCode ^ produto.hashCode;
+  Item copyWith({
+    int? id,
+    int? quantidade,
+    bool? comprado,
+    Produto? produto,
+  }) {
+    return Item(
+      id: id ?? this.id,
+      quantidade: quantidade ?? this.quantidade,
+      comprado: comprado ?? this.comprado,
+      produto: produto ?? this.produto,
+    );
+  }
 
   @override
   String toString() =>
       'Item{id: $id, quantidade: $quantidade, comprado: $comprado, produto: $produto}';
-
-  /// Retorna uma nova instância com o status de comprado atualizado
-  Item marcarComoComprado(bool status) {
-    return Item(
-      id: id,
-      quantidade: quantidade,
-      comprado: status,
-      produto: produto,
-    );
-  }
 }

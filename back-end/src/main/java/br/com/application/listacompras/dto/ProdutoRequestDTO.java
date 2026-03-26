@@ -11,22 +11,45 @@ public class ProdutoRequestDTO {
     @Size(max = 100, message = "O nome deve ter no máximo 100 caracteres")
     private String nome;
 
-    private String descricao; // opcional
-    private BigDecimal preco; // opcional
+    // pode ser null ou vazio
+    private String descricao;
+
+    private BigDecimal preco;
 
     @NotNull(message = "A categoria é obrigatória")
     private Long categoriaId;
 
-    // Getters e Setters
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    // ===== GETTERS E SETTERS =====
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getNome() {
+        return nome;
+    }
 
-    public BigDecimal getPreco() { return preco; }
-    public void setPreco(BigDecimal preco) { this.preco = preco; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-    public Long getCategoriaId() { return categoriaId; }
-    public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public Long getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(Long categoriaId) {
+        this.categoriaId = categoriaId;
+    }
 }
