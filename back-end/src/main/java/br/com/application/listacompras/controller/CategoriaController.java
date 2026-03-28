@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.application.listacompras.dto.CategoriaRequestDTO;
-import br.com.application.listacompras.dto.CategoriaResponseDTO;
+import br.com.application.listacompras.dto.requestDTO.CategoriaRequestDTO;
+import br.com.application.listacompras.dto.responseDTO.CategoriaResponseDTO;
 import br.com.application.listacompras.service.CategoriaService;
 import jakarta.validation.Valid;
 

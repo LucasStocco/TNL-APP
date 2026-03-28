@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../model/lista.dart';
-import '../view_model/lista_view_model.dart';
+import '../../model/gerenciar_lista/lista.dart';
+import '../../view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:provider/provider.dart';
 
 class CriarNovaListaScreen extends StatefulWidget {
+  // associacao com a entidade lista
   final Lista? lista; // parâmetro opcional para edição
 
   const CriarNovaListaScreen({super.key, this.lista});
@@ -32,6 +33,7 @@ class _CriarNovaListaScreenState extends State<CriarNovaListaScreen> {
     setState(() => _isLoading = true);
 
     try {
+      // obtendo isntancia
       final viewModel = context.read<ListaViewModel>();
 
       Lista lista = Lista(

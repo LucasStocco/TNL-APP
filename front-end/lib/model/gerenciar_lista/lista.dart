@@ -1,4 +1,4 @@
-import 'item.dart';
+import '../criar_produto/item.dart';
 
 class Lista {
   final int? id;

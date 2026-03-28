@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.application.listacompras.dto.ItemRequestDTO;
-import br.com.application.listacompras.dto.ItemResponseDTO;
-import br.com.application.listacompras.dto.ProdutoResponseDTO;
-import br.com.application.listacompras.dto.CategoriaResponseDTO;
+import br.com.application.listacompras.dto.requestDTO.ItemRequestDTO;
+import br.com.application.listacompras.dto.responseDTO.CategoriaResponseDTO;
+import br.com.application.listacompras.dto.responseDTO.ItemResponseDTO;
+import br.com.application.listacompras.dto.responseDTO.ProdutoResponseDTO;
 import br.com.application.listacompras.model.Item;
 import br.com.application.listacompras.model.Lista;
 import br.com.application.listacompras.model.Produto;

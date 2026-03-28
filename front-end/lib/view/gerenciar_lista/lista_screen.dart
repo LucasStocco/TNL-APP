@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../model/item.dart';
-import '../view_model/item_view_model.dart';
-import 'criar_item_screen.dart';
+import '../../model/criar_produto/item.dart';
+import '../../view_model/criar_produto/item_view_model.dart';
+import '../criar_produto/criar_produto_screen.dart';
 
 class ListaScreen extends StatefulWidget {
   final int listaId;

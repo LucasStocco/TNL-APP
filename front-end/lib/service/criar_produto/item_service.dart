@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model/item.dart';
-import '../config/api_config.dart';
+import '../../model/criar_produto/item.dart';
+import '../../config/api_config.dart';
 
 class ItemService {
   static const String baseUrl = ApiConfig.baseUrl;

@@ -3,8 +3,8 @@ package br.com.application.listacompras.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.application.listacompras.dto.CategoriaRequestDTO;
-import br.com.application.listacompras.dto.CategoriaResponseDTO;
+import br.com.application.listacompras.dto.requestDTO.CategoriaRequestDTO;
+import br.com.application.listacompras.dto.responseDTO.CategoriaResponseDTO;
 import br.com.application.listacompras.model.Categoria;
 import br.com.application.listacompras.repository.CategoriaRepository;
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../view_model/categoria_view_model.dart';
+import '../view_model/criar_produto/categoria_view_model.dart';
 import '../helpers/categoria_helper.dart';
 import 'categoria_detalhes_screen.dart'; // Tela de detalhes da categoria
 

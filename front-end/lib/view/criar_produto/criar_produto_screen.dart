@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../model/item.dart';
-import '../model/categoria.dart';
-import '../model/produto.dart';
+import '../../model/criar_produto/item.dart';
+import '../../model/criar_produto/categoria.dart';
+import '../../model/criar_produto/produto.dart';
 
-import '../view_model/categoria_view_model.dart';
-import '../view_model/produto_view_model.dart';
+import '../../view_model/criar_produto/categoria_view_model.dart';
+import '../../view_model/criar_produto/produto_view_model.dart';
 
 class CriarItemScreen extends StatefulWidget {
   final int listaId;

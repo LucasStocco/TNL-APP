@@ -1,13 +1,18 @@
-import 'package:crud_flutter/view/categorias_screen.dart';
+// Flutter & Packages
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../model/criar_produto/categoria.dart';
-import 'categoria_detalhes_screen.dart';
-import 'gerenciar_lista/criar_nova_lista_screen.dart';
-import 'gerenciar_lista/minhas_listas_screen.dart';
-import 'auto_cadastro/user_screen.dart';
-import 'settings_screen.dart';
-import 'relatorio_financeiro/relatorio_screen.dart';
+
+// Model
+import 'package:crud_flutter/model/criar_produto/categoria.dart';
+
+// Views (Telas)
+import 'package:crud_flutter/view/categoria_detalhes_screen.dart';
+import 'package:crud_flutter/view/categorias_screen.dart';
+import 'package:crud_flutter/view/settings_screen.dart';
+import 'package:crud_flutter/view/relatorio_financeiro/relatorio_screen.dart';
+import 'package:crud_flutter/view/gerenciar_lista/criar_nova_lista_screen.dart';
+import 'package:crud_flutter/view/gerenciar_lista/minhas_listas_screen.dart';
+import 'package:crud_flutter/view/auto_cadastro/user_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

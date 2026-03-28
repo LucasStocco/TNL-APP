@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model/categoria.dart';
-import '../config/api_config.dart';
+import '../../model/criar_produto/categoria.dart';
+import '../../config/api_config.dart';
 
 class CategoriaService {
   static const String baseUrl = '${ApiConfig.baseUrl}/categorias';

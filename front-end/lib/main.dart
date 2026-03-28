@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 
 import 'view/home_screen.dart';
 
-import 'view_model/categoria_view_model.dart';
-import 'view_model/lista_view_model.dart';
-import 'view_model/item_view_model.dart';
-import 'view_model/produto_view_model.dart';
+import 'view_model/criar_produto/categoria_view_model.dart';
+import 'view_model/gerenciar_lista/lista_view_model.dart';
+import 'view_model/criar_produto/item_view_model.dart';
+import 'view_model/criar_produto/produto_view_model.dart';
 
 void main() {
   runApp(const MyApp());

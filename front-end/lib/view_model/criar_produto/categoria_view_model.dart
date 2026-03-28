@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../model/categoria.dart';
-import '../service/categoria_service.dart';
+import '../../model/criar_produto/categoria.dart';
+import '../../service/criar_produto/categoria_service.dart';
 
 class CategoriaViewModel extends ChangeNotifier {
   final CategoriaService _service = CategoriaService();

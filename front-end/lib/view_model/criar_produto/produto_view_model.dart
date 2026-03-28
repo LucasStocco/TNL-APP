@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../model/produto.dart';
-import '../service/produto_service.dart';
+import '../../model/criar_produto/produto.dart';
+import '../../service/criar_produto/produto_service.dart';
 
 class ProdutoViewModel extends ChangeNotifier {
   final ProdutoService _service = ProdutoService();

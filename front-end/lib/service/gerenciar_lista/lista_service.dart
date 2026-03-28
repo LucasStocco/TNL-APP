@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model/lista.dart';
-import '../config/api_config.dart';
+import '../../model/gerenciar_lista/lista.dart';
+import '../../config/api_config.dart';
 
 class ListaService {
   static const String baseUrl = '${ApiConfig.baseUrl}/listas';

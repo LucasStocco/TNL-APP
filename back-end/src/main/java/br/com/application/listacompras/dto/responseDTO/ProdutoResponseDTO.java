@@ -1,4 +1,4 @@
-package br.com.application.listacompras.dto;
+package br.com.application.listacompras.dto.responseDTO;
 
 import java.math.BigDecimal;
 

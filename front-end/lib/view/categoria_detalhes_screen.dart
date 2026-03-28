@@ -1,9 +1,9 @@
 import 'package:crud_flutter/my_widgets/app_navigation_bar.dart';
-import 'package:crud_flutter/view/criar_nova_lista_screen.dart';
+import 'package:crud_flutter/view/gerenciar_lista/criar_nova_lista_screen.dart';
 import 'package:crud_flutter/view/home_screen.dart';
-import 'package:crud_flutter/view/minhas_listas_screen.dart';
+import 'package:crud_flutter/view/gerenciar_lista/minhas_listas_screen.dart';
 import 'package:crud_flutter/view/categorias_screen.dart';
-import 'package:crud_flutter/view/relatorio_screen.dart';
+import 'package:crud_flutter/view/relatorio_financeiro/relatorio_screen.dart';
 import 'package:flutter/material.dart';
 
 class CategoriaDetalhesScreen extends StatefulWidget {

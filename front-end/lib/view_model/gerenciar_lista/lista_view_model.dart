@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../model/lista.dart';
-import '../service/lista_service.dart';
+import '../../model/gerenciar_lista/lista.dart';
+import '../../service/gerenciar_lista/lista_service.dart';
 
 class ListaViewModel extends ChangeNotifier {
+  // atributo da classe
   final ListaService _service = ListaService();
 
   List<Lista> listas = [];

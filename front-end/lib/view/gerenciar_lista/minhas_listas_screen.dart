@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../view_model/lista_view_model.dart';
-import '../model/lista.dart';
+import '../../view_model/gerenciar_lista/lista_view_model.dart';
+import '../../model/gerenciar_lista/lista.dart';
 import 'criar_nova_lista_screen.dart';
 import 'lista_screen.dart';
 

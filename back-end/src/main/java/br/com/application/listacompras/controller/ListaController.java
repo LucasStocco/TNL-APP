@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.application.listacompras.dto.ListaRequestDTO;
-import br.com.application.listacompras.dto.ListaResponseDTO;
+import br.com.application.listacompras.dto.requestDTO.ListaRequestDTO;
+import br.com.application.listacompras.dto.responseDTO.ListaResponseDTO;
 import br.com.application.listacompras.service.ListaService;
 
 import java.util.List;

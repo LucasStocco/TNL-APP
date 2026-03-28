@@ -1,4 +1,4 @@
-package br.com.application.listacompras.dto;
+package br.com.application.listacompras.dto.requestDTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
