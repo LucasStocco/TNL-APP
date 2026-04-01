@@ -1,0 +1,108 @@
+# =========================
+
+# FLUTTER / DART
+
+# =========================
+
+# Build
+
+build/
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+
+# Flutter plugins
+
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Generated files
+
+*.log
+*.tmp
+
+# IDE
+
+.idea/
+.vscode/
+
+# Dart
+
+.dart_tool/
+
+# =========================
+
+# ANDROID (Flutter)
+
+# =========================
+
+**/android/.gradle/
+**/android/local.properties
+
+# =========================
+
+# IOS / MACOS / LINUX / WINDOWS
+
+# =========================
+
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/macos/Flutter/ephemeral/
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
+
+# =========================
+
+# BACK-END (SPRING BOOT / JAVA)
+
+# =========================
+
+# Build
+
+back-end/target/
+back-end/bin/
+target/
+bin/
+
+# Compilados
+
+*.class
+*.jar
+*.war
+
+# Eclipse / IDE Java
+
+.classpath
+.project
+.settings/
+
+# Logs
+
+*.log
+
+# =========================
+
+# DOCKER / ENV
+
+# =========================
+
+.env
+docker-compose.override.yml
+
+# =========================
+
+# SISTEMA
+
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+
+# BACKUP / LIXO
+
+# =========================
+
+front_backup/
