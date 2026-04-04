@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:crud_flutter/model/criar_produto/categoria.dart';
 
 // Views (Telas)
-import 'package:crud_flutter/view/categoria_detalhes_screen.dart';
-import 'package:crud_flutter/view/categorias_screen.dart';
+import 'package:crud_flutter/view/categorias/categoria_detalhes_screen.dart';
+import 'package:crud_flutter/view/categorias/categorias_screen.dart';
 import 'package:crud_flutter/view/settings_screen.dart';
 import 'package:crud_flutter/view/relatorio_financeiro/relatorio_screen.dart';
 import 'package:crud_flutter/view/gerenciar_lista/criar_nova_lista_screen.dart';

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 // ViewModels
 import 'view/home_screen.dart';
-import 'view_model/criar_produto/categoria_view_model.dart';
+import 'view_model/categorias/categoria_view_model.dart';
 import 'view_model/gerenciar_lista/lista_view_model.dart';
 import 'view_model/criar_produto/item_view_model.dart';
 import 'view_model/criar_produto/produto_view_model.dart';

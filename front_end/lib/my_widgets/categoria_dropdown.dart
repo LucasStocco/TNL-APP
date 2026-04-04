@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/criar_produto/categoria.dart';
-import '../view_model/criar_produto/categoria_view_model.dart';
+import '../view_model/categorias/categoria_view_model.dart';
 
 class CategoriaDropdown extends StatelessWidget {
   final CategoriaViewModel viewModel;

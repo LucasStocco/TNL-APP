@@ -40,6 +40,8 @@ class Lista {
     );
   }
 
+  get produtos => null;
+
   // SERIALIZAÇÃO
   Map<String, dynamic> toJson() {
     return {

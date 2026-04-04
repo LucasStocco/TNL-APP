@@ -1,8 +1,8 @@
-import 'package:crud_flutter/view/categorias_screen.dart';
+import 'package:crud_flutter/view/categorias/categorias_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../model/criar_produto/categoria.dart';
-import 'categoria_detalhes_screen.dart';
+import 'categorias/categoria_detalhes_screen.dart';
 import 'gerenciar_lista/criar_nova_lista_screen.dart';
 import 'gerenciar_lista/minhas_listas_screen.dart';
 import 'auto_cadastro/user_screen.dart';

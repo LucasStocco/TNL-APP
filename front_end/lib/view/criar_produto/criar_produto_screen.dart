@@ -5,7 +5,7 @@ import '../../model/criar_produto/item.dart';
 import '../../model/criar_produto/categoria.dart';
 import '../../model/criar_produto/produto.dart';
 
-import '../../view_model/criar_produto/categoria_view_model.dart';
+import '../../view_model/categorias/categoria_view_model.dart';
 import '../../view_model/criar_produto/produto_view_model.dart';
 
 class CriarItemScreen extends StatefulWidget {
