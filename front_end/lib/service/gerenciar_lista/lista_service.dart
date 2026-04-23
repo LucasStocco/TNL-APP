@@ -1,90 +1,126 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:crud_flutter/core/helpers/service_utils.dart';
+
 import '../../model/gerenciar_lista/lista.dart';
-import '../../config/api_config.dart';
+import '../../core/api/api_client.dart';
+import '../../core/api/api_endpoints.dart';
 
 class ListaService {
-  static const String baseUrl = '${ApiConfig.baseUrl}/listas';
+  final ApiClient _client = ApiClient();
 
-  // ---------------------- LISTAR ----------------------
-  Future<List<Lista>> getAll() async {
-    final response = await http.get(Uri.parse(baseUrl));
-    print('URL: $baseUrl');
-    print('STATUS: ${response.statusCode}');
-    print('BODY: ${response.body}');
-
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body);
-
-      if (decoded is List) {
-        return decoded.map((e) => Lista.fromJson(e)).toList();
-      } else if (decoded is Map && decoded.containsKey('content')) {
-        return (decoded['content'] as List)
-            .map((e) => Lista.fromJson(e))
-            .toList();
-      } else {
-        throw Exception('Formato inesperado da resposta');
-      }
-    } else {
-      throw Exception('Erro ao listar listas: ${response.statusCode}');
-    }
+  // =====================================================
+  // 🧠 LOG HELPERS
+  // =====================================================
+  void _log(String msg) => print("[LISTA_SERVICE] $msg");
+  void _logReq(String method, String url, [dynamic body]) {
+    _log("➡️ $method $url");
+    if (body != null) _log("📦 BODY: $body");
   }
 
-  // ---------------------- CRIAR ----------------------
-  Future<Lista> create(Lista lista) async {
-    final response = await http.post(
-      Uri.parse(baseUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(lista.toJson()),
+  void _logRes(dynamic res) {
+    _log("⬅️ RESPONSE: $res");
+  }
+
+  // =====================================================
+  // 📥 LISTAR
+  // =====================================================
+  Future<List<Lista>> getAll() async {
+    const url = ApiEndpoints.listas;
+
+    _logReq("GET", url);
+
+    final res = await _client.get<List<Lista>>(
+      url,
+      (data) => (data as List).map((e) => Lista.fromJson(e)).toList(),
     );
 
-    if ([200, 201].contains(response.statusCode)) {
-      return Lista.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Erro ao criar lista: ${response.statusCode}');
-    }
+    _logRes(res);
+
+    return ServiceUtils.extractList<Lista>(res);
   }
 
-  // ---------------------- ATUALIZAR ----------------------
+  // =====================================================
+  // ➕ CRIAR
+  // =====================================================
+  Future<Lista> create(String nome) async {
+    const url = ApiEndpoints.listas;
+
+    final body = {"nome": nome};
+
+    _logReq("POST", url, body);
+
+    final res = await _client.post<Lista>(
+      url,
+      body,
+      (data) => Lista.fromJson(data),
+    );
+
+    _logRes(res);
+
+    return ServiceUtils.extract<Lista>(res);
+  }
+
+  // =====================================================
+  // ✏️ ATUALIZAR
+  // =====================================================
   Future<Lista> update(Lista lista) async {
     if (lista.id == null) {
-      throw Exception('ID obrigatório para atualizar');
+      throw Exception("Lista sem ID");
     }
 
-    final response = await http.put(
-      Uri.parse('$baseUrl/${lista.id}'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(lista.toJson()),
-    );
+    final url = "${ApiEndpoints.listas}/${lista.id}";
+    final body = {"nome": lista.nome};
 
-    if (response.statusCode == 200) {
-      return Lista.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Erro ao atualizar lista: ${response.statusCode}');
+    _logReq("PUT", url, body);
+
+    try {
+      final res = await _client.put<Lista>(
+        url,
+        body,
+        (data) => Lista.fromJson(data),
+      );
+
+      _logRes(res);
+
+      return ServiceUtils.extract<Lista>(res);
+    } catch (e, s) {
+      _log("❌ ERRO NO UPDATE");
+      _log("MSG: $e");
+      _log("STACK: $s");
+      rethrow;
     }
   }
 
-  // ---------------------- DELETAR ----------------------
+  // =====================================================
+  // ✅ FINALIZAR
+  // =====================================================
+  Future<void> finalizarLista(int listaId) async {
+    final url = "${ApiEndpoints.listas}/$listaId/finalizar";
+
+    _logReq("POST", url);
+
+    final res = await _client.post<void>(
+      url,
+      {},
+      null,
+    );
+
+    _logRes(res);
+
+    ServiceUtils.validate(res);
+  }
+
+  // =====================================================
+  // 🗑 DELETAR
+  // =====================================================
   Future<void> delete(int id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/$id'));
+    final url = "${ApiEndpoints.listas}/$id";
 
-    if (![200, 204].contains(response.statusCode)) {
-      throw Exception('Erro ao deletar lista: ${response.statusCode}');
-    }
-  }
+    _logReq("DELETE", url);
 
-  // ---------------------- FINALIZAR ----------------------
-  Future<void> finalizarLista(int listaId, DateTime dataConclusao) async {
-    final response = await http.patch(
-      Uri.parse('$baseUrl/$listaId/finalizar'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'dataConclusao': dataConclusao.toIso8601String(),
-      }),
-    );
+    final res = await _client.delete<void>(url);
 
-    if (![200, 204].contains(response.statusCode)) {
-      throw Exception('Erro ao finalizar lista: ${response.statusCode}');
-    }
+    _logRes(res);
+
+    ServiceUtils.validate(res);
   }
 }

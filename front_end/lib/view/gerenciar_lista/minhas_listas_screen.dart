@@ -48,9 +48,9 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
                   title: Text(lista.nome),
-                  subtitle: lista.dataConclusao != null
+                  subtitle: lista.concluidoEm != null
                       ? Text(
-                          'Concluída em ${_formatarData(lista.dataConclusao!)}')
+                          'Concluída em ${_formatarData(lista.concluidoEm!)}')
                       : null,
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () {

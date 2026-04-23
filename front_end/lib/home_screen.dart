@@ -1,13 +1,14 @@
 // Flutter & Packages
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-// Model
-import 'package:crud_flutter/model/criar_produto/categoria.dart';
+// ViewModels
+import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 
-// Views (Telas)
-import 'package:crud_flutter/view/categoria_detalhes_screen.dart';
-import 'package:crud_flutter/view/categorias_screen.dart';
+// Views
+import 'package:crud_flutter/view/categorias/categoria_detalhes_screen.dart';
+import 'package:crud_flutter/view/categorias/categorias_screen.dart';
 import 'package:crud_flutter/view/settings_screen.dart';
 import 'package:crud_flutter/view/relatorio_financeiro/relatorio_screen.dart';
 import 'package:crud_flutter/view/gerenciar_lista/criar_nova_lista_screen.dart';
@@ -29,12 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     _pages = [
       SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Linha de cards da Home
             Container(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
               decoration: BoxDecoration(
@@ -45,25 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildCategoryCard(
-                    'assets/icons/ic_bebidas.png',
-                    'Bebidas',
-                    1,
-                  ),
+                      'assets/icons/ic_bebidas.png', 'Bebidas', 'BEBIDAS'),
+                  _buildCategoryCard('assets/icons/ic_hortifrut.png',
+                      'Hortifrut', 'HORTIFRUTI'),
                   _buildCategoryCard(
-                    'assets/icons/ic_hortifrut.png',
-                    'Hortifrut',
-                    4,
-                  ),
+                      'assets/icons/ic_padaria.png', 'Padaria', 'PADARIA'),
                   _buildCategoryCard(
-                    'assets/icons/ic_padaria.png',
-                    'Padaria',
-                    3,
-                  ),
-                  _buildCategoryCard(
-                    'assets/icons/ic_acougue.png',
-                    'Carnes',
-                    2,
-                  ),
+                      'assets/icons/ic_acougue.png', 'Carnes', 'CARNES'),
                 ],
               ),
             ),
@@ -81,16 +70,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      const CategoriasScreen(), // Ícone "fastfood"
-      const SizedBox(), // "+" botão, só abre nova tela
-      const MinhasListasScreen(), // Lista
-      const RelatorioScreen(), // Relatórios
+      const CategoriasScreen(),
+      const SizedBox(),
+      const MinhasListasScreen(),
+      const RelatorioScreen(),
     ];
   }
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      // botão "+" abre criar nova lista
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const CriarNovaListaScreen()),
@@ -102,21 +90,35 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget _buildCategoryCard(String imagePath, String label, int id) {
+  Widget _buildCategoryCard(String imagePath, String label, String codigo) {
     return GestureDetector(
       onTap: () {
-        final categoria = Categoria(id: id, nome: label);
+        final listaVm = context.read<ListaViewModel>();
+
+        if (listaVm.listaAtual == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Selecione uma lista primeiro"),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                CategoriaDetalhesScreen(nomeCategoria: categoria.nome),
+            builder: (_) => CategoriaDetalhesScreen(
+              nomeCategoria: label,
+              codigoCategoria: codigo,
+              idLista: listaVm.listaAtual!.id!, // ✅ CORRETO
+            ),
           ),
         );
       },
       child: Container(
         width: 70,
-        padding: const EdgeInsets.all(8), 
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),

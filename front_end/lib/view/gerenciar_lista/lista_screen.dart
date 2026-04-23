@@ -1,9 +1,13 @@
+import 'package:crud_flutter/dto/item_global_dto.dart';
+import 'package:crud_flutter/dto/item_manual_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/criar_produto/item.dart';
-import '../../view_model/criar_produto/item_view_model.dart';
-import '../criar_produto/criar_produto_screen.dart';
+import '../../view_model/gerenciar_lista/item_view_model.dart';
+import '../../view_model/cadastrar_categoria/categoria_view_model.dart';
+import '../../model/cadastrar_produto/item.dart';
+
+import '../cadastrar_produto/criar_item_screen.dart';
 
 class ListaScreen extends StatefulWidget {
   final int listaId;
@@ -20,134 +24,221 @@ class ListaScreen extends StatefulWidget {
 }
 
 class _ListaScreenState extends State<ListaScreen> {
+  bool _fabExpanded = false;
+
   @override
   void initState() {
     super.initState();
-    // Carrega itens da lista ao iniciar
+
     Future.microtask(() {
-      context.read<ItemViewModel>().listar(widget.listaId);
+      context.read<ItemViewModel>().carregarItens(widget.listaId);
+      context.read<CategoriaViewModel>().listar();
     });
   }
+
+  void _toggleFab() => setState(() => _fabExpanded = !_fabExpanded);
+
+  void _abrirCriarCategoria() {
+    final controller = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16,
+            right: 16,
+            top: 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Nova Categoria",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: "Nome da categoria",
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  final nome = controller.text.trim();
+                  if (nome.isEmpty) return;
+
+                  await context.read<CategoriaViewModel>().criar(nome);
+
+                  await context.read<CategoriaViewModel>().listar();
+
+                  Navigator.pop(context);
+                },
+                child: const Text("Salvar"),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ================= MENU ITEM (🔥 EDITAR / DELETAR / COMPRADO) =================
+  void _abrirMenu(BuildContext context, Item item) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit),
+              title: const Text("Editar"),
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CriarItemScreen(
+                      listaId: widget.listaId,
+                      item: item,
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.check),
+              title: Text(item.comprado ? "Desmarcar" : "Marcar comprado"),
+              onTap: () async {
+                Navigator.pop(context);
+
+                await context.read<ItemViewModel>().marcarComprado(
+                      widget.listaId,
+                      item.id!,
+                      true,
+                    );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text("Deletar"),
+              onTap: () async {
+                Navigator.pop(context);
+
+                await context.read<ItemViewModel>().deletarItem(
+                      widget.listaId,
+                      item.id!,
+                    );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ================= TOTAL =================
+  double _calcularTotal(List<Item> itens) =>
+      itens.fold(0.0, (s, i) => s + i.valorTotal);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Itens: ${widget.listaNome}')),
+      appBar: AppBar(title: Text(widget.listaNome)),
+
       body: Consumer<ItemViewModel>(
-        builder: (context, itemVM, _) {
-          if (itemVM.isLoading) {
+        builder: (context, vm, _) {
+          if (vm.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (itemVM.erro != null) {
-            return Center(child: Text(itemVM.erro!));
+          if (vm.itens.isEmpty) {
+            return const Center(child: Text("Nenhum item"));
           }
 
-          if (itemVM.itens.isEmpty) {
-            return const Center(child: Text('Nenhum item encontrado'));
-          }
+          final total = _calcularTotal(vm.itens);
 
-          return ListView.builder(
-            itemCount: itemVM.itens.length,
-            itemBuilder: (context, index) {
-              final item = itemVM.itens[index];
-
-              return ListTile(
-                title: Text(
-                  item.produto.nome,
-                  style: TextStyle(
-                    decoration:
-                        item.comprado ? TextDecoration.lineThrough : null,
-                  ),
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                color: Colors.green.shade50,
+                child: Text(
+                  "Total: R\$ ${total.toStringAsFixed(2)}",
+                  style: const TextStyle(fontSize: 18),
                 ),
-                subtitle: Text(
-                  'Qtd: ${item.quantidade} | Categoria: ${item.produto.categoria.nome}',
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: vm.itens.length,
+                  itemBuilder: (_, i) {
+                    final item = vm.itens[i];
+
+                    return ListTile(
+                      title: Text(item.nomeProdutoSnapshot),
+                      subtitle: Text(
+                        "Qtd: ${item.quantidade} • ${item.nomeCategoriaSnapshot}",
+                      ),
+                      trailing: Text(
+                        "R\$ ${item.valorTotal.toStringAsFixed(2)}",
+                      ),
+
+                      // 🔥 MENU AQUI
+                      onLongPress: () => _abrirMenu(context, item),
+                    );
+                  },
                 ),
-                leading: Icon(
-                  item.comprado
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  color: item.comprado ? Colors.green : null,
-                ),
-                trailing: const Icon(Icons.more_vert),
-
-                // MARCAR COMO COMPRADO
-                onTap: () async {
-                  final atualizado = item.copyWith(comprado: !item.comprado);
-                  await context
-                      .read<ItemViewModel>()
-                      .atualizar(widget.listaId, atualizado);
-                },
-
-                // MENU EDITAR / DELETAR
-                onLongPress: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (_) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.edit),
-                          title: const Text('Atualizar'),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            final itemEditado = await Navigator.push<Item>(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CriarItemScreen(
-                                  listaId: widget.listaId,
-                                  item: item,
-                                ),
-                              ),
-                            );
-
-                            if (itemEditado != null) {
-                              await context
-                                  .read<ItemViewModel>()
-                                  .atualizar(widget.listaId, itemEditado);
-                            }
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.delete),
-                          title: const Text('Deletar'),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            if (item.id != null) {
-                              await context
-                                  .read<ItemViewModel>()
-                                  .deletar(widget.listaId, item.id!);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
+              ),
+            ],
           );
         },
       ),
 
-      // BOTÃO DE CRIAR ITEM
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final novoItem = await Navigator.push<Item>(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CriarItemScreen(
-                listaId: widget.listaId,
-              ),
+      // ================= FAB =================
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_fabExpanded) ...[
+            FloatingActionButton.extended(
+              heroTag: "cat",
+              onPressed: () {
+                _toggleFab();
+                _abrirCriarCategoria();
+              },
+              label: const Text("Categoria"),
+              icon: const Icon(Icons.category),
             ),
-          );
-
-          if (novoItem != null) {
-            // Adiciona item na lista imediatamente e notifica a UI
-            await context.read<ItemViewModel>().criar(widget.listaId, novoItem);
-          }
-        },
-        child: const Icon(Icons.add),
+            const SizedBox(height: 10),
+            FloatingActionButton.extended(
+              heroTag: "item",
+              onPressed: () {
+                _toggleFab();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CriarItemScreen(
+                      listaId: widget.listaId,
+                    ),
+                  ),
+                );
+              },
+              label: const Text("Item"),
+              icon: const Icon(Icons.add),
+            ),
+            const SizedBox(height: 10),
+          ],
+          FloatingActionButton(
+            onPressed: _toggleFab,
+            child: Icon(_fabExpanded ? Icons.close : Icons.add),
+          ),
+        ],
       ),
     );
   }

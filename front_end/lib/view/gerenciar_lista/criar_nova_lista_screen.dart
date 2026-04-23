@@ -30,37 +30,31 @@ class _CriarNovaListaScreenState extends State<CriarNovaListaScreen> {
   Future<void> _salvarLista() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    final viewModel = context.read<ListaViewModel>();
 
-    try {
-      // obtendo isntancia
-      final viewModel = context.read<ListaViewModel>();
+    Lista lista = Lista(
+      id: widget.lista?.id,
+      nome: _nomeController.text,
+      concluidoEm: widget.lista?.concluidoEm,
+    );
 
-      Lista lista = Lista(
-        id: widget.lista?.id,
-        nome: _nomeController.text,
-        dataConclusao: widget.lista?.dataConclusao,
+    Lista? listaRetornada;
+
+    if (widget.lista == null) {
+      listaRetornada = await viewModel.criar(lista.nome);
+    } else {
+      listaRetornada = await viewModel.atualizar(lista);
+    }
+
+    if (viewModel.erro != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(viewModel.erro!)),
       );
+      return;
+    }
 
-      Lista? listaRetornada;
-
-      if (widget.lista == null) {
-        listaRetornada = await viewModel.criar(lista.nome);
-      } else {
-        listaRetornada = await viewModel.atualizar(lista);
-      }
-
-      if (listaRetornada != null && mounted) {
-        Navigator.pop(context, listaRetornada);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar lista: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+    if (listaRetornada != null && mounted) {
+      Navigator.pop(context, listaRetornada);
     }
   }
 
