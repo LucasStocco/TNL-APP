@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../model/cadastrar_categoria/categoria.dart';
 import '../../service/cadastrar_categoria/categoria_service.dart';
+import '../../dto/categoria_create_dto.dart';
+import '../../dto/categoria_update_dto.dart';
 
 class CategoriaViewModel extends ChangeNotifier {
-  final CategoriaService _service = CategoriaService();
+  final CategoriaService _service;
 
+  CategoriaViewModel(this._service);
   // =========================
   // STATE
   // =========================
   List<Categoria> categorias = [];
-  List<Categoria> get categoriasAtivas =>
-      categorias.where((c) => !c.deletado).toList();
 
   bool isLoading = false;
   bool isSaving = false;
@@ -18,9 +19,8 @@ class CategoriaViewModel extends ChangeNotifier {
   String? erro;
 
   // =========================
-  // HELPERS
+  // LOADING HELPERS
   // =========================
-
   void _setLoading(bool value) {
     isLoading = value;
     notifyListeners();
@@ -31,134 +31,109 @@ class CategoriaViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _parseErro(Object e) {
-    return e.toString().replaceAll('Exception: ', '');
-  }
-
-  Future<T?> _execute<T>({
-    required Future<T> Function() action,
-    bool useSaving = false,
-  }) async {
-    if (useSaving) {
-      _setSaving(true);
-    } else {
-      _setLoading(true);
-    }
-
-    erro = null;
-
-    try {
-      return await action();
-    } catch (e) {
-      erro = _parseErro(e);
-      return null;
-    } finally {
-      if (useSaving) {
-        _setSaving(false);
-      } else {
-        _setLoading(false);
-      }
-    }
+  void _setError(Object e) {
+    erro = e.toString().replaceAll('Exception: ', '');
   }
 
   // =========================
   // LISTAR
   // =========================
   Future<void> listar() async {
-    final result = await _execute<List<Categoria>>(
-      action: () => _service.buscarCategorias(),
-    );
+    _setLoading(true);
+    erro = null;
 
-    if (result != null) {
-      categorias = result;
-      notifyListeners();
+    try {
+      final result = await _service.buscarCategorias();
+
+      categorias
+        ..clear()
+        ..addAll(result);
+    } catch (e) {
+      _setError(e);
     }
+
+    _setLoading(false);
   }
 
   // =========================
   // CRIAR
   // =========================
   Future<Categoria?> criar(String nome) async {
-    final criada = await _execute<Categoria>(
-      useSaving: true,
-      action: () => _service.criarCategoria(nome),
-    );
+    _setSaving(true);
+    erro = null;
 
-    if (criada != null) {
-      categorias = [...categorias, criada];
+    try {
+      final nova = await _service.criarCategoria(
+        CategoriaCreateDTO(nome: nome),
+      );
+
+      categorias = [...categorias, nova];
+      return nova;
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setSaving(false);
       notifyListeners();
     }
-
-    return criada;
   }
 
   // =========================
   // ATUALIZAR
   // =========================
   Future<Categoria?> atualizar(Categoria categoria) async {
-    // 🔒 validação
     if (categoria.id == null) {
       erro = "ID obrigatório";
       notifyListeners();
       return null;
     }
 
-    // 🔥 chamada padrão com executor
-    final atualizada = await _execute<Categoria>(
-      useSaving: true,
-      action: () => _service.atualizarCategoria(
-        categoria.id!,
-        categoria.nome,
-      ),
-    );
+    _setSaving(true);
+    erro = null;
 
-    // 🔄 atualiza lista local
-    if (atualizada != null) {
+    try {
+      final atualizada = await _service.atualizarCategoria(
+        categoria.id!,
+        CategoriaUpdateDTO(nome: categoria.nome),
+      );
+
       categorias = categorias.map((c) {
         return c.id == atualizada.id ? atualizada : c;
       }).toList();
 
+      return atualizada;
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setSaving(false);
       notifyListeners();
     }
-
-    return atualizada;
   }
 
   // =========================
   // DELETAR
   // =========================
   Future<void> deletar(int id) async {
-    final categoria = categorias.firstWhere(
-      (c) => c.id == id,
-      orElse: () => Categoria(nome: ''),
-    );
+    _setSaving(true);
+    erro = null;
 
-    // regra de negócio
-    if (categoria.idUsuario == null) {
-      erro = "Categorias globais não podem ser excluídas";
+    try {
+      await _service.deletarCategoria(id);
+
+      categorias.removeWhere((c) => c.id == id);
+    } catch (e) {
+      _setError(e);
+    } finally {
+      _setSaving(false);
       notifyListeners();
-      return;
     }
-
-    final ok = await _execute<void>(
-      useSaving: true,
-      action: () => _service.deletarCategoria(id),
-    );
-
-    if (erro != null) return;
-
-    categorias.removeWhere((c) => c.id == id);
-    notifyListeners();
   }
 
   // =========================
-  // FILTROS
+  // FILTROS (SE NECESSÁRIO)
   // =========================
-  List<Categoria> get categoriasUsuario =>
-      categorias.where((c) => c.idUsuario != null).toList();
-
-  List<Categoria> get categoriasGlobais =>
-      categorias.where((c) => c.idUsuario == null).toList();
+  List<Categoria> get categoriasAtivas => categorias;
 
   // =========================
   // RESET

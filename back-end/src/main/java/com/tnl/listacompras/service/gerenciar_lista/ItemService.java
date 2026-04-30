@@ -1,72 +1,163 @@
 package com.tnl.listacompras.service.gerenciar_lista;
 
-import java.util.List;
+import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ItemRequestDTO;
+import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ItemUpdateDTO;
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
+import com.tnl.listacompras.model.cadastrar_produto.Produto;
+import com.tnl.listacompras.model.gerenciar_lista.Item;
+import com.tnl.listacompras.model.gerenciar_lista.Lista;
+import com.tnl.listacompras.repository.cadastrar_produto.ProdutoRepository;
+import com.tnl.listacompras.repository.gerenciar_lista.ItemRepository;
+import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
+import com.tnl.listacompras.session.Session;
+
+import exception.business.BusinessException;
+import exception.business.NotFoundException;
 
 import org.springframework.stereotype.Service;
 
-import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.*;
-import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
-import com.tnl.listacompras.model.gerenciar_lista.Item;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemService {
 
-    private final ItemManualService manualService;
-    private final ItemGlobalService globalService;
+    private final ItemRepository itemRepository;
+    private final ProdutoRepository produtoRepository;
+    private final ListaRepository listaRepository;
 
-    public ItemService(ItemManualService manualService,
-                       ItemGlobalService globalService) {
-        this.manualService = manualService;
-        this.globalService = globalService;
+    public ItemService(ItemRepository itemRepository,
+                       ProdutoRepository produtoRepository,
+                       ListaRepository listaRepository) {
+        this.itemRepository = itemRepository;
+        this.produtoRepository = produtoRepository;
+        this.listaRepository = listaRepository;
     }
 
-    // ================= CREATE MANUAL =================
-    public ItemResponseDTO criarManual(Long idLista, ItemManualRequestDTO dto) {
-        return manualService.criar(idLista, dto);
+    // =========================
+    // HELPER SEGURANÇA
+    // =========================
+    private Lista validarLista(Long listaId) {
+        Long userId = Session.getUsuarioId();
+
+        return listaRepository.findById(listaId)
+                .filter(l -> l.getUsuario().getId().equals(userId))
+                .filter(l -> !Boolean.TRUE.equals(l.getDeletado()))
+                .orElseThrow(() -> new NotFoundException("Lista não encontrada"));
     }
 
-    // ================= CREATE GLOBAL =================
-    public ItemResponseDTO criarGlobal(Long idLista, ItemGlobalRequestDTO dto) {
-        return globalService.criar(idLista, dto);
+    private Item validarItem(Long listaId, Long itemId) {
+        return itemRepository.findByIdAndListaIdAndDeletadoFalse(itemId, listaId)
+                .orElseThrow(() -> new NotFoundException("Item não encontrado"));
     }
 
-    // ================= LISTAR =================
-    public List<ItemResponseDTO> listarPorLista(Long idLista) {
-        return manualService.listarPorLista(idLista);
+    // =========================
+    // LISTAR
+    // =========================
+    public List<ItemResponseDTO> listarPorLista(Long listaId) {
+
+        validarLista(listaId);
+
+        return itemRepository.findByListaIdAndDeletadoFalse(listaId)
+                .stream()
+                .map(ItemResponseDTO::new)
+                .toList();
     }
 
-    // ================= POR CATEGORIA =================
-    public List<ItemResponseDTO> buscarPorCategoria(Long idLista, Long idCategoria) {
-        return manualService.buscarPorCategoria(idLista, idCategoria);
-    }
+    // =========================
+    // CRIAR (SEM DUPLICAR)
+    // =========================
+    public ItemResponseDTO criar(Long listaId, ItemRequestDTO dto) {
 
-    // ================= UPDATE =================
-    public ItemResponseDTO atualizar(Long idLista, Long idItem, ItemUpdateDTO dto) {
+        Lista lista = validarLista(listaId);
 
-        Item item = manualService.getEntity(idLista, idItem);
-
-        // 🔥 SE FOR GLOBAL → usa globalService
-        if (item.getIdProduto() != null) {
-            return globalService.atualizar(item, dto);
+        if (lista.getConcluidoEm() != null) {
+            throw new BusinessException("Lista já concluída");
         }
 
-        // 🔥 SE FOR MANUAL → usa manualService
-        return manualService.atualizar(idLista, idItem, dto);
+        Produto produto = produtoRepository.findById(dto.getProdutoId())
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
+
+        Optional<Item> itemExistente =
+                itemRepository.findByListaIdAndProdutoIdAndDeletadoFalse(
+                        listaId, produto.getId()
+                );
+
+        if (itemExistente.isPresent()) {
+            Item item = itemExistente.get();
+
+            item.setQuantidade(item.getQuantidade() + dto.getQuantidade());
+
+            // 🔥 ATUALIZA PREÇO TAMBÉM
+            item.setPreco(dto.getPreco());
+
+            return new ItemResponseDTO(itemRepository.save(item));
+        }
+
+        Item item = new Item();
+        item.setLista(lista);
+        item.setProduto(produto);
+        item.setQuantidade(dto.getQuantidade());
+        item.setPreco(dto.getPreco()); // 🔥 ESSENCIAL
+
+        return new ItemResponseDTO(itemRepository.save(item));
+    }
+    // =========================
+    // ATUALIZAR QUANTIDADE
+    // =========================
+    public ItemResponseDTO atualizar(Long listaId, Long itemId, ItemUpdateDTO dto) {
+
+        Item item = validarItem(listaId, itemId);
+
+        if (dto.getQuantidade() <= 0) {
+            throw new BusinessException("Quantidade deve ser maior que zero");
+        }
+
+        item.setQuantidade(dto.getQuantidade());
+        item.setPreco(dto.getPreco()); // 🔥 NOVO
+
+        return new ItemResponseDTO(itemRepository.save(item));
     }
 
-    // ================= DELETE =================
-    public void deletar(Long idLista, Long idItem) {
-        Item item = manualService.getEntity(idLista, idItem);
-        globalService.deletar(item);
+    // =========================
+    // MARCAR COMO COMPRADO
+    // =========================
+    public void marcarComprado(Long listaId, Long itemId) {
+
+        validarLista(listaId);
+
+        Item item = validarItem(listaId, itemId);
+
+        item.setComprado(true);
+
+        itemRepository.save(item);
     }
 
-    // ================= COMPRADO (FIXADO) =================
-    public void marcarComprado(Long idLista, Long idItem) {
-        manualService.marcarComprado(idLista, idItem, true);
+    // =========================
+    // DESMARCAR
+    // =========================
+    public void desmarcarComprado(Long listaId, Long itemId) {
+
+        validarLista(listaId);
+
+        Item item = validarItem(listaId, itemId);
+
+        item.setComprado(false);
+
+        itemRepository.save(item);
     }
 
-    // (OPCIONAL - MELHOR FUTURO)
-    public void toggleComprado(Long idLista, Long idItem) {
-        manualService.marcarComprado(idLista, idItem, true);
+    // =========================
+    // DELETE LÓGICO
+    // =========================
+    public void deletar(Long listaId, Long itemId) {
+
+        validarLista(listaId);
+
+        Item item = validarItem(listaId, itemId);
+
+        item.setDeletado(true);
+
+        itemRepository.save(item);
     }
 }

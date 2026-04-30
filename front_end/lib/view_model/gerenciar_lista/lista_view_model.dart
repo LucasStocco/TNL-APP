@@ -3,7 +3,9 @@ import '../../model/gerenciar_lista/lista.dart';
 import '../../service/gerenciar_lista/lista_service.dart';
 
 class ListaViewModel extends ChangeNotifier {
-  final ListaService _service = ListaService();
+  final ListaService _service;
+
+  ListaViewModel(this._service);
 
   // =========================
   // STATE
@@ -19,27 +21,16 @@ class ListaViewModel extends ChangeNotifier {
   static const String TAG = "[LISTA_VM]";
 
   // =========================
-  // LOG HELPERS
+  // HELPERS
   // =========================
 
-  void _log(String msg) {
-    print("$TAG $msg");
-  }
-
-  void _logErro(String origem, Object e) {
-    print("$TAG ❌ ERRO EM $origem");
-    print("$TAG $e");
-  }
-
-  void _setLoading(bool value, String origem) {
+  void _setLoading(bool value) {
     isLoading = value;
-    _log("loading=$value ($origem)");
     notifyListeners();
   }
 
-  void _setSaving(bool value, String origem) {
+  void _setSaving(bool value) {
     isSaving = value;
-    _log("saving=$value ($origem)");
     notifyListeners();
   }
 
@@ -52,33 +43,25 @@ class ListaViewModel extends ChangeNotifier {
     required Future<T> Function() action,
     bool useSaving = false,
   }) async {
-    _log("▶ INICIO: $origem");
-
-    if (useSaving) {
-      _setSaving(true, origem);
-    } else {
-      _setLoading(true, origem);
-    }
-
     erro = null;
 
-    try {
-      final result = await action();
+    if (useSaving) {
+      _setSaving(true);
+    } else {
+      _setLoading(true);
+    }
 
-      _log("✔ SUCESSO: $origem");
-      return result;
+    try {
+      return await action();
     } catch (e) {
       erro = _parseErro(e);
-      _logErro(origem, e);
       return null;
     } finally {
       if (useSaving) {
-        _setSaving(false, origem);
+        _setSaving(false);
       } else {
-        _setLoading(false, origem);
+        _setLoading(false);
       }
-
-      _log("⏹ FIM: $origem");
     }
   }
 
@@ -93,12 +76,6 @@ class ListaViewModel extends ChangeNotifier {
 
     if (result != null) {
       listas = result;
-
-      _log("listas carregadas: ${listas.length}");
-      for (var l in listas) {
-        _log(" - ${l.id} | ${l.nome}");
-      }
-
       notifyListeners();
     }
   }
@@ -114,11 +91,8 @@ class ListaViewModel extends ChangeNotifier {
     );
 
     if (criada != null) {
-      listas = [...listas, criada];
+      listas.add(criada);
       listaAtual = criada;
-
-      _log("lista criada e selecionada: ${criada.id}");
-
       notifyListeners();
     }
 
@@ -126,13 +100,10 @@ class ListaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // SELECIONAR LISTA
+  // SELECIONAR
   // =========================
   void selecionarLista(Lista lista) {
     listaAtual = lista;
-
-    _log("📌 LISTA SELECIONADA: ${lista.id} | ${lista.nome}");
-
     notifyListeners();
   }
 
@@ -142,7 +113,6 @@ class ListaViewModel extends ChangeNotifier {
   Future<Lista?> atualizar(Lista lista) async {
     if (lista.id == null) {
       erro = "ID obrigatório";
-      _logErro("atualizar", erro!);
       notifyListeners();
       return null;
     }
@@ -154,13 +124,14 @@ class ListaViewModel extends ChangeNotifier {
     );
 
     if (atualizada != null) {
-      listas = listas.map((l) {
-        return l.id == atualizada.id ? atualizada : l;
-      }).toList();
+      final index = listas.indexWhere((l) => l.id == atualizada.id);
+
+      if (index != -1) {
+        listas[index] = atualizada;
+      }
 
       if (listaAtual?.id == atualizada.id) {
         listaAtual = atualizada;
-        _log("listaAtual sincronizada");
       }
 
       notifyListeners();
@@ -185,7 +156,6 @@ class ListaViewModel extends ChangeNotifier {
 
     if (listaAtual?.id == id) {
       listaAtual = null;
-      _log("listaAtual removida (era deletada)");
     }
 
     notifyListeners();
@@ -203,14 +173,13 @@ class ListaViewModel extends ChangeNotifier {
 
     if (erro != null) return;
 
-    listas = listas.map((l) {
-      if (l.id == id) {
-        return l.copyWith(concluidoEm: DateTime.now());
-      }
-      return l;
-    }).toList();
+    final index = listas.indexWhere((l) => l.id == id);
 
-    _log("lista finalizada: $id");
+    if (index != -1) {
+      listas[index] = listas[index].copyWith(
+        concluidoEm: DateTime.now(),
+      );
+    }
 
     notifyListeners();
   }
@@ -224,8 +193,6 @@ class ListaViewModel extends ChangeNotifier {
     isLoading = false;
     isSaving = false;
     erro = null;
-
-    _log("RESET completo do ViewModel");
 
     notifyListeners();
   }

@@ -1,12 +1,10 @@
 package com.tnl.listacompras.dto.requestDTO.cadastrar_categoria;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public class CategoriaRequestDTO {
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
 
     public String getNome() {

@@ -11,8 +11,6 @@ public class ListaResponseDTO {
     private final LocalDateTime atualizadoEm;
     private final LocalDateTime concluidoEm;
 
-    private final boolean concluida;
-
     public ListaResponseDTO(Long id, String nome,
                             LocalDateTime criadoEm,
                             LocalDateTime atualizadoEm,
@@ -23,7 +21,6 @@ public class ListaResponseDTO {
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
         this.concluidoEm = concluidoEm;
-        this.concluida = concluidoEm != null;
     }
 
     public Long getId() { return id; }
@@ -33,5 +30,8 @@ public class ListaResponseDTO {
     public LocalDateTime getAtualizadoEm() { return atualizadoEm; }
     public LocalDateTime getConcluidoEm() { return concluidoEm; }
 
-    public boolean isConcluida() { return concluida; }
+    // helper de regra (opcional)
+    public boolean isConcluida() {
+        return concluidoEm != null;
+    }
 }

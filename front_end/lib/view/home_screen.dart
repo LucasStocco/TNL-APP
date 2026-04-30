@@ -3,7 +3,7 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'categorias/categoria_detalhes_screen.dart';
+import 'categorias/categoria_produtos_screen.dart';
 import 'gerenciar_lista/criar_nova_lista_screen.dart';
 import 'gerenciar_lista/minhas_listas_screen.dart';
 import 'auto_cadastro/user_screen.dart';
@@ -31,42 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // 🔥 CARDS DE CATEGORIA
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildCategoryCard(
-                    'assets/icons/ic_bebidas.png',
-                    'Bebidas',
-                    'BEBIDAS',
-                  ),
-                  _buildCategoryCard(
-                    'assets/icons/ic_hortifrut.png',
-                    'Hortifruti',
-                    'HORTIFRUTI',
-                  ),
-                  _buildCategoryCard(
-                    'assets/icons/ic_padaria.png',
-                    'Padaria',
-                    'PADARIA',
-                  ),
-                  _buildCategoryCard(
-                    'assets/icons/ic_acougue.png',
-                    'Carnes',
-                    'CARNES',
-                  ),
-                ],
-              ),
-            ),
-
             const SizedBox(height: 24),
-
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.asset(
@@ -76,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-
             const SizedBox(height: 24),
           ],
         ),
@@ -122,10 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
               return const SizedBox(); // evita crash
             }
 
-            return CategoriaDetalhesScreen(
+            return CategoriasProdutosScreen(
               nomeCategoria: label,
-              codigoCategoria: codigo,
-              idLista: listaId,
+              idCategoria: int.parse(codigo), // ou categoria.id se já for int
             );
           },
         ));

@@ -1,4 +1,4 @@
-import '../cadastrar_categoria/categoria.dart';
+import 'package:crud_flutter/model/cadastrar_categoria/categoria.dart';
 
 class Produto {
   final int? id;
@@ -6,7 +6,6 @@ class Produto {
   final double preco;
   final String? descricao;
 
-  // 🔥 agora obrigatório (regra do backend)
   final int idCategoria;
   final Categoria categoria;
 
@@ -15,7 +14,6 @@ class Produto {
   final DateTime? criadoEm;
   final DateTime? atualizadoEm;
 
-  // soft delete
   final bool deletado;
 
   Produto({
@@ -31,25 +29,25 @@ class Produto {
     this.deletado = false,
   });
 
-  // =========================
-  // FROM JSON
-  // =========================
   factory Produto.fromJson(Map<String, dynamic> json) {
     final categoriaJson = json['categoria'];
 
-    if (categoriaJson == null) {
-      throw Exception("Categoria é obrigatória no Produto");
-    }
-
-    final categoria = Categoria.fromJson(categoriaJson);
+    final categoria = categoriaJson != null
+        ? Categoria.fromJson(categoriaJson)
+        : Categoria(
+            id: json['idCategoria'] ?? 0, // ✅ corrigido
+            nome: json['nomeCategoria'] ?? '',
+          );
 
     return Produto(
-      id: json['id'],
-      nome: json['nome'] ?? 'Produto inválido',
+      id: json['id'] ?? 0,
+      nome: json['nome'] ?? '',
       preco: (json['preco'] as num?)?.toDouble() ?? 0.0,
       descricao: json['descricao'],
 
-      idCategoria: categoria.id!, // vem da entidade
+      // ✅ corrigido
+      idCategoria: json['idCategoria'] ?? categoria.id ?? 0,
+
       categoria: categoria,
 
       idUsuario: json['idUsuario'],
@@ -65,60 +63,18 @@ class Produto {
     );
   }
 
-  // =========================
-  // TO JSON
-  // =========================
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
       'nome': nome,
       'preco': preco,
       'descricao': descricao,
-
-      // mantém compatibilidade com backend
-      'idCategoria': idCategoria,
-
+      'idCategoria': idCategoria, // ✅ corrigido
       'idUsuario': idUsuario,
       'deletado': deletado,
     };
   }
 
-  // =========================
-  // HELPERS
-  // =========================
   bool get isAtivo => !deletado;
-  bool get isDeletado => deletado;
-
   bool get isGlobal => idUsuario == null;
-
-  Produto copyWith({
-    int? id,
-    String? nome,
-    double? preco,
-    String? descricao,
-    int? idCategoria,
-    Categoria? categoria,
-    int? idUsuario,
-    DateTime? criadoEm,
-    DateTime? atualizadoEm,
-    bool? deletado,
-  }) {
-    return Produto(
-      id: id ?? this.id,
-      nome: nome ?? this.nome,
-      preco: preco ?? this.preco,
-      descricao: descricao ?? this.descricao,
-      idCategoria: idCategoria ?? this.idCategoria,
-      categoria: categoria ?? this.categoria,
-      idUsuario: idUsuario ?? this.idUsuario,
-      criadoEm: criadoEm ?? this.criadoEm,
-      atualizadoEm: atualizadoEm ?? this.atualizadoEm,
-      deletado: deletado ?? this.deletado,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Produto{id: $id, nome: $nome, categoria: ${categoria.nome}, deletado: $deletado}';
-  }
 }

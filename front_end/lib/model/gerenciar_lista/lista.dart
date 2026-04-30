@@ -1,4 +1,4 @@
-import '../cadastrar_produto/item.dart';
+import 'package:crud_flutter/model/gerenciar_lista/item.dart';
 
 class Lista {
   final int? id;
@@ -24,9 +24,6 @@ class Lista {
     this.deletado = false,
   });
 
-  // =========================
-  // FROM JSON
-  // =========================
   factory Lista.fromJson(Map<String, dynamic> json) {
     return Lista(
       id: json['id'],
@@ -36,54 +33,22 @@ class Lista {
               ?.map((i) => Item.fromJson(i))
               .toList() ??
           [],
-      criadoEm:
-          json['criadoEm'] != null ? DateTime.tryParse(json['criadoEm']) : null,
-      atualizadoEm: json['atualizadoEm'] != null
-          ? DateTime.tryParse(json['atualizadoEm'])
-          : null,
-      concluidoEm: json['concluidoEm'] != null
-          ? DateTime.tryParse(json['concluidoEm'])
-          : null,
+      criadoEm: DateTime.tryParse(json['criadoEm'] ?? ''),
+      atualizadoEm: DateTime.tryParse(json['atualizadoEm'] ?? ''),
+      concluidoEm: DateTime.tryParse(json['concluidoEm'] ?? ''),
       deletado: json['deletado'] ?? false,
     );
   }
 
-  // =========================
-  // TO JSON
-  // =========================
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
       'nome': nome,
       'idUsuario': idUsuario,
       'deletado': deletado,
-      // Adicione as linhas abaixo para satisfazer o banco de dados
-      'criadoEm': criadoEm?.toIso8601String(),
-      'atualizadoEm': atualizadoEm?.toIso8601String(),
-      'concluidoEm': concluidoEm?.toIso8601String(),
     };
   }
 
-  // =========================
-  // HELPERS
-  // =========================
-  bool get concluida => concluidoEm != null;
-
-  bool get isAtiva => !deletado;
-
-  // =========================
-  // CONCLUIR LISTA
-  // =========================
-  Lista concluir() {
-    return copyWith(
-      concluidoEm: DateTime.now(),
-      atualizadoEm: DateTime.now(),
-    );
-  }
-
-  // =========================
-  // COPY WITH
-  // =========================
   Lista copyWith({
     int? id,
     String? nome,
@@ -105,6 +70,13 @@ class Lista {
       deletado: deletado ?? this.deletado,
     );
   }
+
+  // =========================
+  // HELPERS
+  // =========================
+  bool get concluida => concluidoEm != null;
+  bool get isAtiva => !deletado;
+  bool get isEmpty => itens.isEmpty;
 
   @override
   String toString() {

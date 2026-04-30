@@ -23,85 +23,45 @@ public class ProdutoController {
         this.produtoService = produtoService;
     }
 
-    // ================= CRIAR =================
     @PostMapping
     public ResponseEntity<ApiResponse<ProdutoResponseDTO>> criar(
-            @Valid @RequestBody ProdutoRequestDTO dto
-    ) {
+            @Valid @RequestBody ProdutoRequestDTO dto) {
 
-        ProdutoResponseDTO produto = produtoService.criar(dto);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Produto criado com sucesso", produto));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Produto criado", produtoService.criar(dto)));
     }
 
-    // ================= LISTAR TODOS =================
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProdutoResponseDTO>>> listar() {
-
-        List<ProdutoResponseDTO> lista = produtoService.listarTodos();
-
         return ResponseEntity.ok(
-                ApiResponse.success("Produtos listados com sucesso", lista)
+                ApiResponse.success("Produtos carregados", produtoService.listar())
         );
     }
 
-    // ================= BUSCAR POR ID =================
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProdutoResponseDTO>> buscar(
-            @PathVariable Long id
-    ) {
-
-        ProdutoResponseDTO produto = produtoService.buscarPorId(id);
-
+    public ResponseEntity<ApiResponse<ProdutoResponseDTO>> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(
-                ApiResponse.success("Produto encontrado", produto)
+                ApiResponse.success("Produto encontrado", produtoService.buscar(id))
         );
     }
 
-    // ================= LISTAR POR CATEGORIA 🔥 =================
-    @GetMapping("/categoria/{idCategoria}")
-    public ResponseEntity<ApiResponse<List<ProdutoResponseDTO>>> listarPorCategoria(
-            @PathVariable Long idCategoria
-    ) {
-
-        List<ProdutoResponseDTO> lista =
-                produtoService.listarPorCategoria(idCategoria);
-
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "Produtos da categoria carregados",
-                        lista
-                )
-        );
-    }
-
-    // ================= ATUALIZAR =================
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ProdutoResponseDTO>> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody ProdutoRequestDTO dto
-    ) {
-
-        ProdutoResponseDTO atualizado =
-                produtoService.atualizar(id, dto);
+            @Valid @RequestBody ProdutoRequestDTO dto) {
 
         return ResponseEntity.ok(
-                ApiResponse.success("Produto atualizado com sucesso", atualizado)
+                ApiResponse.success("Produto atualizado", produtoService.atualizar(id, dto))
         );
     }
 
-    // ================= DELETAR =================
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deletar(
-            @PathVariable Long id
-    ) {
+    public ResponseEntity<ApiResponse<Void>> deletar(@PathVariable Long id) {
 
         produtoService.deletar(id);
 
         return ResponseEntity.ok(
-                ApiResponse.success("Produto deletado com sucesso", null)
+                ApiResponse.success("Produto deletado", null)
         );
     }
 }

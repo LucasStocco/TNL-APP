@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import '../../model/cadastrar_produto/produto.dart';
 import '../../service/cadastrar_produto/produto_service.dart';
 import '../../service/gerenciar_lista/item_service.dart';
-import '../../dto/item_global_dto.dart';
+import '../../dto/item_create_dto.dart';
 
 class CategoriaDetalhesViewModel extends ChangeNotifier {
   final ProdutoService produtoService;
   final ItemService itemService;
-
   final int idCategoria;
 
   CategoriaDetalhesViewModel({
@@ -17,76 +16,99 @@ class CategoriaDetalhesViewModel extends ChangeNotifier {
     required this.idCategoria,
   });
 
+  // ================= STATE =================
+  List<Produto> produtos = [];
   bool isLoading = false;
   String? erro;
 
-  List<Produto> produtos = [];
+  // ================= LOG =================
+  void _log(String msg) {
+    print("[CATEGORIA_DETALHES_VM] $msg");
+  }
+
+  // ================= HELPERS =================
+  void _setLoading(bool value) {
+    isLoading = value;
+    _log("loading = $value");
+    notifyListeners();
+  }
+
+  void _setError(Object e) {
+    erro = e.toString().replaceAll('Exception: ', '');
+    _log("❌ erro = $erro");
+    notifyListeners();
+  }
 
   // ================= PRODUTOS =================
   Future<void> carregarProdutos() async {
-    isLoading = true;
+    _log("🚀 carregando produtos da categoria $idCategoria");
+
+    _setLoading(true);
     erro = null;
-    notifyListeners();
 
     try {
-      produtos = await produtoService.listarPorCategoria(idCategoria);
+      final result = await produtoService.listarPorCategoria(idCategoria);
+
+      _log("📥 produtos recebidos: ${result.length}");
+
+      produtos = result;
+
+      _log("📦 lista final no VM: ${produtos.length}");
     } catch (e) {
-      erro = e.toString();
+      _log("❌ erro = $e");
+
+      _setError(e);
       produtos = [];
-    } finally {
-      isLoading = false;
-      notifyListeners();
     }
+
+    _setLoading(false);
+    _log("✅ carregamento finalizado");
   }
 
-  // ================= ADD ITEM =================
+  // ================= ADICIONAR ITEM =================
   Future<void> adicionarProdutoNaLista(
     int idLista,
     Produto produto,
   ) async {
-    try {
-      print("━━━━━━━━━━━━━━━━━━━━━━");
-      print("🛒 ADD ITEM");
-      print("listaId: $idLista");
-      print("produtoId: ${produto.id}");
-      print("categoriaProduto: ${produto.categoria?.id}");
+    _log("➕ adicionando produto ${produto.nome} na lista $idLista");
 
+    try {
       if (produto.id == null) {
         throw Exception("Produto sem ID");
       }
 
-      final categoriaId = produto.categoria?.id ?? idCategoria;
-
-      if (categoriaId == null) {
-        throw Exception("Produto sem categoria");
+      if (produto.preco == null) {
+        throw Exception("Produto sem preço");
       }
 
-      final dto = ItemGlobalDTO(
-        idProduto: produto.id!,
-        idCategoria: categoriaId,
-        quantidade: 1,
+      await itemService.criar(
+        idLista,
+        ItemCreateDTO(
+          produtoId: produto.id!,
+          quantidade: 1,
+          preco: produto.preco!, // 🔥 ESSENCIAL
+        ),
       );
 
-      print("📦 DTO: ${dto.toJson()}");
-
-      final item = await itemService.criarGlobal(idLista, dto);
-
-      print("✅ ITEM CRIADO: ${item.id}");
+      _log("✅ produto adicionado com sucesso");
     } catch (e) {
-      erro = e.toString();
-      notifyListeners();
-      rethrow;
+      _setError(e);
     }
   }
 
-  // ================= DELETE =================
+  // ================= DELETE PRODUTO =================
   Future<void> deletarProduto(int id) async {
+    _log("🗑 deletando produto id=$id");
+
     try {
       await produtoService.deletar(id);
+
+      _log("✅ produto deletado");
+
+      // 🔥 recarrega usando o id fixo da categoria
       await carregarProdutos();
     } catch (e) {
-      erro = e.toString();
-      notifyListeners();
+      _setError(e);
     }
   }
 }

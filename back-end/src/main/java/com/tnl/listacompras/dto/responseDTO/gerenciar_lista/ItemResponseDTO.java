@@ -1,6 +1,5 @@
 package com.tnl.listacompras.dto.responseDTO.gerenciar_lista;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.tnl.listacompras.model.gerenciar_lista.Item;
@@ -8,27 +7,17 @@ import com.tnl.listacompras.model.gerenciar_lista.Item;
 public class ItemResponseDTO {
 
     private Long id;
-    private Long idLista;
-
     private Integer quantidade;
     private Boolean comprado;
 
-    // CONTROLE DE ORIGEM
-    private Boolean isGlobalItem;
+    private Long produtoId;
+    private String nomeProduto;
 
-    // SNAPSHOT PRODUTO
-    private String nomeProdutoSnapshot;
-    private BigDecimal precoProdutoSnapshot;
+    private Long categoriaId;
+    private String nomeCategoria;
 
-    // SNAPSHOT CATEGORIA
-    private Long idCategoria;
-    private String nomeCategoriaSnapshot;
-    private String codigoCategoriaSnapshot;
+    private Double preco; // 🔥 NOVO
 
-    // DERIVADOS
-    private BigDecimal valorTotal;
-
-    // AUDITORIA
     private LocalDateTime criadoEm;
     private LocalDateTime atualizadoEm;
 
@@ -38,79 +27,44 @@ public class ItemResponseDTO {
     public ItemResponseDTO(Item item) {
 
         this.id = item.getId();
-        this.idLista = item.getIdLista();
-
         this.quantidade = item.getQuantidade();
         this.comprado = item.getComprado();
 
-        this.nomeProdutoSnapshot = item.getNomeProdutoSnapshot();
-        this.precoProdutoSnapshot = item.getPrecoProdutoSnapshot();
+        this.produtoId = item.getProduto().getId();
+        this.nomeProduto = item.getProduto().getNome();
 
-        this.idCategoria = item.getIdCategoria();
-        this.nomeCategoriaSnapshot = item.getNomeCategoriaSnapshot();
-        this.codigoCategoriaSnapshot = item.getCodigoCategoriaSnapshot();
+        if (item.getProduto().getCategoria() != null) {
+            this.categoriaId = item.getProduto().getCategoria().getId();
+            this.nomeCategoria = item.getProduto().getCategoria().getNome();
+        }
+
+        this.preco = item.getPreco(); // 🔥 IMPORTANTE
 
         this.criadoEm = item.getCriadoEm();
         this.atualizadoEm = item.getAtualizadoEm();
-
-        this.valorTotal = item.getValorTotal();
-
-        this.isGlobalItem = item.getIdProduto() != null;
     }
 
     // =========================
-    // GETTERS
+    // GETTERS (ESSENCIAL)
     // =========================
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public Long getIdLista() {
-        return idLista;
-    }
+    public Integer getQuantidade() { return quantidade; }
 
-    public Integer getQuantidade() {
-        return quantidade;
-    }
+    public Boolean getComprado() { return comprado; }
 
-    public Boolean getComprado() {
-        return comprado;
-    }
+    public Long getProdutoId() { return produtoId; }
 
-    public Boolean getIsGlobalItem() {
-        return isGlobalItem;
-    }
+    public String getNomeProduto() { return nomeProduto; }
 
-    public String getNomeProdutoSnapshot() {
-        return nomeProdutoSnapshot;
-    }
+    public Long getCategoriaId() { return categoriaId; }
 
-    public BigDecimal getPrecoProdutoSnapshot() {
-        return precoProdutoSnapshot;
-    }
+    public String getNomeCategoria() { return nomeCategoria; }
 
-    public Long getIdCategoria() {
-        return idCategoria;
-    }
+    public Double getPreco() { return preco; }
 
-    public String getNomeCategoriaSnapshot() {
-        return nomeCategoriaSnapshot;
-    }
+    public LocalDateTime getCriadoEm() { return criadoEm; }
 
-    public String getCodigoCategoriaSnapshot() {
-        return codigoCategoriaSnapshot;
-    }
-
-    public BigDecimal getValorTotal() {
-        return valorTotal;
-    }
-
-    public LocalDateTime getCriadoEm() {
-        return criadoEm;
-    }
-
-    public LocalDateTime getAtualizadoEm() {
-        return atualizadoEm;
-    }
+    public LocalDateTime getAtualizadoEm() { return atualizadoEm; }
 }

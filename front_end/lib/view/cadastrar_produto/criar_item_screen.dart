@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/cadastrar_produto/item.dart';
-import '../../model/cadastrar_categoria/categoria.dart';
-import '../../view_model/cadastrar_categoria/categoria_view_model.dart';
+import '../../model/gerenciar_lista/item.dart';
 import '../../view_model/gerenciar_lista/item_view_model.dart';
-import '../../dto/item_manual_dto.dart';
-import '../../dto/item_update_dto.dart';
+import '../../view_model/cadastrar_produto/produto_view_model.dart';
+import '../../view_model/cadastrar_categoria/categoria_view_model.dart';
+import '../../shered/widgets/buttons/submit_button.dart';
 
 class CriarItemScreen extends StatefulWidget {
   final int listaId;
@@ -25,69 +24,79 @@ class CriarItemScreen extends StatefulWidget {
 class _CriarItemScreenState extends State<CriarItemScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  String _nome = '';
-  String _descricao = '';
-  int _quantidade = 1;
-  double _preco = 0.0;
+  // Controllers (melhor controle)
+  final _nomeController = TextEditingController();
+  final _precoController = TextEditingController();
+  final _descricaoController = TextEditingController();
+  final _quantidadeController = TextEditingController(text: '1');
 
-  Categoria? _categoriaSelecionada;
+  int? idCategoria;
 
-  bool get isGlobal => widget.item?.idProduto != null;
+  bool get isEditMode => widget.item != null;
 
   @override
   void initState() {
     super.initState();
-
-    print("===== INIT CriarItemScreen =====");
-
-    if (widget.item != null) {
-      print("MODO: EDITAR");
-      print("Item ID: ${widget.item!.id}");
-      print("ID PRODUTO (global?): ${widget.item!.idProduto}");
-      print("Nome atual: ${widget.item!.nomeProdutoSnapshot}");
-      print("Quantidade atual: ${widget.item!.quantidade}");
-    } else {
-      print("MODO: CRIAR");
-    }
 
     Future.microtask(() {
       context.read<CategoriaViewModel>().listar();
     });
 
     if (widget.item != null) {
-      final i = widget.item!;
-
-      _nome = i.nomeProdutoSnapshot;
-      _quantidade = i.quantidade;
-      _preco = i.precoProdutoSnapshot;
-      _descricao = i.descricaoProdutoSnapshot ?? '';
-
-      _categoriaSelecionada = i.idCategoria != null
-          ? Categoria(
-              id: i.idCategoria,
-              nome: i.nomeCategoriaSnapshot,
-            )
-          : null;
+      _quantidadeController.text = widget.item!.quantidade.toString();
     }
+  }
+
+  Future<void> _salvar() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final produtoVM = context.read<ProdutoViewModel>();
+    final itemVM = context.read<ItemViewModel>();
+
+    final nome = _nomeController.text.trim();
+    final preco = double.tryParse(_precoController.text) ?? 0;
+    final descricao = _descricaoController.text.trim();
+    final quantidade = int.tryParse(_quantidadeController.text) ?? 1;
+
+    if (idCategoria == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Selecione uma categoria")),
+      );
+      return;
+    }
+
+    final produto = await produtoVM.criar(
+      nome: nome,
+      preco: preco,
+      idCategoria: idCategoria!,
+      descricao: descricao,
+    );
+
+    if (produto == null || produto.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao criar produto")),
+      );
+      return;
+    }
+
+    await itemVM.criar(
+      listaId: widget.listaId,
+      idProduto: produto.id!,
+      quantidade: quantidade,
+      preco: produto.preco!,
+    );
+
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final categoriaVM = context.watch<CategoriaViewModel>();
     final itemVM = context.watch<ItemViewModel>();
-
-    final categorias = categoriaVM.categoriasAtivas;
-
-    final categoriaCorrigida =
-        categorias.where((c) => c.id == _categoriaSelecionada?.id).isNotEmpty
-            ? categorias.firstWhere(
-                (c) => c.id == _categoriaSelecionada?.id,
-              )
-            : null;
+    final categoriaVM = context.watch<CategoriaViewModel>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.item == null ? 'Criar Item' : 'Editar Item'),
+        title: Text(isEditMode ? 'Editar Item' : 'Adicionar Item'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -95,145 +104,77 @@ class _CriarItemScreenState extends State<CriarItemScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              if (isGlobal)
-                const Text(
-                  "Item global: apenas quantidade pode ser editada",
-                  style: TextStyle(color: Colors.grey),
-                ),
+              // ================= NOME =================
               TextFormField(
-                initialValue: _nome,
-                enabled: !isGlobal,
-                decoration: const InputDecoration(labelText: 'Nome'),
+                controller: _nomeController,
+                decoration: const InputDecoration(labelText: "Nome do produto"),
                 validator: (v) =>
-                    v == null || v.isEmpty ? 'Informe o nome' : null,
-                onSaved: (v) => _nome = v!,
+                    v == null || v.isEmpty ? "Informe o nome" : null,
               ),
+
               const SizedBox(height: 16),
+
+              // ================= PREÇO =================
               TextFormField(
-                initialValue: _descricao,
-                enabled: !isGlobal,
-                decoration: const InputDecoration(labelText: 'Descrição'),
-                onSaved: (v) => _descricao = v ?? '',
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _quantidade.toString(),
-                decoration: const InputDecoration(labelText: 'Quantidade'),
+                controller: _precoController,
+                decoration: const InputDecoration(labelText: "Preço"),
                 keyboardType: TextInputType.number,
                 validator: (v) {
-                  final q = int.tryParse(v ?? '');
-                  if (q == null || q <= 0) return 'Quantidade inválida';
+                  final valor = double.tryParse(v ?? '');
+                  if (valor == null || valor <= 0) {
+                    return "Preço inválido";
+                  }
                   return null;
                 },
-                onSaved: (v) => _quantidade = int.tryParse(v ?? '1') ?? 1,
               ),
+
               const SizedBox(height: 16),
+
+              // ================= CATEGORIA =================
+              DropdownButtonFormField<int>(
+                value: idCategoria,
+                items: categoriaVM.categorias.map((c) {
+                  return DropdownMenuItem(
+                    value: c.id,
+                    child: Text(c.nome),
+                  );
+                }).toList(),
+                onChanged: (v) => setState(() => idCategoria = v),
+                decoration: const InputDecoration(labelText: "Categoria"),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ================= DESCRIÇÃO =================
               TextFormField(
-                initialValue: _preco.toString(),
-                enabled: !isGlobal,
-                decoration: const InputDecoration(labelText: 'Preço'),
+                controller: _descricaoController,
+                decoration: const InputDecoration(labelText: "Descrição"),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ================= QUANTIDADE =================
+              TextFormField(
+                controller: _quantidadeController,
                 keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: "Quantidade"),
                 validator: (v) {
-                  final p = double.tryParse(v ?? '');
-                  if (p == null || p < 0) return 'Preço inválido';
+                  final valor = int.tryParse(v ?? '');
+                  if (valor == null || valor <= 0) {
+                    return "Quantidade inválida";
+                  }
                   return null;
                 },
-                onSaved: (v) => _preco = double.tryParse(v ?? '0') ?? 0.0,
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<Categoria>(
-                value: categoriaCorrigida,
-                items: categorias
-                    .map((c) => DropdownMenuItem(
-                          value: c,
-                          child: Text(c.nome),
-                        ))
-                    .toList(),
-                onChanged: isGlobal
-                    ? null
-                    : (c) => setState(() => _categoriaSelecionada = c),
-                decoration: const InputDecoration(labelText: 'Categoria'),
-                validator: (c) => c == null ? 'Selecione uma categoria' : null,
-              ),
+
               const SizedBox(height: 32),
-              itemVM.isSaving
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      onPressed: () async {
-                        print("===== CLICK SALVAR =====");
 
-                        if (!_formKey.currentState!.validate()) {
-                          print("Form inválido");
-                          return;
-                        }
-
-                        _formKey.currentState!.save();
-
-                        print("Dados do form:");
-                        print("Nome: $_nome");
-                        print("Quantidade: $_quantidade");
-                        print("Preço: $_preco");
-                        print("Categoria: ${_categoriaSelecionada?.id}");
-
-                        if (_categoriaSelecionada == null ||
-                            _categoriaSelecionada?.id == null) {
-                          print("Categoria inválida");
-                          return;
-                        }
-
-                        if (widget.item == null) {
-                          print("AÇÃO: CRIAR ITEM");
-
-                          final dto = ItemManualDTO(
-                            nomeProdutoSnapshot: _nome,
-                            precoProdutoSnapshot: _preco,
-                            idCategoria: _categoriaSelecionada!.id!,
-                            quantidade: _quantidade,
-                          );
-
-                          print("DTO CREATE: ${dto.toJson()}");
-
-                          await itemVM.criarItemManual(
-                            widget.listaId,
-                            dto,
-                          );
-                        } else {
-                          print("AÇÃO: ATUALIZAR ITEM");
-                          print(
-                              "ID PRODUTO (global?): ${widget.item!.idProduto}");
-
-                          final dto = ItemUpdateDTO(
-                            nomeProdutoSnapshot: isGlobal ? null : _nome,
-                            precoProdutoSnapshot: isGlobal ? null : _preco,
-                            quantidade: _quantidade,
-                            idCategoria:
-                                isGlobal ? null : _categoriaSelecionada!.id!,
-                          );
-
-                          print("DTO UPDATE: ${dto.toJson()}");
-
-                          await itemVM.atualizarItem(
-                            widget.listaId,
-                            widget.item!.id!,
-                            dto,
-                          );
-                        }
-
-                        if (itemVM.erro != null) {
-                          print("ERRO: ${itemVM.erro}");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(itemVM.erro!)),
-                          );
-                          return;
-                        }
-
-                        print("SUCESSO");
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        widget.item == null ? 'Adicionar' : 'Salvar',
-                      ),
-                    ),
+              // ================= BOTÃO =================
+              SubmitButton(
+                loading: itemVM.isSaving,
+                text: "Adicionar",
+                onPressed: _salvar,
+              ),
             ],
           ),
         ),

@@ -1,16 +1,18 @@
 import 'package:crud_flutter/core/helpers/service_utils.dart';
-
 import '../../model/gerenciar_lista/lista.dart';
 import '../../core/api/api_client.dart';
 import '../../core/api/api_endpoints.dart';
 
 class ListaService {
-  final ApiClient _client = ApiClient();
+  final ApiClient _client;
 
-  // =====================================================
-  // 🧠 LOG HELPERS
-  // =====================================================
+  ListaService(this._client);
+
+  // =========================
+  // LOGS
+  // =========================
   void _log(String msg) => print("[LISTA_SERVICE] $msg");
+
   void _logReq(String method, String url, [dynamic body]) {
     _log("➡️ $method $url");
     if (body != null) _log("📦 BODY: $body");
@@ -20,48 +22,63 @@ class ListaService {
     _log("⬅️ RESPONSE: $res");
   }
 
-  // =====================================================
-  // 📥 LISTAR
-  // =====================================================
+  void _logErr(String method, String url, Object e, StackTrace s) {
+    _log("❌ ERROR $method $url");
+    _log("MSG: $e");
+    _log("STACK: $s");
+  }
+
+  // =========================
+  // LISTAR
+  // =========================
   Future<List<Lista>> getAll() async {
     const url = ApiEndpoints.listas;
 
     _logReq("GET", url);
 
-    final res = await _client.get<List<Lista>>(
-      url,
-      (data) => (data as List).map((e) => Lista.fromJson(e)).toList(),
-    );
+    try {
+      final res = await _client.get<List<Lista>>(
+        url,
+        (data) => (data as List).map((e) => Lista.fromJson(e)).toList(),
+      );
 
-    _logRes(res);
+      _logRes(res);
 
-    return ServiceUtils.extractList<Lista>(res);
+      return ServiceUtils.extractList<Lista>(res);
+    } catch (e, s) {
+      _logErr("GET", url, e, s);
+      rethrow;
+    }
   }
 
-  // =====================================================
-  // ➕ CRIAR
-  // =====================================================
+  // =========================
+  // CRIAR
+  // =========================
   Future<Lista> create(String nome) async {
     const url = ApiEndpoints.listas;
-
     final body = {"nome": nome};
 
     _logReq("POST", url, body);
 
-    final res = await _client.post<Lista>(
-      url,
-      body,
-      (data) => Lista.fromJson(data),
-    );
+    try {
+      final res = await _client.post<Lista>(
+        url,
+        body,
+        (data) => Lista.fromJson(data),
+      );
 
-    _logRes(res);
+      _logRes(res);
 
-    return ServiceUtils.extract<Lista>(res);
+      return ServiceUtils.extract<Lista>(res);
+    } catch (e, s) {
+      _logErr("POST", url, e, s);
+      rethrow;
+    }
   }
 
-  // =====================================================
-  // ✏️ ATUALIZAR
-  // =====================================================
+  // =========================
+  // ATUALIZAR
+  // =========================
   Future<Lista> update(Lista lista) async {
     if (lista.id == null) {
       throw Exception("Lista sem ID");
@@ -83,44 +100,55 @@ class ListaService {
 
       return ServiceUtils.extract<Lista>(res);
     } catch (e, s) {
-      _log("❌ ERRO NO UPDATE");
-      _log("MSG: $e");
-      _log("STACK: $s");
+      _logErr("PUT", url, e, s);
       rethrow;
     }
   }
 
-  // =====================================================
-  // ✅ FINALIZAR
-  // =====================================================
+  // =========================
+  // FINALIZAR
+  // =========================
   Future<void> finalizarLista(int listaId) async {
     final url = "${ApiEndpoints.listas}/$listaId/finalizar";
 
     _logReq("POST", url);
 
-    final res = await _client.post<void>(
-      url,
-      {},
-      null,
-    );
+    try {
+      final res = await _client.post<void>(
+        url,
+        {},
+        null,
+      );
 
-    _logRes(res);
+      _logRes(res);
 
-    ServiceUtils.validate(res);
+      ServiceUtils.validate(res);
+    } catch (e, s) {
+      _logErr("POST", url, e, s);
+      rethrow;
+    }
   }
 
-  // =====================================================
-  // 🗑 DELETAR
-  // =====================================================
+  // =========================
+  // DELETE
+  // =========================
   Future<void> delete(int id) async {
     final url = "${ApiEndpoints.listas}/$id";
 
     _logReq("DELETE", url);
 
-    final res = await _client.delete<void>(url);
+    try {
+      final res = await _client.delete<void>(
+        url,
+        null,
+      );
 
-    _logRes(res);
+      _logRes(res);
 
-    ServiceUtils.validate(res);
+      ServiceUtils.validate(res);
+    } catch (e, s) {
+      _logErr("DELETE", url, e, s);
+      rethrow;
+    }
   }
 }

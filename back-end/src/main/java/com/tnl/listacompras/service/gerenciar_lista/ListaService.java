@@ -1,17 +1,19 @@
 package com.tnl.listacompras.service.gerenciar_lista;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ListaRequestDTO;
 import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseDTO;
+import com.tnl.listacompras.model.auto_cadastro.Usuario;
 import com.tnl.listacompras.model.gerenciar_lista.Lista;
 import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
 import com.tnl.listacompras.session.Session;
 
 import exception.business.BusinessException;
 import exception.business.NotFoundException;
-
-import java.util.List;
 
 @Service
 public class ListaService {
@@ -30,11 +32,14 @@ public class ListaService {
     }
 
     // =========================
-    // HELPER
+    // HELPER SEGURANÇA
     // =========================
-    private Lista buscarOuFalhar(Long id, Long idUsuario) {
-        return listaRepository
-                .findByIdAndIdUsuarioAndDeletadoFalse(id, idUsuario)
+    private Lista buscarOuFalhar(Long id) {
+        Long userId = usuarioAtual();
+
+        return listaRepository.findById(id)
+                .filter(l -> l.getUsuario().getId().equals(userId))
+                .filter(l -> !Boolean.TRUE.equals(l.getDeletado()))
                 .orElseThrow(() -> new NotFoundException("Lista não encontrada"));
     }
 
@@ -42,10 +47,12 @@ public class ListaService {
     // LISTAR
     // =========================
     public List<ListaResponseDTO> listar() {
-        Long idUsuario = usuarioAtual();
+        Long userId = usuarioAtual();
 
-        return listaRepository.findAllVisible(idUsuario)
+        return listaRepository.findAll()
                 .stream()
+                .filter(l -> l.getUsuario().getId().equals(userId))
+                .filter(l -> !Boolean.TRUE.equals(l.getDeletado()))
                 .map(this::toDTO)
                 .toList();
     }
@@ -54,66 +61,63 @@ public class ListaService {
     // BUSCAR
     // =========================
     public ListaResponseDTO buscarPorId(Long id) {
-        Long idUsuario = usuarioAtual();
-
-        Lista lista = buscarOuFalhar(id, idUsuario);
-
-        return toDTO(lista);
+        return toDTO(buscarOuFalhar(id));
     }
 
     // =========================
     // CRIAR
     // =========================
     public ListaResponseDTO criar(ListaRequestDTO dto) {
-        Long idUsuario = usuarioAtual();
 
-        if (listaRepository.existsVisibleByName(dto.getNome(), idUsuario)) {
-            throw new BusinessException("Lista já existe");
+        Long userId = usuarioAtual();
+
+        boolean existe = listaRepository.findAll()
+                .stream()
+                .anyMatch(l ->
+                        l.getUsuario().getId().equals(userId) &&
+                        l.getNome().equalsIgnoreCase(dto.getNome()) &&
+                        !Boolean.TRUE.equals(l.getDeletado())
+                );
+
+        if (existe) {
+            throw new BusinessException("Já existe uma lista com esse nome");
         }
 
         Lista lista = new Lista();
         lista.setNome(dto.getNome());
-        lista.setIdUsuario(idUsuario);
 
-        Lista saved = listaRepository.save(lista);
+        Usuario usuario = new Usuario();
+        usuario.setId(userId);
 
-        return toDTO(saved);
+        lista.setUsuario(usuario);
+
+        return toDTO(listaRepository.save(lista));
     }
 
     // =========================
-    // ✏️ ATUALIZAR (PUT - CORRIGIDO)
+    // ATUALIZAR
     // =========================
     public ListaResponseDTO atualizar(Long id, ListaRequestDTO dto) {
 
-        Long idUsuario = usuarioAtual();
-
-        Lista lista = buscarOuFalhar(id, idUsuario);
-
-        // LOG importante pro debug Flutter
-        System.out.println("✏️ ATUALIZANDO LISTA ID=" + id + " NOVO NOME=" + dto.getNome());
+        Lista lista = buscarOuFalhar(id);
 
         lista.setNome(dto.getNome());
 
-        Lista saved = listaRepository.save(lista);
-
-        System.out.println("✔ LISTA ATUALIZADA: " + saved.getId() + " | " + saved.getNome());
-
-        return toDTO(saved);
+        return toDTO(listaRepository.save(lista));
     }
 
     // =========================
     // CONCLUIR
     // =========================
     public ListaResponseDTO concluir(Long id) {
-        Long idUsuario = usuarioAtual();
 
-        Lista lista = buscarOuFalhar(id, idUsuario);
+        Lista lista = buscarOuFalhar(id);
 
-        if (lista.isConcluida()) {
-            throw new BusinessException("Lista já está concluída");
+        if (lista.getConcluidoEm() != null) {
+            throw new BusinessException("Lista já concluída");
         }
 
-        lista.concluir();
+        lista.setConcluidoEm(LocalDateTime.now());
 
         return toDTO(listaRepository.save(lista));
     }
@@ -122,28 +126,26 @@ public class ListaService {
     // REABRIR
     // =========================
     public ListaResponseDTO reabrir(Long id) {
-        Long idUsuario = usuarioAtual();
 
-        Lista lista = buscarOuFalhar(id, idUsuario);
+        Lista lista = buscarOuFalhar(id);
 
-        if (!lista.isConcluida()) {
+        if (lista.getConcluidoEm() == null) {
             throw new BusinessException("Lista já está ativa");
         }
 
-        lista.reabrir();
+        lista.setConcluidoEm(null);
 
         return toDTO(listaRepository.save(lista));
     }
 
     // =========================
-    // DELETAR
+    // DELETE LÓGICO
     // =========================
     public void deletar(Long id) {
-        Long idUsuario = usuarioAtual();
 
-        Lista lista = buscarOuFalhar(id, idUsuario);
+        Lista lista = buscarOuFalhar(id);
 
-        lista.deletar();
+        lista.setDeletado(true);
 
         listaRepository.save(lista);
     }

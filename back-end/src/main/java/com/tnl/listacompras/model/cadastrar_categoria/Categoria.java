@@ -1,42 +1,34 @@
 package com.tnl.listacompras.model.cadastrar_categoria;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.tnl.listacompras.model.cadastrar_produto.Produto;
 
 @Entity
-@Table(
-    name = "categoria",
-    uniqueConstraints = @UniqueConstraint(
-        columnNames = {"codigo", "id_usuario"}
-    )
-)
+@Table(name = "categoria")
 public class Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false)
     private String nome;
-
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true)
     private String codigo;
 
-    // GLOBAL = NULL
-    @Column(name = "id_usuario", nullable = true)
-    private Long idUsuario;
+    @Column(nullable = false)
+    private Boolean deletado = false;
     
-    @Column(name = "criado_em", nullable = false, updatable = false)
-    private LocalDateTime criadoEm;
+    // 🏷 1 categoria → muitos produtos
+    @OneToMany(mappedBy = "categoria")
+    private List<Produto> produtos;
 
-    @Column(name = "atualizado_em", nullable = false)
+    private LocalDateTime criadoEm;
     private LocalDateTime atualizadoEm;
 
-    @Column(nullable = false)
-    private boolean deletado = false;
-
-    // LIFECYCLE
     @PrePersist
     public void prePersist() {
         LocalDateTime agora = LocalDateTime.now();
@@ -50,9 +42,8 @@ public class Categoria {
         this.atualizadoEm = LocalDateTime.now();
     }
 
-    public Categoria() {}
-
     // GETTERS / SETTERS
+
     public Long getId() {
         return id;
     }
@@ -73,13 +64,12 @@ public class Categoria {
         this.codigo = codigo;
     }
 
-    @JsonProperty("idUsuario")
-    public Long getIdUsuario() {
-        return idUsuario;
+    public Boolean getDeletado() {
+        return deletado;
     }
 
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setDeletado(Boolean deletado) {
+        this.deletado = deletado;
     }
 
     public LocalDateTime getCriadoEm() {
@@ -88,18 +78,5 @@ public class Categoria {
 
     public LocalDateTime getAtualizadoEm() {
         return atualizadoEm;
-    }
-
-    public boolean isDeletado() {
-        return deletado;
-    }
-
-    public void setDeletado(boolean deletado) {
-        this.deletado = deletado;
-    }
-
-    // REGRA DE NEGÓCIO
-    public boolean isGlobal() {
-        return this.idUsuario == null;
     }
 }

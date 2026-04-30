@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../view/auto_cadastro/user_screen.dart';
-import '../../view/settings_screen.dart';
+import '../../../../view/auto_cadastro/user_screen.dart';
+import '../../../../view/settings_screen.dart';
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   const AppTopBar({super.key});

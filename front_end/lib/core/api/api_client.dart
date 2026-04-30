@@ -5,46 +5,48 @@ import 'api_config.dart';
 import 'api_response.dart';
 
 class ApiClient {
-  final http.Client _client = http.Client();
+  final http.Client _client;
 
-  // =========================================================
-  // 🌐 URL BUILDER
-  // =========================================================
+  ApiClient(this._client);
+
+  // =========================
+  // 🌐 URL
+  // =========================
   Uri _uri(String path) {
-    final fullUrl = '${ApiConfig.baseUrl}$path';
-    print('\n🌐 [API] $fullUrl');
-    return Uri.parse(fullUrl);
+    final url = '${ApiConfig.baseUrl}$path';
+    print('\n🌐 [API] $url');
+    return Uri.parse(url);
   }
 
-  // =========================================================
-  // 🧠 PARSER PADRÃO (SERVER-FIRST)
-  // =========================================================
+  // =========================
+  // 📦 PARSER
+  // =========================
   ApiResponse<T> _parseResponse<T>(
     http.Response response,
     T Function(dynamic)? fromJson,
   ) {
     final decoded = jsonDecode(response.body);
 
-    print('📦 STATUS: ${response.statusCode}');
-    print('📦 RAW: ${response.body}');
-    print('🧠 DECODED TYPE: ${decoded.runtimeType}');
-    print('🧠 DECODED: $decoded');
+    print('📥 [RESPONSE]');
+    print('   status: ${response.statusCode}');
+    print('   body: ${response.body}');
+    print('   type: ${decoded.runtimeType}');
 
     final apiResponse = ApiResponse<T>.fromJson(decoded, (data) {
-      if (fromJson == null) return data;
-      return fromJson(data);
+      return fromJson != null ? fromJson(data) : data;
     });
 
-    print('🟢 SUCCESS: ${apiResponse.success}');
-    print('💬 MESSAGE: ${apiResponse.message}');
-    print('📊 DATA: ${apiResponse.data}');
+    print('🧠 [PARSED]');
+    print('   success: ${apiResponse.success}');
+    print('   message: ${apiResponse.message}');
+    print('   data: ${apiResponse.data}');
 
     return apiResponse;
   }
 
-  // =========================================================
+  // =========================
   // 🟦 GET
-  // =========================================================
+  // =========================
   Future<ApiResponse<T>> get<T>(
     String path,
     T Function(dynamic)? fromJson,
@@ -53,19 +55,13 @@ class ApiClient {
 
     print('\n🟦 [GET] $path');
 
-    try {
-      final response = await _client.get(uri);
-      return _parseResponse<T>(response, fromJson);
-    } catch (e, stack) {
-      print('❌ [GET ERROR] $e');
-      print('📍 STACK: $stack');
-      rethrow;
-    }
+    final response = await _client.get(uri);
+    return _parseResponse(response, fromJson);
   }
 
-  // =========================================================
+  // =========================
   // 🟨 POST
-  // =========================================================
+  // =========================
   Future<ApiResponse<T>> post<T>(
     String path,
     Object body,
@@ -74,26 +70,20 @@ class ApiClient {
     final uri = _uri(path);
 
     print('\n🟨 [POST] $path');
-    print('📦 BODY: ${jsonEncode(body)}');
+    print('📦 body: ${jsonEncode(body)}');
 
-    try {
-      final response = await _client.post(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
-      );
+    final response = await _client.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
 
-      return _parseResponse<T>(response, fromJson);
-    } catch (e, stack) {
-      print('❌ [POST ERROR] $e');
-      print('📍 STACK: $stack');
-      rethrow;
-    }
+    return _parseResponse(response, fromJson);
   }
 
-  // =========================================================
+  // =========================
   // 🟧 PUT
-  // =========================================================
+  // =========================
   Future<ApiResponse<T>> put<T>(
     String path,
     Object body,
@@ -102,69 +92,52 @@ class ApiClient {
     final uri = _uri(path);
 
     print('\n🟧 [PUT] $path');
-    print('📦 BODY: ${jsonEncode(body)}');
+    print('📦 body: ${jsonEncode(body)}');
 
-    try {
-      final response = await _client.put(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body),
-      );
+    final response = await _client.put(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
 
-      return _parseResponse<T>(response, fromJson);
-    } catch (e, stack) {
-      print('❌ [PUT ERROR] $e');
-      print('📍 STACK: $stack');
-      rethrow;
-    }
+    return _parseResponse(response, fromJson);
   }
 
-  // =========================================================
-  // 🟥 PATCH
-  // =========================================================
+  // =========================
+  // 🟪 PATCH
+  // =========================
   Future<ApiResponse<T>> patch<T>(
     String path,
-    Object? body, {
+    Object? body,
     T Function(dynamic)? fromJson,
-  }) async {
+  ) async {
     final uri = _uri(path);
 
-    print('\n🟥 [PATCH] $path');
-    print('📦 BODY: ${jsonEncode(body)}');
+    print('\n🟪 [PATCH] $path');
+    print('📦 body: ${jsonEncode(body)}');
 
-    try {
-      final response = await _client.patch(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: body != null ? jsonEncode(body) : null,
-      );
+    final response = await _client.patch(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: body != null ? jsonEncode(body) : null,
+    );
 
-      return _parseResponse<T>(response, fromJson);
-    } catch (e, stack) {
-      print('❌ [PATCH ERROR] $e');
-      print('📍 STACK: $stack');
-      rethrow;
-    }
+    return _parseResponse(response, fromJson);
   }
 
-  // =========================================================
-  // 🗑 DELETE
-  // =========================================================
+  // =========================
+  // 🟥 DELETE (FIX PRINCIPAL)
+  // =========================
   Future<ApiResponse<T>> delete<T>(
-    String path, {
+    String path, [
     T Function(dynamic)? fromJson,
-  }) async {
+  ]) async {
     final uri = _uri(path);
 
-    print('\n🗑 [DELETE] $path');
+    print('\n🟥 [DELETE] $path');
 
-    try {
-      final response = await _client.delete(uri);
-      return _parseResponse<T>(response, fromJson);
-    } catch (e, stack) {
-      print('❌ [DELETE ERROR] $e');
-      print('📍 STACK: $stack');
-      rethrow;
-    }
+    final response = await _client.delete(uri);
+
+    return _parseResponse(response, fromJson);
   }
 }

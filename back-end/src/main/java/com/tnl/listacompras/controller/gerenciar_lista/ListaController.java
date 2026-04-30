@@ -1,9 +1,8 @@
 package com.tnl.listacompras.controller.gerenciar_lista;
 
-import java.util.List;
-
 import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.*;
 import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.*;
+import com.tnl.listacompras.model.gerenciar_lista.Item;
 import com.tnl.listacompras.service.gerenciar_lista.ItemService;
 import com.tnl.listacompras.service.gerenciar_lista.ListaService;
 
@@ -13,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import response.ApiResponse;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/listas")
@@ -27,7 +28,7 @@ public class ListaController {
     }
 
     // =========================
-    // LISTAS
+    // LISTA (CRUD)
     // =========================
 
     @PostMapping
@@ -52,6 +53,16 @@ public class ListaController {
         );
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ListaResponseDTO>> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ListaRequestDTO dto) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Lista atualizada", listaService.atualizar(id, dto))
+        );
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletar(@PathVariable Long id) {
 
@@ -63,7 +74,7 @@ public class ListaController {
     }
 
     // =========================
-    // ITENS
+    // ITENS (dentro da lista)
     // =========================
 
     @GetMapping("/{idLista}/itens")
@@ -78,54 +89,17 @@ public class ListaController {
         );
     }
 
-    @GetMapping("/{idLista}/itens/categoria/{idCategoria}")
-    public ResponseEntity<ApiResponse<List<ItemResponseDTO>>> listarPorCategoria(
+    @PostMapping("/{idLista}/itens")
+    public ResponseEntity<ApiResponse<ItemResponseDTO>> criarItem(
             @PathVariable Long idLista,
-            @PathVariable Long idCategoria) {
-
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "Itens da categoria carregados",
-                        itemService.buscarPorCategoria(idLista, idCategoria)
-                )
-        );
-    }
-
-    // =========================
-    // CREATE ITEM MANUAL
-    // =========================
-
-    @PostMapping("/{idLista}/itens/manual")
-    public ResponseEntity<ApiResponse<ItemResponseDTO>> criarManual(
-            @PathVariable Long idLista,
-            @Valid @RequestBody ItemManualRequestDTO dto) {
+            @Valid @RequestBody ItemRequestDTO dto) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(
                         "Item criado",
-                        itemService.criarManual(idLista, dto)
+                        itemService.criar(idLista, dto)
                 ));
     }
-
-    // =========================
-    // CREATE ITEM GLOBAL
-    // =========================
-
-    @PostMapping("/{idLista}/itens/global")
-    public ResponseEntity<ApiResponse<ItemResponseDTO>> criarGlobal(
-            @PathVariable Long idLista,
-            @Valid @RequestBody ItemGlobalRequestDTO dto) {
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(
-                        "Item global criado",
-                        itemService.criarGlobal(idLista, dto)
-                ));
-    }
-
-    // =========================
-    // UPDATE ITEM
-    // =========================
 
     @PutMapping("/{idLista}/itens/{idItem}")
     public ResponseEntity<ApiResponse<ItemResponseDTO>> atualizarItem(
@@ -133,28 +107,14 @@ public class ListaController {
             @PathVariable Long idItem,
             @Valid @RequestBody ItemUpdateDTO dto) {
 
+        ItemResponseDTO itemAtualizado =
+                itemService.atualizar(idLista, idItem, dto);
+
         return ResponseEntity.ok(
-                ApiResponse.success(
-                        "Item atualizado",
-                        itemService.atualizar(idLista, idItem, dto)
-                )
+                ApiResponse.success("Item atualizado", itemAtualizado)
         );
     }
     
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ListaResponseDTO>> atualizar(
-            @PathVariable Long id,
-            @Valid @RequestBody ListaRequestDTO dto) {
-
-        return ResponseEntity.ok(
-            ApiResponse.success("Lista atualizada", listaService.atualizar(id, dto))
-        );
-    }
-
-    // =========================
-    // COMPRADO
-    // =========================
-
     @PatchMapping("/{idLista}/itens/{idItem}/comprado")
     public ResponseEntity<ApiResponse<Void>> marcarComprado(
             @PathVariable Long idLista,
@@ -163,14 +123,21 @@ public class ListaController {
         itemService.marcarComprado(idLista, idItem);
 
         return ResponseEntity.ok(
-                ApiResponse.success("Status atualizado", null)
+                ApiResponse.success("Item marcado como comprado", null)
         );
     }
-    
 
-    // =========================
-    // DELETE ITEM
-    // =========================
+    @PatchMapping("/{idLista}/itens/{idItem}/desmarcar")
+    public ResponseEntity<ApiResponse<Void>> desmarcarComprado(
+            @PathVariable Long idLista,
+            @PathVariable Long idItem) {
+
+        itemService.desmarcarComprado(idLista, idItem);
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Item desmarcado", null)
+        );
+    }
 
     @DeleteMapping("/{idLista}/itens/{idItem}")
     public ResponseEntity<ApiResponse<Void>> deletarItem(

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../view_model/gerenciar_lista/lista_view_model.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import 'criar_nova_lista_screen.dart';
-import 'lista_screen.dart';
+import 'lista_screen.dart' hide Scaffold;
 
 class MinhasListasScreen extends StatefulWidget {
   const MinhasListasScreen({super.key});

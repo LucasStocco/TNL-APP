@@ -1,30 +1,47 @@
 package com.tnl.listacompras.dto.requestDTO.cadastrar_produto;
 
-import jakarta.validation.constraints.*;
-import java.math.BigDecimal;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class ProdutoRequestDTO {
 
     @NotBlank
-    @Size(max = 100)
     private String nome;
 
     private String descricao;
 
-    private BigDecimal preco;
-
     @NotNull
     private Long idCategoria;
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    // =========================
+    // GETTERS
+    // =========================
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getNome() {
+        return nome;
+    }
 
-    public BigDecimal getPreco() { return preco; }
-    public void setPreco(BigDecimal preco) { this.preco = preco; }
+    public String getDescricao() {
+        return descricao;
+    }
 
-    public Long getIdCategoria() { return idCategoria; }
-    public void setIdCategoria(Long idCategoria) { this.idCategoria = idCategoria; }
+    public Long getIdCategoria() {
+        return idCategoria;
+    }
+
+    // =========================
+    // SETTERS
+    // =========================
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public void setIdCategoria(Long idCategoria) {
+        this.idCategoria = idCategoria;
+    }
 }

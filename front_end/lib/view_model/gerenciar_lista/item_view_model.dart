@@ -1,31 +1,34 @@
-import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
 import 'package:flutter/material.dart';
-
-import '../../dto/item_global_dto.dart';
-import '../../dto/item_manual_dto.dart';
-import '../../dto/item_update_dto.dart';
-import '../../model/cadastrar_produto/item.dart';
+import 'package:crud_flutter/model/gerenciar_lista/item.dart';
+import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
+import 'package:crud_flutter/dto/item_create_dto.dart';
+import 'package:crud_flutter/dto/item_update_dto.dart';
 
 class ItemViewModel extends ChangeNotifier {
-  final ItemService _service;
+  final ItemService service;
 
-  ItemViewModel(this._service);
+  ItemViewModel(this.service);
 
+  // =========================
+  // STATE
+  // =========================
   List<Item> itens = [];
+
   bool isLoading = false;
   bool isSaving = false;
+
   String? erro;
 
   // =========================
-  // LISTAR
+  // LISTAR ITENS
   // =========================
-  Future<void> carregarItens(int idLista) async {
+  Future<void> carregar(int listaId) async {
     isLoading = true;
+    erro = null;
     notifyListeners();
 
     try {
-      itens = await _service.listarPorLista(idLista);
-      erro = null;
+      itens = await service.listar(listaId);
     } catch (e) {
       erro = e.toString();
     }
@@ -35,78 +38,70 @@ class ItemViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // CRIAR MANUAL
+  // CRIAR ITEM
   // =========================
-  Future<void> criarItemManual(int idLista, ItemManualDTO dto) async {
+  Future<Item?> criar({
+    required int listaId,
+    required int idProduto,
+    required int quantidade,
+    required double preco,
+  }) async {
     isSaving = true;
+    erro = null;
     notifyListeners();
 
     try {
-      await _service.criarManual(idLista, dto);
-      erro = null;
+      final dto = ItemCreateDTO(
+        produtoId: idProduto,
+        quantidade: quantidade,
+        preco: preco,
+      );
 
-      await carregarItens(idLista);
+      final novo = await service.criar(listaId, dto);
+
+      // 🔥 MELHOR PRÁTICA: sincroniza com backend
+      await carregar(listaId);
+
+      return novo;
     } catch (e) {
       erro = e.toString();
+      return null;
+    } finally {
+      isSaving = false;
+      notifyListeners();
     }
-
-    isSaving = false;
-    notifyListeners();
-  }
-
-  // =========================
-  // 🔥 CRIAR GLOBAL (CORRETO)
-  // =========================
-  Future<void> criarItemGlobal(int idLista, ItemGlobalDTO dto) async {
-    isSaving = true;
-    notifyListeners();
-
-    try {
-      await _service.criarGlobal(idLista, dto);
-      erro = null;
-
-      await carregarItens(idLista);
-    } catch (e) {
-      erro = e.toString();
-    }
-
-    isSaving = false;
-    notifyListeners();
   }
 
   // =========================
   // ATUALIZAR
   // =========================
-  Future<void> atualizarItem(
-    int idLista,
-    int itemId,
-    ItemUpdateDTO dto,
-  ) async {
+  Future<Item?> atualizar({
+    required int listaId,
+    required int idItem,
+    required int quantidade,
+    required double preco,
+  }) async {
     isSaving = true;
+    erro = null;
     notifyListeners();
 
     try {
-      await _service.atualizar(idLista, itemId, dto);
-      erro = null;
+      final dto = ItemUpdateDTO(
+        quantidade: quantidade,
+        preco: preco,
+      );
 
-      await carregarItens(idLista);
+      final atualizado = await service.atualizar(listaId, idItem, dto);
+
+      // 🔥 GARANTE CONSISTÊNCIA COM BACKEND
+      await carregar(listaId);
+
+      return atualizado;
     } catch (e) {
       erro = e.toString();
-    }
-
-    isSaving = false;
-    notifyListeners();
-  }
-
-  // =========================
-  // DELETAR
-  // =========================
-  Future<void> deletarItem(int idLista, int itemId) async {
-    try {
-      await _service.deletar(idLista, itemId);
-      await carregarItens(idLista);
-    } catch (e) {
-      erro = e.toString();
+      return null;
+    } finally {
+      isSaving = false;
       notifyListeners();
     }
   }
@@ -114,10 +109,39 @@ class ItemViewModel extends ChangeNotifier {
   // =========================
   // TOGGLE COMPRADO
   // =========================
-  Future<void> marcarComprado(int idLista, int itemId, bool valor) async {
+  Future<void> marcarComprado(
+    int listaId,
+    int idItem,
+    bool comprado,
+  ) async {
     try {
-      await _service.marcarComprado(idLista, itemId, valor);
-      await carregarItens(idLista);
+      if (comprado) {
+        await service.marcarComprado(listaId, idItem);
+      } else {
+        await service.desmarcarComprado(listaId, idItem);
+      }
+
+      final index = itens.indexWhere((i) => i.id == idItem);
+
+      if (index != -1) {
+        itens[index] = itens[index].copyWith(comprado: comprado);
+        notifyListeners();
+      }
+    } catch (e) {
+      erro = e.toString();
+      notifyListeners();
+    }
+  }
+
+  // =========================
+  // DELETAR ITEM
+  // =========================
+  Future<void> deletar(int listaId, int idItem) async {
+    try {
+      await service.deletar(listaId, idItem);
+
+      itens.removeWhere((i) => i.id == idItem);
+      notifyListeners();
     } catch (e) {
       erro = e.toString();
       notifyListeners();

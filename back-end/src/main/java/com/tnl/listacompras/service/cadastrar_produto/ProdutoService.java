@@ -1,17 +1,16 @@
 package com.tnl.listacompras.service.cadastrar_produto;
 
-import org.springframework.stereotype.Service;
-
-import com.tnl.listacompras.session.Session;
-import exception.business.BusinessException;
-
 import com.tnl.listacompras.dto.requestDTO.cadastrar_produto.ProdutoRequestDTO;
-import com.tnl.listacompras.dto.responseDTO.cadastrar_categoria.CategoriaResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.cadastrar_produto.ProdutoResponseDTO;
-import com.tnl.listacompras.model.cadastrar_produto.Produto;
 import com.tnl.listacompras.model.cadastrar_categoria.Categoria;
+import com.tnl.listacompras.model.cadastrar_produto.Produto;
 import com.tnl.listacompras.repository.cadastrar_categoria.CategoriaRepository;
 import com.tnl.listacompras.repository.cadastrar_produto.ProdutoRepository;
+
+import exception.business.BusinessException;
+import exception.business.NotFoundException;
+
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -27,248 +26,98 @@ public class ProdutoService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    // ================= USUARIO =================
-    private Long usuarioAtual() {
-        return Session.getUsuarioId();
-    }
-
-    // ================= LISTAR TODOS =================
-    public List<ProdutoResponseDTO> listarTodos() {
-
-        Long idUsuario = usuarioAtual();
-
-        System.out.println(">>> [PRODUTO SERVICE] listarTodos");
-        System.out.println("usuario=" + idUsuario);
-
-        var lista = produtoRepository.listarDisponiveis(idUsuario);
-
-        System.out.println("✔ produtos encontrados=" + lista.size());
-
-        return lista.stream()
-                .map(this::toDTO)
+    // =========================
+    // LISTAR
+    // =========================
+    public List<ProdutoResponseDTO> listar() {
+        return produtoRepository.findAll()
+                .stream()
+                .map(ProdutoResponseDTO::new)
                 .toList();
     }
 
-    // ================= LISTAR POR CATEGORIA 🔥 =================
-    public List<ProdutoResponseDTO> listarPorCategoria(Long idCategoria) {
+    // =========================
+    // BUSCAR
+    // =========================
+    public ProdutoResponseDTO buscar(Long id) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
 
-        Long idUsuario = usuarioAtual();
-
-        System.out.println(">>> [PRODUTO SERVICE] listarPorCategoria");
-        System.out.println("categoriaId=" + idCategoria);
-        System.out.println("usuario=" + idUsuario);
-
-        validarCategoriaExiste(idCategoria);
-
-        var lista = produtoRepository.listarPorCategoria(idCategoria, idUsuario);
-
-        System.out.println("✔ produtos na categoria=" + lista.size());
-
-        return lista.stream()
-                .map(this::toDTO)
-                .toList();
+        return new ProdutoResponseDTO(produto);
     }
 
-    // ================= BUSCAR =================
-    public ProdutoResponseDTO buscarPorId(Long id) {
-
-        Long idUsuario = usuarioAtual();
-
-        System.out.println(">>> [PRODUTO SERVICE] buscarPorId id=" + id);
-
-        Produto produto = produtoRepository.buscarDisponivelPorId(id, idUsuario)
-                .orElseThrow(() -> {
-                    System.out.println("❌ Produto não encontrado");
-                    return new BusinessException("Produto não encontrado");
-                });
-
-        System.out.println("✔ Produto encontrado: " + produto.getNome());
-
-        return toDTO(produto);
-    }
-
-    // ================= CRIAR =================
+    // =========================
+    // CRIAR
+    // =========================
     public ProdutoResponseDTO criar(ProdutoRequestDTO dto) {
 
-        Long idUsuario = usuarioAtual();
+        String nome = dto.getNome().trim();
+        String descricao = dto.getDescricao() == null ? "" : dto.getDescricao().trim();
 
-        System.out.println(">>> [PRODUTO SERVICE] criar");
-        System.out.println("nome=" + dto.getNome());
-        System.out.println("categoria=" + dto.getIdCategoria());
-        System.out.println("usuario=" + idUsuario);
-
-        validarCategoria(dto.getIdCategoria(), idUsuario);
-
-        Categoria categoria = categoriaRepository
-                .findById(dto.getIdCategoria())
-                .orElseThrow(() -> {
-                    System.out.println("❌ Categoria não encontrada no banco");
-                    return new BusinessException("Categoria não encontrada");
-                });
-
-        var existente = produtoRepository.buscarIncluindoDeletados(
-                dto.getNome(),
-                dto.getIdCategoria(),
-                idUsuario
-        );
-
-        // REATIVAR
-        if (existente.isPresent()) {
-
-            Produto prod = existente.get();
-
-            System.out.println("⚠ Produto já existe no sistema");
-
-            if (Boolean.TRUE.equals(prod.getDeletado())) {
-
-                System.out.println("♻ Reativando produto deletado");
-
-                prod.setDeletado(false);
-                prod.setDescricao(dto.getDescricao());
-                prod.setPreco(dto.getPreco());
-                prod.setCategoria(categoria);
-
-                return toDTO(produtoRepository.save(prod));
-            }
-
-            throw new BusinessException("Produto já existe");
+        if (produtoRepository.existsByNomeIgnoreCaseAndDescricaoIgnoreCaseAndCategoriaId(
+                nome,
+                descricao,
+                dto.getIdCategoria()
+        )) {
+            throw new BusinessException("Produto já existe com esse nome, descrição e categoria");
         }
 
-        // NOVO
+        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
+                .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
+
         Produto produto = new Produto();
-
-        produto.setNome(dto.getNome());
-        produto.setDescricao(dto.getDescricao());
-        produto.setPreco(dto.getPreco());
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
         produto.setCategoria(categoria);
-        produto.setIdUsuario(idUsuario);
-        produto.setDeletado(false);
 
-        Produto salvo = produtoRepository.save(produto);
-
-        System.out.println("🟢 Produto criado ID=" + salvo.getId());
-
-        return toDTO(salvo);
+        return new ProdutoResponseDTO(produtoRepository.save(produto));
     }
 
-    // ================= UPDATE =================
+    // =========================
+    // ATUALIZAR
+    // =========================
     public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
 
-        Long idUsuario = usuarioAtual();
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
 
-        System.out.println(">>> [PRODUTO SERVICE] atualizar id=" + id);
+        String nome = dto.getNome().trim();
+        String descricao = dto.getDescricao() == null ? "" : dto.getDescricao().trim();
 
-        Produto prod = produtoRepository.buscarDisponivelPorId(id, idUsuario)
-                .orElseThrow(() -> {
-                    System.out.println("❌ Produto não encontrado para update");
-                    return new BusinessException("Produto não encontrado");
-                });
+        // ⚠️ evita duplicidade ao atualizar
+        boolean existe = produtoRepository
+                .existsByNomeIgnoreCaseAndDescricaoIgnoreCaseAndCategoriaId(
+                        nome,
+                        descricao,
+                        dto.getIdCategoria()
+                );
 
-        if (prod.getIdUsuario() == null) {
-            System.out.println("⛔ Produto global bloqueado");
-            throw new BusinessException("Produto global não pode ser editado");
+        if (existe &&
+            !(produto.getNome().equalsIgnoreCase(nome)
+              && ((produto.getDescricao() == null ? "" : produto.getDescricao()).equalsIgnoreCase(descricao))
+              && produto.getCategoria().getId().equals(dto.getIdCategoria()))) {
+
+            throw new BusinessException("Produto já existe com esse nome, descrição e categoria");
         }
 
-        if (!prod.getIdUsuario().equals(idUsuario)) {
-            System.out.println("⛔ Sem permissão de edição");
-            throw new BusinessException("Sem permissão para editar este produto");
-        }
+        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
+                .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
 
-        Categoria categoria = categoriaRepository
-                .findById(dto.getIdCategoria())
-                .orElseThrow(() -> new BusinessException("Categoria não encontrada"));
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
+        produto.setCategoria(categoria);
 
-        prod.setNome(dto.getNome());
-        prod.setDescricao(dto.getDescricao());
-        prod.setPreco(dto.getPreco());
-        prod.setCategoria(categoria);
-
-        Produto salvo = produtoRepository.save(prod);
-
-        System.out.println("✔ Produto atualizado ID=" + salvo.getId());
-
-        return toDTO(salvo);
+        return new ProdutoResponseDTO(produtoRepository.save(produto));
     }
 
-    // ================= DELETE =================
+    // =========================
+    // DELETE
+    // =========================
     public void deletar(Long id) {
 
-        Long idUsuario = usuarioAtual();
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
 
-        System.out.println(">>> [PRODUTO SERVICE] deletar id=" + id);
-
-        Produto prod = produtoRepository.buscarDisponivelPorId(id, idUsuario)
-                .orElseThrow(() -> {
-                    System.out.println("❌ Produto não encontrado para delete");
-                    return new BusinessException("Produto não encontrado");
-                });
-
-        if (prod.getIdUsuario() == null) {
-            System.out.println("⛔ Tentativa de deletar produto global");
-            throw new BusinessException("Produto global não pode ser deletado");
-        }
-
-        if (!prod.getIdUsuario().equals(idUsuario)) {
-            System.out.println("⛔ Sem permissão de delete");
-            throw new BusinessException("Sem permissão para deletar este produto");
-        }
-
-        prod.setDeletado(true);
-        produtoRepository.save(prod);
-
-        System.out.println("🗑 Produto deletado ID=" + prod.getId());
-    }
-
-    // ================= VALIDAR CATEGORIA EXISTE 🔥 =================
-    private void validarCategoriaExiste(Long idCategoria) {
-        if (!categoriaRepository.existsById(idCategoria)) {
-            System.out.println("❌ Categoria não encontrada");
-            throw new BusinessException("Categoria não encontrada");
-        }
-    }
-
-    // ================= VALIDAR CATEGORIA =================
-    private void validarCategoria(Long idCategoria, Long idUsuario) {
-
-        System.out.println(">>> validando categoria id=" + idCategoria);
-
-        categoriaRepository.listarTodas(idUsuario)
-                .stream()
-                .filter(c -> c.getId().equals(idCategoria))
-                .findFirst()
-                .orElseThrow(() -> {
-                    System.out.println("❌ Categoria inválida");
-                    return new BusinessException("Categoria não encontrada");
-                });
-
-        System.out.println("✔ Categoria válida");
-    }
-
-    // ================= MAPPER =================
-    private ProdutoResponseDTO toDTO(Produto produto) {
-
-        Categoria categoria = produto.getCategoria();
-
-        CategoriaResponseDTO categoriaDTO = null;
-
-        if (categoria != null) {
-            categoriaDTO = new CategoriaResponseDTO(
-                    categoria.getId(),
-                    categoria.getNome(),
-                    categoria.getCodigo(),
-                    categoria.getIdUsuario()
-            );
-        }
-
-        return new ProdutoResponseDTO(
-                produto.getId(),
-                produto.getNome(),
-                produto.getDescricao(),
-                produto.getPreco(),
-                categoriaDTO,
-                produto.getCriadoEm(),
-                produto.getAtualizadoEm(),
-                produto.getIdUsuario()
-        );
+        produtoRepository.delete(produto);
     }
 }

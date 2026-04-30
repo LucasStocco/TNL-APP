@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+
 import '../../model/cadastrar_produto/produto.dart';
 import '../../service/cadastrar_produto/produto_service.dart';
-import '../../service/cadastrar_produto/produto_service.dart';
+import '../../dto/produto_create_dto.dart';
+import '../../dto/produto_update_dto.dart';
 
 class ProdutoViewModel extends ChangeNotifier {
-  final ProdutoService _service = ProdutoService();
+  final ProdutoService _service;
+
+  ProdutoViewModel(this._service);
 
   // =========================
   // STATE
@@ -19,7 +23,6 @@ class ProdutoViewModel extends ChangeNotifier {
   // =========================
   // HELPERS
   // =========================
-
   void _setLoading(bool value) {
     isLoading = value;
     notifyListeners();
@@ -30,116 +33,141 @@ class ProdutoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _parseErro(Object e) {
-    return e.toString().replaceAll('Exception: ', '');
+  void _setError(Object e) {
+    erro = e.toString().replaceAll('Exception: ', '');
   }
 
-  Future<T?> _execute<T>({
-    required Future<T> Function() action,
-    bool useSaving = false,
-  }) async {
-    if (useSaving) {
-      _setSaving(true);
-    } else {
-      _setLoading(true);
-    }
-
+  // =========================
+  // LISTAR TODOS
+  // =========================
+  Future<void> listar() async {
+    _setLoading(true);
     erro = null;
 
     try {
-      return await action();
+      produtos = await _service.listar();
     } catch (e) {
-      erro = _parseErro(e);
+      _setError(e);
+    }
+
+    _setLoading(false);
+  }
+
+  // =========================
+  // LISTAR POR CATEGORIA
+  // =========================
+  Future<void> listarPorCategoria(int idCategoria) async {
+    _setLoading(true);
+    erro = null;
+
+    try {
+      produtos = await _service.listarPorCategoria(idCategoria);
+    } catch (e) {
+      _setError(e);
+      produtos = [];
+    }
+
+    _setLoading(false);
+  }
+
+  // =========================
+  // CRIAR PRODUTO
+  // =========================
+  Future<Produto?> criar({
+    required String nome,
+    required double preco,
+    String? descricao,
+    required int idCategoria,
+  }) async {
+    _setSaving(true);
+    erro = null;
+
+    try {
+      final novo = await _service.criar(
+        ProdutoCreateDTO(
+          nome: nome,
+          preco: preco,
+          descricao: descricao,
+          idCategoria: idCategoria,
+        ),
+      );
+
+      produtos = [...produtos, novo];
+      return novo;
+    } catch (e) {
+      _setError(e);
       return null;
     } finally {
-      if (useSaving) {
-        _setSaving(false);
-      } else {
-        _setLoading(false);
-      }
-    }
-  }
-
-  // =========================
-  // LISTAR
-  // =========================
-  Future<void> listar() async {
-    final result = await _execute<List<Produto>>(
-      action: () => _service.listar(),
-    );
-
-    if (result != null) {
-      produtos = result;
+      _setSaving(false);
       notifyListeners();
     }
   }
 
   // =========================
-  // CRIAR
-  // =========================
-  Future<Produto?> criar(Produto produto) async {
-    final novo = await _execute<Produto>(
-      useSaving: true,
-      action: () => _service.criar(produto),
-    );
-
-    if (novo != null) {
-      produtos = [...produtos, novo];
-      notifyListeners();
-    }
-
-    return novo;
-  }
-
-  // =========================
-  // ATUALIZAR
+  // ATUALIZAR PRODUTO
   // =========================
   Future<Produto?> atualizar(Produto produto) async {
     if (produto.id == null) {
-      erro = 'ID obrigatório';
+      erro = "ID obrigatório";
       notifyListeners();
       return null;
     }
 
-    final atualizado = await _execute<Produto>(
-      useSaving: true,
-      action: () => _service.atualizar(produto),
-    );
+    _setSaving(true);
+    erro = null;
 
-    if (atualizado != null) {
+    try {
+      final atualizado = await _service.atualizar(
+        produto.id!,
+        ProdutoUpdateDTO(
+          nome: produto.nome,
+          preco: produto.preco,
+          descricao: produto.descricao,
+          idCategoria: produto.idCategoria,
+        ),
+      );
+
       produtos = produtos.map((p) {
         return p.id == atualizado.id ? atualizado : p;
       }).toList();
 
+      return atualizado;
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setSaving(false);
       notifyListeners();
     }
-
-    return atualizado;
   }
 
   // =========================
-  // DELETAR
+  // DELETAR PRODUTO
   // =========================
   Future<void> deletar(int id) async {
-    await _execute<void>(
-      useSaving: true,
-      action: () => _service.deletar(id),
-    );
+    _setSaving(true);
+    erro = null;
 
-    if (erro != null) return;
+    try {
+      await _service.deletar(id);
 
-    produtos.removeWhere((p) => p.id == id);
+      produtos.removeWhere((p) => p.id == id);
+    } catch (e) {
+      _setError(e);
+    }
+
+    _setSaving(false);
     notifyListeners();
   }
 
   // =========================
-  // RESET
+  // BUSCA LOCAL (UI FILTER)
   // =========================
-  void resetar() {
-    produtos = [];
-    isLoading = false;
-    isSaving = false;
-    erro = null;
-    notifyListeners();
+  List<Produto> buscarPorNome(String query) {
+    if (query.isEmpty) return produtos;
+
+    return produtos
+        .where((p) => p.nome.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 }

@@ -1,7 +1,12 @@
 class ApiConfig {
-  static const String baseUrl = 'http://localhost:8088';
+  // rodar com depuração USB
+  //static const String baseUrl = 'http://localhost:8088';
+
+  // rodar com emulador
+  static const String baseUrl = 'http://10.0.2.2:8088';
 }
-//http://seu ip/listas
+// flutter emulators --launch Small_Phone
+
 
 // concete o celular via USB no modo dev
 // adb reverse tcp:8088 tcp:8088 no terminal 
