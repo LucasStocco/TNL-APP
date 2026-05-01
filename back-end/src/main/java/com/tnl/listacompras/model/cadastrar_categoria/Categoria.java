@@ -1,10 +1,11 @@
 package com.tnl.listacompras.model.cadastrar_categoria;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // ✅ ADICIONADO (evitar loop JSON)
+import com.tnl.listacompras.model.cadastrar_produto.Produto;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.tnl.listacompras.model.cadastrar_produto.Produto;
 
 @Entity
 @Table(name = "categoria")
@@ -16,6 +17,7 @@ public class Categoria {
 
     @Column(nullable = false)
     private String nome;
+
     @Column(nullable = false, unique = true)
     private String codigo;
 
@@ -23,10 +25,18 @@ public class Categoria {
     private Boolean deletado = false;
     
     // 🏷 1 categoria → muitos produtos
-    @OneToMany(mappedBy = "categoria")
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY) 
+    // ✅ ADICIONADO fetch LAZY (evita carregar produtos sem necessidade)
+    @JsonIgnore 
+    // ✅ ADICIONADO (evita loop infinito no JSON: categoria → produto → categoria...)
     private List<Produto> produtos;
 
+    @Column(name = "criado_em", nullable = false, updatable = false) 
+    // ✅ ADICIONADO name (garante compatibilidade com o banco)
     private LocalDateTime criadoEm;
+
+    @Column(name = "atualizado_em", nullable = false) 
+    // ✅ ADICIONADO name (padronização com banco)
     private LocalDateTime atualizadoEm;
 
     @PrePersist
@@ -35,11 +45,21 @@ public class Categoria {
         this.criadoEm = agora;
         this.atualizadoEm = agora;
         this.deletado = false;
+
+        // ✅ ADICIONADO (padroniza codigo para evitar bug no Flutter)
+        if (this.codigo != null) {
+            this.codigo = this.codigo.toUpperCase();
+        }
     }
 
     @PreUpdate
     public void preUpdate() {
         this.atualizadoEm = LocalDateTime.now();
+
+        // ✅ ADICIONADO (garante que continue em maiúsculo mesmo após edição)
+        if (this.codigo != null) {
+            this.codigo = this.codigo.toUpperCase();
+        }
     }
 
     // GETTERS / SETTERS
@@ -61,7 +81,8 @@ public class Categoria {
     }
 
     public void setCodigo(String codigo) {
-        this.codigo = codigo;
+        this.codigo = codigo; 
+        // ⚠️ poderia já colocar toUpperCase aqui também (opcional)
     }
 
     public Boolean getDeletado() {

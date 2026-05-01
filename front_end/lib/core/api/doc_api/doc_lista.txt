@@ -1,0 +1,35 @@
+📁 LISTA — CRUD COMPLETO
+
+Base URL:  http://localhost:8088
+
+🟢 1. LISTAR TODAS AS LISTAS
+GET http://localhost:8088/listas
+
+///////////////////////////////////////////////////////////////
+
+🟢 2. BUSCAR LISTA POR ID
+GET http://localhost:8088/listas/{id}
+
+///////////////////////////////////////////////////////////////
+
+🟢 3. CRIAR LISTA
+POST http://localhost:8088/listas
+Content-Type: application/json
+
+{
+  "nome": "Supermercado da Semana"
+}
+
+///////////////////////////////////////////////////////////////
+
+🟡 4. ATUALIZAR LISTA
+PUT http://localhost:8088/listas/{id}
+Content-Type: application/json
+
+{
+  "nome": "Compras do Mês"
+}
+///////////////////////////////////////////////////////////////
+
+🔴 5. DELETAR LISTA
+DELETE http://localhost:8088/listas/{id}

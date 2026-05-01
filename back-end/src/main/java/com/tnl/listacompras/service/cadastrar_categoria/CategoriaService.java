@@ -6,9 +6,8 @@ import com.tnl.listacompras.dto.responseDTO.cadastrar_produto.ProdutoResponseDTO
 import com.tnl.listacompras.model.cadastrar_categoria.Categoria;
 import com.tnl.listacompras.repository.cadastrar_categoria.CategoriaRepository;
 import com.tnl.listacompras.repository.cadastrar_produto.ProdutoRepository;
-
-import exception.business.BusinessException;
 import exception.business.NotFoundException;
+import utils.CodigoUtils;
 
 import org.springframework.stereotype.Service;
 
@@ -47,10 +46,10 @@ public class CategoriaService {
     // ================= CRIAR =================
     public CategoriaResponseDTO criar(CategoriaRequestDTO dto) {
 
-        String codigo = gerarCodigoUnico(dto.getNome());
-
         Categoria categoria = new Categoria();
         categoria.setNome(dto.getNome());
+
+        String codigo = gerarCodigoUnico(dto.getNome());
         categoria.setCodigo(codigo);
 
         return new CategoriaResponseDTO(repository.save(categoria));
@@ -90,16 +89,9 @@ public class CategoriaService {
     }
 
     // ================= GERADOR DE CÓDIGO =================
-    private String gerarCodigo(String nome) {
-        return nome
-                .trim()
-                .toUpperCase()
-                .replaceAll("[^A-Z0-9]", "_");
-    }
-
-    // 🔥 Garante código único (nível profissional)
     private String gerarCodigoUnico(String nome) {
-        String base = gerarCodigo(nome);
+
+        String base = CodigoUtils.gerarCodigo(nome);
         String codigo = base;
 
         int i = 1;

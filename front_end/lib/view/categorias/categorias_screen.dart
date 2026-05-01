@@ -1,3 +1,4 @@
+import 'package:crud_flutter/shered/helpers/categoria_icon_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -106,7 +107,28 @@ class _CategoriaCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.category, size: 40),
+              Image.asset(
+                CategoriaIconMapper.icone(
+                  codigo: categoria.codigo,
+                  isUsuario: ![
+                    'BEBIDAS',
+                    'CARNES',
+                    'PADARIA',
+                    'HORTIFRUTI',
+                    'LATICINIOS',
+                    'MERCEARIA',
+                    'HIGIENE',
+                    'LIMPEZA',
+                    'PETS',
+                    'DOCES',
+                    'UTILIDADES',
+                    'BEBES',
+                    'SAZONAIS',
+                  ].contains(categoria.codigo.toUpperCase()),
+                ),
+                width: 40,
+                height: 40,
+              ),
               const SizedBox(height: 8),
               Text(
                 categoria.nome,
