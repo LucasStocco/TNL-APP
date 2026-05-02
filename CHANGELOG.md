@@ -53,8 +53,39 @@ O formato segue versionamento semântico:
 
 ---
 
-## [v-0.3.1] - em desenvolvimento
+## [v-0.3.1] - em [Unreleased]
 ### Planejado
 - Melhorar UX da seleção de listas (busca e destaque)
 - Permitir criar lista direto do BottomSheet
 - Melhor feedback de erro na adição de itens
+
+## [v-0.4.0] - 2026-05-02
+
+### Adicionado
+
+* Endpoint `GET /listas/resumo` para retorno de dados agregados
+* DTO `ListaResponseResumoDTO` no backend
+* Modelo `ListaResumo` no Flutter
+* `ListaResumoService` para consumo do endpoint de resumo
+* `ListaResumoViewModel` para gerenciamento de estado
+* Barra de progresso na tela **Minhas Listas**
+* Exibição de porcentagem de conclusão e quantidade de itens
+
+### Melhorado
+
+* Tela **MinhasListasScreen** agora utiliza dados resumidos (sem carregar itens)
+* Cálculo de progresso movido do frontend para o backend
+* Atualização automática da tela ao retornar da `ListaScreen`
+* Contagem de itens otimizada usando queries no banco
+
+### Corrigido
+
+* Progresso incorreto causado por itens deletados
+* Listas exibindo 0% mesmo com itens comprados
+* Falta de sincronização entre telas após alterações nos itens
+
+### Técnico
+
+* Melhor separação de responsabilidades (DTO específico)
+* Redução de carga no frontend
+* Base preparada para escalabilidade

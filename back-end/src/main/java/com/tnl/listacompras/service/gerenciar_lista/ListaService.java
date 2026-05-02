@@ -1,5 +1,5 @@
 package com.tnl.listacompras.service.gerenciar_lista;
-
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseResumoDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +11,7 @@ import com.tnl.listacompras.model.auto_cadastro.Usuario;
 import com.tnl.listacompras.model.gerenciar_lista.Lista;
 import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
 import com.tnl.listacompras.session.Session;
-
+import com.tnl.listacompras.repository.gerenciar_lista.ItemRepository;
 import exception.business.BusinessException;
 import exception.business.NotFoundException;
 
@@ -19,11 +19,14 @@ import exception.business.NotFoundException;
 public class ListaService {
 
     private final ListaRepository listaRepository;
+    private final ItemRepository itemRepository;
+    
 
-    public ListaService(ListaRepository listaRepository) {
+    public ListaService(ListaRepository listaRepository, ItemRepository itemRepository) {
         this.listaRepository = listaRepository;
+        this.itemRepository = itemRepository;
     }
-
+    
     // =========================
     // SESSION
     // =========================
@@ -162,4 +165,29 @@ public class ListaService {
                 lista.getConcluidoEm()
         );
     }
+    // ================================
+    // resumo de todas as listas do usuário, sem trazer tudo da lista (só dados essenciais).
+    // =================================
+    public List<ListaResponseResumoDTO> listarResumo() {
+
+        Long userId = usuarioAtual();
+
+        return listaRepository
+                .findByUsuarioIdAndDeletadoFalse(userId)
+                .stream()
+                .map(lista -> {
+
+                    int totalItens = itemRepository.contarItensAtivos(lista.getId());
+                    int itensComprados = itemRepository.contarItensComprados(lista.getId());
+
+                    return new ListaResponseResumoDTO(
+                            lista.getId(),
+                            lista.getNome(),
+                            totalItens,
+                            itensComprados
+                    );
+                })
+                .toList();
+    }
+
 }

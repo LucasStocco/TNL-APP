@@ -19,8 +19,9 @@ import 'package:crud_flutter/view/gerenciar_lista/widgets/categoria_bottom_sheet
 import 'package:crud_flutter/view/gerenciar_lista/widgets/item_actions_sheet.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_fab_menu.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_item_tile.dart';
-import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_total_header.dart';
 import 'package:crud_flutter/view/cadastrar_produto/criar_item_screen.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_resumo_header.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_status_card.dart';
 
 class ListaScreen extends StatefulWidget {
   final int listaId;
@@ -91,7 +92,13 @@ class _ListaScreenState extends State<ListaScreen> {
 
           return Column(
             children: [
-              ListaTotalHeader(itens: vm.itens),
+              // HEADER (leve)
+              ListaResumoHeader(itens: vm.itens),
+              const SizedBox(height: 8),
+
+              const SizedBox(height: 8),
+
+              // LISTA
               Expanded(
                 child: ListView.builder(
                   itemCount: vm.itens.length,
