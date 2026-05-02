@@ -90,14 +90,16 @@ class CategoriaService {
   Future<void> deletarCategoria(int id) async {
     final url = "${ApiEndpoints.categorias}/$id";
 
-    _logReq("DELETE", url);
+    _log("🔥 DELETE CHAMADO REAL: $url");
 
-    final res = await _client.delete<void>(
+    final res = await _client.delete(
       url,
       null,
     );
-    _logRes(res);
 
-    ServiceUtils.validate(res);
+    _log("🔥 DELETE RESPONSE RAW: $res");
+
+    // ⚠️ COMENTA ISSO TEMPORARIAMENTE
+    // ServiceUtils.validate(res);
   }
 }

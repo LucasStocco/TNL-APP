@@ -1,15 +1,10 @@
-import 'package:crud_flutter/shered/helpers/categoria_icon_mapper.dart';
+import 'package:crud_flutter/model/cadastrar_categoria/categoria.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../view_model/cadastrar_categoria/categoria_view_model.dart';
-import '../../view_model/cadastrar_categoria/categoria_detalhes_view_model.dart';
 
-import '../../service/cadastrar_produto/produto_service.dart';
-import '../../service/gerenciar_lista/item_service.dart';
-
-import 'categoria_produtos_screen.dart';
+import 'widgets/categoria_card.dart';
 
 class CategoriasScreen extends StatefulWidget {
   const CategoriasScreen({super.key});
@@ -36,7 +31,7 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final categorias = vm.categorias;
+        final List<Categoria> categorias = vm.categorias;
 
         if (categorias.isEmpty) {
           return const Center(child: Text("Nenhuma categoria"));
@@ -52,95 +47,12 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
           ),
           itemCount: categorias.length,
           itemBuilder: (context, index) {
-            final categoria = categorias[index];
-
-            return _CategoriaCard(
-              categoria: categoria,
+            return CategoriaCard(
+              categoria: categorias[index],
             );
           },
         );
       },
-    );
-  }
-}
-
-class _CategoriaCard extends StatelessWidget {
-  final dynamic categoria; // depois tipamos melhor se quiser
-
-  const _CategoriaCard({required this.categoria});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          print("CLICOU NA CATEGORIA");
-
-          final produtoService = context.read<ProdutoService>();
-          final itemService = context.read<ItemService>();
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider(
-                create: (context) => CategoriaDetalhesViewModel(
-                  produtoService: produtoService,
-                  itemService: itemService,
-                  idCategoria: categoria.id,
-                ),
-                child: CategoriasProdutosScreen(
-                  nomeCategoria: categoria.nome,
-                  idCategoria: categoria.id,
-                ),
-              ),
-            ),
-          );
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                CategoriaIconMapper.icone(
-                  codigo: categoria.codigo,
-                  isUsuario: ![
-                    'BEBIDAS',
-                    'CARNES',
-                    'PADARIA',
-                    'HORTIFRUTI',
-                    'LATICINIOS',
-                    'MERCEARIA',
-                    'HIGIENE',
-                    'LIMPEZA',
-                    'PETS',
-                    'DOCES',
-                    'UTILIDADES',
-                    'BEBES',
-                    'SAZONAIS',
-                  ].contains(categoria.codigo.toUpperCase()),
-                ),
-                width: 40,
-                height: 40,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                categoria.nome,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(fontSize: 12),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

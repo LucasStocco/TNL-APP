@@ -1,3 +1,5 @@
+import 'package:crud_flutter/view/categorias/widgets/lista_selecao_bottom_sheet.dart';
+import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +28,19 @@ class _CategoriasProdutosScreenState extends State<CategoriasProdutosScreen> {
 
     Future.microtask(() {
       context.read<CategoriaDetalhesViewModel>().carregarProdutos();
+
+      // 🔥 garante que listas estão prontas pro bottom sheet
+      context.read<ListaViewModel>().listar();
     });
+  }
+
+  void _adicionarNaLista(BuildContext context, Produto produto) {
+    if (produto.id == null) return;
+
+    ListaSelecaoBottomSheet.show(
+      context: context,
+      produtoId: produto.id!,
+    );
   }
 
   @override
@@ -50,7 +64,7 @@ class _CategoriasProdutosScreenState extends State<CategoriasProdutosScreen> {
             );
           }
 
-          final List<Produto> produtos = vm.produtos;
+          final produtos = vm.produtos;
 
           if (produtos.isEmpty) {
             return const Center(
@@ -66,7 +80,10 @@ class _CategoriasProdutosScreenState extends State<CategoriasProdutosScreen> {
               return ListTile(
                 title: Text(produto.nome),
                 subtitle: Text(produto.descricao ?? ''),
-                trailing: const Icon(Icons.add_shopping_cart),
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_shopping_cart),
+                  onPressed: () => _adicionarNaLista(context, produto),
+                ),
               );
             },
           );
