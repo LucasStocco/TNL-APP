@@ -5,7 +5,7 @@ import '../../model/gerenciar_lista/item.dart';
 import '../../view_model/gerenciar_lista/item_view_model.dart';
 import '../../view_model/cadastrar_produto/produto_view_model.dart';
 import '../../view_model/cadastrar_categoria/categoria_view_model.dart';
-import '../../shered/widgets/buttons/submit_button.dart';
+import '../../shared/widgets/buttons/submit_button.dart';
 
 class CriarItemScreen extends StatefulWidget {
   final int listaId;

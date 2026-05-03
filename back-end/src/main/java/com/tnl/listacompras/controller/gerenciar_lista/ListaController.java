@@ -1,8 +1,13 @@
 package com.tnl.listacompras.controller.gerenciar_lista;
 
-import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.*;
-import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.*;
-import com.tnl.listacompras.model.gerenciar_lista.Item;
+import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ListaRequestDTO;
+import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ItemRequestDTO;
+import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ItemUpdateDTO;
+
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseDTO;
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseResumoDTO;
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
+
 import com.tnl.listacompras.service.gerenciar_lista.ItemService;
 import com.tnl.listacompras.service.gerenciar_lista.ListaService;
 
@@ -74,7 +79,22 @@ public class ListaController {
     }
 
     // =========================
-    // ITENS (dentro da lista)
+    // RESUMO (MINHAS LISTAS)
+    // =========================
+
+    @GetMapping("/resumo")
+    public ResponseEntity<ApiResponse<List<ListaResponseResumoDTO>>> listarResumo() {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Resumo das listas carregado",
+                        listaService.listarResumo()
+                )
+        );
+    }
+
+    // =========================
+    // ITENS (DENTRO DA LISTA)
     // =========================
 
     @GetMapping("/{idLista}/itens")
@@ -114,7 +134,7 @@ public class ListaController {
                 ApiResponse.success("Item atualizado", itemAtualizado)
         );
     }
-    
+
     @PatchMapping("/{idLista}/itens/{idItem}/comprado")
     public ResponseEntity<ApiResponse<Void>> marcarComprado(
             @PathVariable Long idLista,

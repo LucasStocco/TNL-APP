@@ -1,5 +1,5 @@
 // componente
-import 'package:crud_flutter/shered/widgets/buttons/user_auth_button.dart';
+import 'package:crud_flutter/shared/widgets/buttons/user_auth_button.dart';
 import 'package:crud_flutter/view/auto_cadastro/widgets/user_header.dart';
 import 'package:crud_flutter/view/auto_cadastro/widgets/user_options_list.dart';
 import 'package:crud_flutter/view_model/auto_cadastro/user_view_model.dart';

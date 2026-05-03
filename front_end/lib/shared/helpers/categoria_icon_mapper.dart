@@ -5,13 +5,15 @@ class CategoriaIconMapper {
     required String codigo,
     required bool isUsuario,
   }) {
-    // CATEGORIA CRIADA PELO USUÁRIO
+    // 🔥 normalização mais segura
+    final c = _normalizar(codigo);
+
+    // categoria do usuário
     if (isUsuario) {
       return "assets/icons/ic_estrela.png";
     }
 
-    // CATEGORIAS DO SISTEMA (GLOBAIS)
-    switch (codigo.toUpperCase()) {
+    switch (c) {
       case 'BEBIDAS':
         return "assets/icons/ic_bebidas.png";
 
@@ -54,5 +56,14 @@ class CategoriaIconMapper {
       default:
         return "assets/icons/ic_estrela.png";
     }
+  }
+
+  // 🔥 função de normalização robusta
+  static String _normalizar(String value) {
+    return value
+        .trim()
+        .toUpperCase()
+        .replaceAll(RegExp(r'\s+'), '') // remove qualquer espaço (1 ou vários)
+        .replaceAll(RegExp(r'[^A-Z0-9_]'), ''); // remove caracteres inválidos
   }
 }

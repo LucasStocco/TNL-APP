@@ -35,20 +35,22 @@ class Produto {
     final categoria = categoriaJson != null
         ? Categoria.fromJson(categoriaJson)
         : Categoria(
-            id: json['idCategoria'] ?? 0, // ✅ corrigido
+            id: json['idCategoria'] ?? 0,
             nome: json['nomeCategoria'] ?? '',
+            codigo: 'UNKNOWN',
+            deletado: false,
           );
 
     return Produto(
       id: json['id'] ?? 0,
       nome: json['nome'] ?? '',
       preco: (json['preco'] as num?)?.toDouble() ?? 0.0,
-      descricao: json['descricao'],
-
-      // ✅ corrigido
-      idCategoria: json['idCategoria'] ?? categoria.id ?? 0,
+      descricao: json['descricao'] ?? '',
 
       categoria: categoria,
+
+      // ⚠️ mantém compatibilidade, mas agora depende da categoria
+      idCategoria: categoria.id,
 
       idUsuario: json['idUsuario'],
 

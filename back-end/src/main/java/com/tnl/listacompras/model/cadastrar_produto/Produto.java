@@ -1,11 +1,13 @@
 package com.tnl.listacompras.model.cadastrar_produto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tnl.listacompras.model.cadastrar_categoria.Categoria;
 import com.tnl.listacompras.model.gerenciar_lista.Item;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Entity
 @Table(name = "produtos")
 public class Produto {
@@ -19,11 +21,14 @@ public class Produto {
 
     private String descricao;
 
-    @ManyToOne
+    // 🔗 Muitos produtos → 1 categoria
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
+    // 🔗 1 produto → muitos itens
     @OneToMany(mappedBy = "produto")
+    @JsonIgnore // evita loop infinito
     private List<Item> itens;
 
     @Column(name = "criado_em", nullable = false, updatable = false)

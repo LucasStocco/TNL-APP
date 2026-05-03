@@ -7,10 +7,13 @@ import 'package:crud_flutter/core/api/api_client.dart';
 
 import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_service.dart';
+import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
+
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
 
 import 'package:crud_flutter/view_model/gerenciar_lista/item_view_model.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
+import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model.dart';
 import 'package:crud_flutter/view_model/auto_cadastro/user_view_model.dart';
 
@@ -56,6 +59,12 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
+        Provider<ListaResumoService>(
+          create: (context) => ListaResumoService(
+            context.read<ApiClient>(),
+          ),
+        ),
+
         Provider<CategoriaService>(
           create: (context) => CategoriaService(
             context.read<ApiClient>(),
@@ -74,6 +83,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ListaViewModel(
             context.read<ListaService>(),
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (context) => ListaResumoViewModel(
+            context.read<ListaResumoService>(),
           ),
         ),
 
