@@ -5,8 +5,7 @@ class ApiConfig {
   // rodar com emulador
   //static const String baseUrl = 'http://10.0.2.2:8088';
 }
-// flutter emulators --launch Small_Phone
-
+//
 // reiniciar adb 
 /*
 adb kill-server
@@ -14,6 +13,7 @@ adb start-server
 adb devices */
 
 // inicar adb = adb start-server
+// flutter emulators --launch Small_Phone
 
 // concete o celular via USB no modo dev
 // adb reverse tcp:8088 tcp:8088 no terminal 
