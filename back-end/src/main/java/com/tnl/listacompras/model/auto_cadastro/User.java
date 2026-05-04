@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
-public class Usuario {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +18,8 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "id_google", unique = true)
-    private String idGoogle;
+    @Column(name = "google_id", unique = true)
+    private String googleId;
 
     // 👇 1 usuário → várias listas
     @OneToMany(mappedBy = "usuario")
@@ -66,12 +66,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getIdGoogle() {
-        return idGoogle;
+    public String getGoogleId() {
+        return googleId;
     }
 
-    public void setIdGoogle(String idGoogle) {
-        this.idGoogle = idGoogle;
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public LocalDateTime getCriadoEm() {
