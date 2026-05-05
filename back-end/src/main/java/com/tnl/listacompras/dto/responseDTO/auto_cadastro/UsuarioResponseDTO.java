@@ -1,18 +1,20 @@
 package com.tnl.listacompras.dto.responseDTO.auto_cadastro;
 
-import com.tnl.listacompras.model.auto_cadastro.User;
+import com.tnl.listacompras.model.auto_cadastro.Usuario;
 
-public class UserResponseDTO {
+
+
+public class UsuarioResponseDTO {
     private Long id;
     private String name;
     private String email;
-    private String pictureUrl;
+    private String fotoUrl;
     
-     public UserResponseDTO(User user) {
-        this.id = user.getId();
-        this.name = user.getNome();
-        this.email = user.getEmail();
-        this.pictureUrl = user.getPictureUrl();
+     public UsuarioResponseDTO(Usuario usuario) {
+        this.id = usuario.getId();
+        this.name = usuario.getNome();
+        this.email = usuario.getEmail();
+        this.fotoUrl = usuario.getFotoUrl();
     }
 
     public Long getId() {
@@ -39,12 +41,12 @@ public class UserResponseDTO {
         this.email = email;
     }
 
-    public String getPictureUrl() {
-        return pictureUrl;
+    public String getFotoUrl() {
+        return fotoUrl;
     }
 
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 
    
