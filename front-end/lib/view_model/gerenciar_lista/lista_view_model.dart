@@ -3,113 +3,197 @@ import '../../model/gerenciar_lista/lista.dart';
 import '../../service/gerenciar_lista/lista_service.dart';
 
 class ListaViewModel extends ChangeNotifier {
-  // atributo da classe
-  final ListaService _service = ListaService();
+  final ListaService _service;
 
+  ListaViewModel(this._service);
+
+  // =========================
+  // STATE
+  // =========================
   List<Lista> listas = [];
+  Lista? listaAtual;
+
   bool isLoading = false;
+  bool isSaving = false;
+
   String? erro;
 
-  // ---------------------- UTILITÁRIOS ----------------------
-  void _startLoading() {
-    isLoading = true;
+  static const String TAG = "[LISTA_VM]";
+
+  // =========================
+  // HELPERS
+  // =========================
+
+  void _setLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
+  void _setSaving(bool value) {
+    isSaving = value;
+    notifyListeners();
+  }
+
+  String _parseErro(Object e) {
+    return e.toString().replaceAll('Exception: ', '');
+  }
+
+  Future<T?> _execute<T>({
+    required String origem,
+    required Future<T> Function() action,
+    bool useSaving = false,
+  }) async {
     erro = null;
-    notifyListeners();
-  }
 
-  void _stopLoading() {
-    isLoading = false;
-    notifyListeners();
-  }
-
-  // ---------------------- LISTAR ----------------------
-  Future<void> listar() async {
-    _startLoading();
-    try {
-      listas = await _service.getAll();
-    } catch (e) {
-      listas = [];
-      erro = 'Erro ao carregar listas: $e';
-    } finally {
-      _stopLoading();
+    if (useSaving) {
+      _setSaving(true);
+    } else {
+      _setLoading(true);
     }
-  }
 
-  // ---------------------- CRIAR ----------------------
-  Future<Lista?> criar(String nome, {DateTime? dataConclusao}) async {
-    _startLoading();
     try {
-      final novaLista = Lista(nome: nome, dataConclusao: dataConclusao);
-      final criada = await _service.create(novaLista);
-      if (criada.id != null) {
-        listas.add(criada);
-        notifyListeners();
-      }
-      return criada;
+      return await action();
     } catch (e) {
-      erro = 'Erro ao criar lista: $e';
+      erro = _parseErro(e);
       return null;
     } finally {
-      _stopLoading();
+      if (useSaving) {
+        _setSaving(false);
+      } else {
+        _setLoading(false);
+      }
     }
   }
 
-  // ---------------------- ATUALIZAR ----------------------
-  Future<Lista?> atualizar(Lista listaAtualizada) async {
-    if (listaAtualizada.id == null) return null;
-    _startLoading();
-    try {
-      final atualizada = await _service.update(listaAtualizada);
+  // =========================
+  // LISTAR
+  // =========================
+  Future<void> listar() async {
+    final result = await _execute<List<Lista>>(
+      origem: "listar",
+      action: () => _service.getAll(),
+    );
+
+    if (result != null) {
+      listas = result;
+      notifyListeners();
+    }
+  }
+
+  // =========================
+  // CRIAR
+  // =========================
+  Future<Lista?> criar(String nome) async {
+    final criada = await _execute<Lista>(
+      origem: "criar",
+      useSaving: true,
+      action: () => _service.create(nome),
+    );
+
+    if (criada != null) {
+      listas.add(criada);
+      listaAtual = criada;
+      notifyListeners();
+    }
+
+    return criada;
+  }
+
+  // =========================
+  // SELECIONAR
+  // =========================
+  void selecionarLista(Lista lista) {
+    listaAtual = lista;
+    notifyListeners();
+  }
+
+  // =========================
+  // ATUALIZAR
+  // =========================
+  Future<Lista?> atualizar(Lista lista) async {
+    if (lista.id == null) {
+      erro = "ID obrigatório";
+      notifyListeners();
+      return null;
+    }
+
+    final atualizada = await _execute<Lista>(
+      origem: "atualizar",
+      useSaving: true,
+      action: () => _service.update(lista),
+    );
+
+    if (atualizada != null) {
       final index = listas.indexWhere((l) => l.id == atualizada.id);
+
       if (index != -1) {
         listas[index] = atualizada;
-        notifyListeners();
       }
-      return atualizada;
-    } catch (e) {
-      erro = 'Erro ao atualizar lista: $e';
-      return null;
-    } finally {
-      _stopLoading();
-    }
-  }
 
-  // ---------------------- DELETAR ----------------------
-  Future<void> deletar(int id) async {
-    _startLoading();
-    try {
-      await _service.delete(id);
-      listas.removeWhere((l) => l.id == id);
+      if (listaAtual?.id == atualizada.id) {
+        listaAtual = atualizada;
+      }
+
       notifyListeners();
-    } catch (e) {
-      erro = 'Erro ao deletar lista: $e';
-    } finally {
-      _stopLoading();
     }
+
+    return atualizada;
   }
 
-  // ---------------------- FINALIZAR ----------------------
-  Future<void> finalizar(int listaId) async {
-    _startLoading();
-    try {
-      await _service.finalizarLista(listaId, DateTime.now());
-      final index = listas.indexWhere((l) => l.id == listaId);
-      if (index != -1) {
-        listas[index] = listas[index].concluir();
-        notifyListeners();
-      }
-    } catch (e) {
-      erro = 'Erro ao finalizar lista: $e';
-    } finally {
-      _stopLoading();
+  // =========================
+  // DELETAR
+  // =========================
+  Future<void> deletar(int id) async {
+    await _execute<void>(
+      origem: "deletar",
+      useSaving: true,
+      action: () => _service.delete(id),
+    );
+
+    if (erro != null) return;
+
+    listas.removeWhere((l) => l.id == id);
+
+    if (listaAtual?.id == id) {
+      listaAtual = null;
     }
+
+    notifyListeners();
   }
 
-  // ---------------------- RESET ----------------------
+  // =========================
+  // FINALIZAR
+  // =========================
+  Future<void> finalizar(int id) async {
+    await _execute<void>(
+      origem: "finalizar",
+      useSaving: true,
+      action: () => _service.finalizarLista(id),
+    );
+
+    if (erro != null) return;
+
+    final index = listas.indexWhere((l) => l.id == id);
+
+    if (index != -1) {
+      listas[index] = listas[index].copyWith(
+        concluidoEm: DateTime.now(),
+      );
+    }
+
+    notifyListeners();
+  }
+
+  // =========================
+  // RESET
+  // =========================
   void resetar() {
     listas = [];
+    listaAtual = null;
     isLoading = false;
+    isSaving = false;
     erro = null;
+
     notifyListeners();
   }
 }

@@ -1,0 +1,61 @@
+📁 PRODUTOS — CRUD COMPLETO (API LOCAL)
+
+Base URL:
+
+http://localhost:8088
+🟢 1. LISTAR TODOS
+GET http://localhost:8088/produtos
+
+///////////////////////////////////////////////////////////////
+
+🟢 2. BUSCAR POR ID
+GET http://localhost:8088/produtos/{id}
+
+Exemplo:
+
+GET http://localhost:8088/produtos/1
+
+///////////////////////////////////////////////////////////////
+
+🟢 3. CRIAR PRODUTO
+POST http://localhost:8088/produtos
+Content-Type: application/json
+
+{
+  "nome": "Arroz 5kg",
+  "descricao": "Arroz branco tipo 1",
+  "categoriaId": 1
+}
+
+⚠️ IMPORTANTE:
+👉 categoriaId precisa existir no banco
+
+Exemplo:
+
+categoria 1 = BEBIDAS
+categoria 2 = CARNES
+
+///////////////////////////////////////////////////////////////
+
+🟡 4. ATUALIZAR PRODUTO
+PUT http://localhost:8088/produtos/{id}
+Content-Type: application/json
+
+{
+  "nome": "Arroz Premium 5kg",
+  "descricao": "Arroz melhor qualidade",
+  "categoriaId": 1
+}
+
+Exemplo:
+
+PUT http://localhost:8088/produtos/1
+
+///////////////////////////////////////////////////////////////
+
+🔴 5. DELETAR PRODUTO
+DELETE http://localhost:8088/produtos/{id}
+
+Exemplo:
+
+DELETE http://localhost:8088/produtos/1

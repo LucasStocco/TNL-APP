@@ -1,0 +1,58 @@
+🟢 1. LISTAR TODOS OS ITENS
+GET http://localhost:8088/itens
+
+///////////////////////////////////////////////////////////////
+
+🟢 2. BUSCAR ITEM POR ID
+GET http://localhost:8088/itens/{id}
+
+Exemplo:
+
+GET http://localhost:8088/itens/1
+
+///////////////////////////////////////////////////////////////
+
+🟢 3. CRIAR ITEM
+POST http://localhost:8088/itens
+Content-Type: application/json
+
+{
+  "quantidade": 2,
+  "produtoId": 1,
+  "listaId": 1
+}
+
+⚠️ IMPORTANTE:
+
+produtoId precisa existir
+listaId precisa existir
+
+👉 O item liga:
+
+Lista
+Produto
+
+///////////////////////////////////////////////////////////////
+
+🟡 4. ATUALIZAR ITEM
+PUT http://localhost:8088/itens/{id}
+Content-Type: application/json
+
+{
+  "quantidade": 5,
+  "produtoId": 1,
+  "listaId": 1
+}
+
+Exemplo:
+
+PUT http://localhost:8088/itens/1
+
+///////////////////////////////////////////////////////////////
+
+🔴 5. DELETAR ITEM
+DELETE http://localhost:8088/itens/{id}
+
+Exemplo:
+
+DELETE http://localhost:8088/itens/1

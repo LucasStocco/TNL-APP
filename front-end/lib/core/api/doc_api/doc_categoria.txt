@@ -1,0 +1,39 @@
+📁 CATEGORIAS — CRUD COMPLETO (API LOCAL)
+
+Base URL: http://localhost:8088
+
+🟢 1. LISTAR TODAS
+GET http://localhost:8088/categorias
+
+///////////////////////////////////////////////////////////////
+
+🟢 2. BUSCAR POR ID
+GET http://localhost:8088/categorias/{id}
+
+///////////////////////////////////////////////////////////////
+
+🟢 3. CRIAR CATEGORIA
+POST http://localhost:8088/categorias
+Content-Type: application/json
+
+{
+  "nome": "Bebidas",
+  "codigo": "BEBIDAS"
+}
+
+///////////////////////////////////////////////////////////////
+🟡 4. ATUALIZAR CATEGORIA
+PUT http://localhost:8088/categorias/{id}
+Content-Type: application/json
+
+{
+  "nome": "Bebidas Alcoólicas",
+  "codigo": "BEBIDAS"
+}
+
+///////////////////////////////////////////////////////////////
+
+🔴 5. DELETAR CATEGORIA
+DELETE http://localhost:8088/categorias/{id}
+
+

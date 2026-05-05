@@ -5,9 +5,12 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Tela de Configurações", style: TextStyle(fontSize: 22)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Configurações'),
+      ),
+      body: const Center(
+        child: Text('Tela de Configurações'),
       ),
     );
   }

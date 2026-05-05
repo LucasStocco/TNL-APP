@@ -1,69 +1,88 @@
-import '../criar_produto/item.dart';
+import 'package:crud_flutter/model/gerenciar_lista/item.dart';
 
 class Lista {
   final int? id;
   final String nome;
+  final int? idUsuario;
+
   final List<Item> itens;
-  final DateTime? dataConclusao;
+  final int totalItens;
+
+  final DateTime? criadoEm;
+  final DateTime? atualizadoEm;
+  final DateTime? concluidoEm;
+
+  final bool deletado;
 
   Lista({
     this.id,
     required this.nome,
+    this.idUsuario,
     this.itens = const [],
-    this.dataConclusao,
+    this.totalItens = 0,
+    this.criadoEm,
+    this.atualizadoEm,
+    this.concluidoEm,
+    this.deletado = false,
   });
 
-  // DESSERIALIZAÇÃO
-  factory Lista.fromJson(Map<String, dynamic>? json) {
-    if (json == null) {
-      return Lista(
-        id: 0,
-        nome: 'Lista Inválida',
-        itens: [],
-        dataConclusao: null,
-      );
-    }
-
+  factory Lista.fromJson(Map<String, dynamic> json) {
     return Lista(
-      id: json['id'] as int? ?? 0,
-      nome: json['nome'] as String? ?? 'Lista Inválida',
-
-      // IMPORTANTE: Lista de itens → precisa mapear cada um
+      id: json['id'],
+      nome: json['nome'] ?? 'Sem nome',
+      idUsuario: json['idUsuario'],
       itens: (json['itens'] as List<dynamic>?)
-              ?.map((i) => Item.fromJson(i as Map<String, dynamic>))
+              ?.map((i) => Item.fromJson(i))
               .toList() ??
           [],
-
-      dataConclusao: json['dataConclusao'] != null
-          ? DateTime.parse(json['dataConclusao'])
-          : null,
+      totalItens: json['totalItens'] ?? 0,
+      criadoEm: DateTime.tryParse(json['criadoEm'] ?? ''),
+      atualizadoEm: DateTime.tryParse(json['atualizadoEm'] ?? ''),
+      concluidoEm: DateTime.tryParse(json['concluidoEm'] ?? ''),
+      deletado: json['deletado'] ?? false,
     );
   }
 
-  // SERIALIZAÇÃO
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
       'nome': nome,
-
-      // Converte lista de objetos → lista de JSON
-      'itens': itens.map((i) => i.toJson()).toList(),
-
-      if (dataConclusao != null)
-        'dataConclusao': dataConclusao!.toIso8601String(),
+      'idUsuario': idUsuario,
+      'deletado': deletado,
     };
   }
 
-  Lista concluir() {
+  Lista copyWith({
+    int? id,
+    String? nome,
+    int? idUsuario,
+    List<Item>? itens,
+    DateTime? criadoEm,
+    DateTime? atualizadoEm,
+    DateTime? concluidoEm,
+    bool? deletado,
+  }) {
     return Lista(
-      id: id,
-      nome: nome,
-      itens: itens,
-      dataConclusao: DateTime.now(),
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      idUsuario: idUsuario ?? this.idUsuario,
+      itens: itens ?? this.itens,
+      criadoEm: criadoEm ?? this.criadoEm,
+      atualizadoEm: atualizadoEm ?? this.atualizadoEm,
+      concluidoEm: concluidoEm ?? this.concluidoEm,
+      deletado: deletado ?? this.deletado,
     );
   }
 
+  // =========================
+  // HELPERS
+  // =========================
+  bool get concluida => concluidoEm != null;
+  bool get isAtiva => !deletado;
+  bool get isEmpty => itens.isEmpty;
+
   @override
-  String toString() =>
-      'Lista{id: $id, nome: $nome, itens: $itens, dataConclusao: $dataConclusao}';
+  String toString() {
+    return 'Lista{id: $id, nome: $nome, concluida: $concluida}';
+  }
 }

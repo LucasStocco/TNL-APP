@@ -1,9 +1,27 @@
+// ================= PACKAGES =================
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
-import '../../model/criar_produto/item.dart';
-import '../../view_model/criar_produto/item_view_model.dart';
-import '../criar_produto/criar_produto_screen.dart';
+// ================= CORE =================
+import 'package:crud_flutter/core/api/api_client.dart';
+
+// ================= SERVICES =================
+import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
+
+// ================= VIEW MODELS =================
+import 'package:crud_flutter/view_model/gerenciar_lista/item_view_model.dart';
+import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model.dart';
+import 'package:crud_flutter/view_model/cadastrar_produto/produto_view_model.dart';
+
+// ================= VIEWS / WIDGETS =================
+import 'package:crud_flutter/view/gerenciar_lista/widgets/categoria_bottom_sheet.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/item_actions_sheet.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_fab_menu.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_item_tile.dart';
+import 'package:crud_flutter/view/cadastrar_produto/criar_item_screen.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_resumo_header.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_status_card.dart';
 
 class ListaScreen extends StatefulWidget {
   final int listaId;
@@ -23,131 +41,92 @@ class _ListaScreenState extends State<ListaScreen> {
   @override
   void initState() {
     super.initState();
-    // Carrega itens da lista ao iniciar
+
     Future.microtask(() {
-      context.read<ItemViewModel>().listar(widget.listaId);
+      context.read<ItemViewModel>().carregar(widget.listaId);
+      context.read<CategoriaViewModel>().listar();
     });
+  }
+
+  Future<void> _abrirCriarItem() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(
+              value: context.read<CategoriaViewModel>(),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => ProdutoViewModel(
+                ProdutoService(ApiClient(http.Client())),
+              ),
+            ),
+          ],
+          child: CriarItemScreen(listaId: widget.listaId),
+        ),
+      ),
+    );
+
+    // 🔥 SEMPRE SINCRONIZA COM BACKEND AO VOLTAR
+    if (mounted) {
+      await context.read<ItemViewModel>().carregar(widget.listaId);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Itens: ${widget.listaNome}')),
+      appBar: AppBar(
+        title: Text(widget.listaNome),
+      ),
       body: Consumer<ItemViewModel>(
-        builder: (context, itemVM, _) {
-          if (itemVM.isLoading) {
+        builder: (context, vm, _) {
+          if (vm.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (itemVM.erro != null) {
-            return Center(child: Text(itemVM.erro!));
+          if (vm.itens.isEmpty) {
+            return const Center(child: Text("Nenhum item na lista"));
           }
 
-          if (itemVM.itens.isEmpty) {
-            return const Center(child: Text('Nenhum item encontrado'));
-          }
+          return Column(
+            children: [
+              // HEADER (leve)
+              ListaResumoHeader(itens: vm.itens),
+              const SizedBox(height: 8),
 
-          return ListView.builder(
-            itemCount: itemVM.itens.length,
-            itemBuilder: (context, index) {
-              final item = itemVM.itens[index];
+              const SizedBox(height: 8),
 
-              return ListTile(
-                title: Text(
-                  item.produto.nome,
-                  style: TextStyle(
-                    decoration:
-                        item.comprado ? TextDecoration.lineThrough : null,
-                  ),
+              // LISTA
+              Expanded(
+                child: ListView.builder(
+                  itemCount: vm.itens.length,
+                  itemBuilder: (_, index) {
+                    final item = vm.itens[index];
+
+                    return ListaItemTile(
+                      item: item,
+                      onLongPress: () {
+                        ItemActionsSheet.show(
+                          context,
+                          item,
+                          widget.listaId,
+                        );
+                      },
+                    );
+                  },
                 ),
-                subtitle: Text(
-                  'Qtd: ${item.quantidade} | Categoria: ${item.produto.categoria.nome}',
-                ),
-                leading: Icon(
-                  item.comprado
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  color: item.comprado ? Colors.green : null,
-                ),
-                trailing: const Icon(Icons.more_vert),
-
-                // MARCAR COMO COMPRADO
-                onTap: () async {
-                  final atualizado = item.copyWith(comprado: !item.comprado);
-                  await context
-                      .read<ItemViewModel>()
-                      .atualizar(widget.listaId, atualizado);
-                },
-
-                // MENU EDITAR / DELETAR
-                onLongPress: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (_) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.edit),
-                          title: const Text('Atualizar'),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            final itemEditado = await Navigator.push<Item>(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CriarItemScreen(
-                                  listaId: widget.listaId,
-                                  item: item,
-                                ),
-                              ),
-                            );
-
-                            if (itemEditado != null) {
-                              await context
-                                  .read<ItemViewModel>()
-                                  .atualizar(widget.listaId, itemEditado);
-                            }
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.delete),
-                          title: const Text('Deletar'),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            if (item.id != null) {
-                              await context
-                                  .read<ItemViewModel>()
-                                  .deletar(widget.listaId, item.id!);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
+              ),
+            ],
           );
         },
       ),
-
-      // BOTÃO DE CRIAR ITEM
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final novoItem = await Navigator.push<Item>(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CriarItemScreen(
-                listaId: widget.listaId,
-              ),
-            ),
-          );
-
-          if (novoItem != null) {
-            // Adiciona item na lista imediatamente e notifica a UI
-            await context.read<ItemViewModel>().criar(widget.listaId, novoItem);
-          }
+      floatingActionButton: ListaFabMenu(
+        onAddItem: _abrirCriarItem,
+        onAddCategoria: () {
+          CategoriaBottomSheet.show(context);
         },
-        child: const Icon(Icons.add),
       ),
     );
   }

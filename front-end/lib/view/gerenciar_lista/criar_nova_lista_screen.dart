@@ -1,11 +1,13 @@
+import 'package:crud_flutter/view/gerenciar_lista/widgets/submit_loading_button.dart';
 import 'package:flutter/material.dart';
-import '../../model/gerenciar_lista/lista.dart';
-import '../../view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/gerenciar_lista/lista.dart';
+import '../../view_model/gerenciar_lista/lista_view_model.dart';
+import 'widgets/lista_form.dart';
+
 class CriarNovaListaScreen extends StatefulWidget {
-  // associacao com a entidade lista
-  final Lista? lista; // parâmetro opcional para edição
+  final Lista? lista;
 
   const CriarNovaListaScreen({super.key, this.lista});
 
@@ -17,90 +19,70 @@ class _CriarNovaListaScreenState extends State<CriarNovaListaScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
 
-  bool _isLoading = false;
+  bool get isEdit => widget.lista != null;
 
   @override
   void initState() {
     super.initState();
-    if (widget.lista != null) {
+
+    if (isEdit) {
       _nomeController.text = widget.lista!.nome;
     }
   }
 
-  Future<void> _salvarLista() async {
+  Future<void> _salvar() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    final vm = context.read<ListaViewModel>();
 
-    try {
-      // obtendo isntancia
-      final viewModel = context.read<ListaViewModel>();
+    final nome = _nomeController.text;
 
-      Lista lista = Lista(
-        id: widget.lista?.id,
-        nome: _nomeController.text,
-        dataConclusao: widget.lista?.dataConclusao,
+    final result = isEdit
+        ? await vm.atualizar(
+            Lista(
+              id: widget.lista!.id,
+              nome: nome,
+              concluidoEm: widget.lista!.concluidoEm,
+            ),
+          )
+        : await vm.criar(nome);
+
+    if (vm.erro != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(vm.erro!)),
       );
+      return;
+    }
 
-      Lista? listaRetornada;
-
-      if (widget.lista == null) {
-        listaRetornada = await viewModel.criar(lista.nome);
-      } else {
-        listaRetornada = await viewModel.atualizar(lista);
-      }
-
-      if (listaRetornada != null && mounted) {
-        Navigator.pop(context, listaRetornada);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar lista: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+    if (result != null && mounted) {
+      Navigator.pop(context, result);
     }
   }
 
   @override
-  void dispose() {
-    _nomeController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final vm = context.watch<ListaViewModel>();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.lista == null ? 'Nova Lista' : 'Editar Lista'),
+        title: Text(isEdit ? 'Editar Lista' : 'Nova Lista'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nomeController,
-                decoration: const InputDecoration(labelText: 'Nome da Lista'),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'O nome é obrigatório';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 32),
-              _isLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _salvarLista,
-                      child: Text(widget.lista == null ? 'Criar' : 'Atualizar'),
-                    ),
-            ],
-          ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            ListaForm(
+              formKey: _formKey,
+              controller: _nomeController,
+              enabled: !vm.isLoading,
+            ),
+            const SizedBox(height: 32),
+            SubmitLoadingButton(
+              loading: vm.isLoading,
+              text: isEdit ? 'Atualizar' : 'Criar',
+              onPressed: _salvar,
+            ),
+          ],
         ),
       ),
     );
