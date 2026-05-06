@@ -1,17 +1,38 @@
-# front_end
+# 📱 TNL - Lista de Compras
 
-A new Flutter project.
+Projeto de lista de compras com backend em Spring Boot e frontend em Flutter.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📌 Resumo da funcionalidade
 
-A few resources to get you started if this is your first Flutter project:
+Implementação de melhorias visuais na Home do aplicativo, com foco em:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Criação de Header customizado reutilizável
+- Identidade visual consistente do app
+- Ícones decorativos em background
+- Componentização da TopBar
+- Melhor organização da UI da Home
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🎨 Atualização de UI (Home Screen)
+
+### 🏠 Home com Header personalizado
+
+<a href="./doc/TNL%20-%20Evidencias/home-header.png">
+  <img 
+    src="./doc/TNL%20-%20Evidencias/home-header.png" 
+    width="450"
+    style="border-radius: 10px; border: 1px solid #ddd;"
+  />
+</a>
+
+---
+
+## 🧠 Impacto
+
+- Melhor identidade visual do app
+- Header reutilizável para outras telas
+- UI mais moderna e profissional
+- Base preparada para expansão do design system
