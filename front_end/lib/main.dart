@@ -18,7 +18,7 @@ import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model
 import 'package:crud_flutter/view_model/auto_cadastro/user_view_model.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/mock_auth_service.dart';
-import 'package:crud_flutter/view/home_screen.dart';
+import 'package:crud_flutter/view/home/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
