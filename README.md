@@ -1,27 +1,29 @@
-# 📱 TNL - Lista de Compras
+📱 TNL - Lista de Compras
 
-Projeto de lista de compras com backend em Spring Boot e frontend em Flutter.
+Aplicativo de lista de compras desenvolvido com Flutter (frontend) e Spring Boot (backend).
 
----
+🚀 Funcionalidades
+Criar e gerenciar listas de compras
+Adicionar e marcar itens como comprados
+Progresso automático das listas
+Resumo otimizado via backend
+Interface simples e organizada
+🏠 Home
 
-## 📌 Resumo da funcionalidade
+A Home possui um header customizado reutilizável, com:
 
-Sistema de listas com:
-- CRUD de listas
-- progresso automático
-- itens comprados
-- resumo otimizado via backend
+Título estilizado
+Ícones decorativos no fundo
+Botões de perfil e configurações
+Layout consistente em todo o app
+🧩 Estrutura
+MVVM (Model, View, ViewModel)
+Provider para gerenciamento de estado
+Separação por features
+Componentes reutilizáveis
+🧪 Como rodar
+flutter pub get
+flutter run
+🎯 Status
 
----
-
-## 📷 Evidências
-
-### 📊 Minhas Listas
-
-![Minhas Listas](./doc/TNL%20-%20Evidencias/listas-minhas-listas.png)
-
----
-
-### 🛒 Itens da Lista
-
-![Itens da Lista](./doc/TNL%20-%20Evidencias/listas-itens.png)
+Projeto em desenvolvimento, com foco em organização e melhoria contínua da UI/UX.
