@@ -1,4 +1,5 @@
 import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
+import 'package:crud_flutter/shared/widgets/navigation/section_header.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +81,6 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
                       lista.id,
                       controller.text,
                     );
-
                 Navigator.pop(context);
               },
               child: const Text("Salvar"),
@@ -118,73 +118,92 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Minhas Listas')),
-      body: Consumer<ListaResumoViewModel>(
-        builder: (context, viewModel, _) {
-          if (viewModel.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return Consumer<ListaResumoViewModel>(
+      builder: (context, viewModel, _) {
+        if (viewModel.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          if (viewModel.listas.isEmpty) {
-            return const Center(child: Text('Nenhuma lista encontrada'));
-          }
+        if (viewModel.listas.isEmpty) {
+          return const Center(child: Text('Nenhuma lista encontrada'));
+        }
 
-          return ListView.builder(
-            itemCount: viewModel.listas.length,
-            itemBuilder: (context, index) {
-              final lista = viewModel.listas[index];
+        return SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionHeader(
+                title: "Minhas Listas",
+                subtitle: "Gerencie suas compras",
+                isGrid: false,
+              ),
 
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ListaScreen(
-                        listaId: lista.id,
-                        listaNome: lista.nome,
-                      ),
-                    ),
-                  ).then((_) {
-                    context.read<ListaResumoViewModel>().carregarResumo();
-                  });
-                },
-                onLongPress: () => _abrirOpcoes(context, lista),
-                child: Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: ListTile(
-                    title: Text(lista.nome),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 6),
-                        LinearProgressIndicator(
-                          value: lista.progresso / 100,
-                          backgroundColor: Colors.grey.shade300,
-                          color: _corProgresso(lista.progresso),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${lista.progresso.toStringAsFixed(0)}% concluída '
-                          '(${lista.itensComprados}/${lista.totalItens})',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
+              // 🔥 LISTA
+              Expanded(
+                child: ListView.builder(
+                  key: const ValueKey('listas'),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  itemCount: viewModel.listas.length,
+                  itemBuilder: (context, index) {
+                    final lista = viewModel.listas[index];
+
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ListaScreen(
+                              listaId: lista.id,
+                              listaNome: lista.nome,
+                            ),
                           ),
+                        ).then((_) {
+                          context.read<ListaResumoViewModel>().carregarResumo();
+                        });
+                      },
+                      onLongPress: () => _abrirOpcoes(context, lista),
+                      child: Card(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8,
                         ),
-                      ],
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios),
-                  ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 2,
+                        child: ListTile(
+                          title: Text(lista.nome),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 6),
+                              LinearProgressIndicator(
+                                value: lista.progresso / 100,
+                                backgroundColor: Colors.grey.shade300,
+                                color: _corProgresso(lista.progresso),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${lista.progresso.toStringAsFixed(0)}% concluída '
+                                '(${lista.itensComprados}/${lista.totalItens})',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

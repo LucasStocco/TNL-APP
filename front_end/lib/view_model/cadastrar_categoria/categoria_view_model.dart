@@ -16,6 +16,10 @@ class CategoriaViewModel extends ChangeNotifier {
   bool isLoading = false;
   bool isSaving = false;
 
+  bool _isGrid = true;
+
+  bool get isGrid => _isGrid;
+
   String? erro;
 
   // =========================
@@ -171,6 +175,14 @@ class CategoriaViewModel extends ChangeNotifier {
     isLoading = false;
     isSaving = false;
     erro = null;
+    notifyListeners();
+  }
+
+  // =========================
+// UI STATE (LAYOUT)
+// =========================
+  void toggleLayout() {
+    _isGrid = !_isGrid;
     notifyListeners();
   }
 }
