@@ -66,8 +66,8 @@ public class UsuarioService {
 
         String googleId = payload.getSubject();
         String email = payload.getEmail();
-        String nome = (String) payload.get("nome");
-        String foto = (String) payload.get("foto");
+        String nome = (String) payload.get("name");
+        String foto = (String) payload.get("picture");
 
         Usuario usuario = usuarioRepository.findByGoogleId(googleId)
                 .orElseGet(() -> {
