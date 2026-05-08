@@ -1,5 +1,5 @@
 import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
-import 'package:crud_flutter/shared/widgets/navigation/header_generico.dart';
+import 'package:crud_flutter/shared/widgets/navigation/section_header.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -133,10 +133,10 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔥 HEADER PADRÃO DO APP
               const SectionHeader(
                 title: "Minhas Listas",
                 subtitle: "Gerencie suas compras",
+                isGrid: false,
               ),
 
               // 🔥 LISTA
