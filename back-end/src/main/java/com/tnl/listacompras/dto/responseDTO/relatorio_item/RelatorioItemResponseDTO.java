@@ -1,6 +1,7 @@
-package com.tnl.listacompras.dto.responseDTO.gerenciar_lista;
+package com.tnl.listacompras.dto.responseDTO.relatorio_item;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
 
 import java.util.List;
 import java.util.Map;

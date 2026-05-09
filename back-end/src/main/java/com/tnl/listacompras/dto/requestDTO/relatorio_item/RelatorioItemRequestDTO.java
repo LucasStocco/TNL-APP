@@ -1,4 +1,4 @@
-package com.tnl.listacompras.dto.requestDTO.gerenciar_lista;
+package com.tnl.listacompras.dto.requestDTO.relatorio_item;
 
 public class RelatorioItemRequestDTO {
 

@@ -1,4 +1,4 @@
-package com.tnl.listacompras.repository.gerenciar_lista;
+package com.tnl.listacompras.repository.relatorio_item;
 
 import com.tnl.listacompras.model.gerenciar_lista.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,16 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
-
-    // =========================
-    // 📋 LISTAR ITENS DA LISTA (para relatório)
-    // =========================
-
-    List<Item> findByListaIdAndDeletadoFalse(Long listaId);
-
-    List<Item> findByListaIdAndCompradoTrueAndDeletadoFalse(Long listaId);
-
-    List<Item> findByListaIdAndCompradoFalseAndDeletadoFalse(Long listaId);
 
     @Query("""
         SELECT i FROM Item i

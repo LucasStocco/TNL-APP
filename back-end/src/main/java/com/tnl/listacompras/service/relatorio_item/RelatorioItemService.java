@@ -1,19 +1,19 @@
-package com.tnl.listacompras.service.gerenciar_lista;
-
-import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
-import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.RelatorioItemResponseDTO;
-import com.tnl.listacompras.model.gerenciar_lista.Lista;
-import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
-import com.tnl.listacompras.repository.gerenciar_lista.RelatorioItemRepository;
-import com.tnl.listacompras.session.Session;
-
-import exception.business.NotFoundException;
-
-import org.springframework.stereotype.Service;
+package com.tnl.listacompras.service.relatorio_item;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
+import com.tnl.listacompras.dto.responseDTO.relatorio_item.RelatorioItemResponseDTO;
+import com.tnl.listacompras.model.gerenciar_lista.Lista;
+import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
+import com.tnl.listacompras.repository.relatorio_item.RelatorioItemRepository;
+import com.tnl.listacompras.session.Session;
+
+import exception.business.NotFoundException;
 
 @Service
 public class RelatorioItemService {
