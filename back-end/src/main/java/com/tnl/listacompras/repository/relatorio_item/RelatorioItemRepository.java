@@ -9,17 +9,6 @@ import java.util.List;
 
 public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
 
-    @Query("""
-        SELECT i FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.produto.categoria.id = :categoriaId
-        AND i.deletado = false
-    """)
-    List<Item> findByListaIdAndCategoriaId(
-            @Param("listaId") Long listaId,
-            @Param("categoriaId") Long categoriaId
-    );
-
     // =========================
     // 📊 TOTAIS / MÉTRICAS
     // =========================
