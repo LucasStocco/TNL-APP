@@ -9,68 +9,23 @@ import java.util.List;
 
 public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
 
-    // =========================
-    // 📊 TOTAIS / MÉTRICAS
-    // =========================
-
+    //Itens mais comprados.
     @Query("""
-        SELECT COALESCE(SUM(i.preco * i.quantidade), 0.0)
-        FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.deletado = false
+    SELECT i.produto.nome, COUNT(i.id)
+    FROM Item i
+    WHERE i.comprado = true
+    AND i.deletado = false
+    GROUP BY i.produto.nome
+    ORDER BY COUNT(i.id) DESC
     """)
-    Double somarTotalLista(@Param("listaId") Long listaId);
+    List<Object[]> buscarItensMaisComprados();
+
+    
+
+    //Agrupamento por categoria
 
     @Query("""
-        SELECT COALESCE(SUM(i.preco * i.quantidade), 0.0)
-        FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.deletado = false
-        AND i.comprado = true
-    """)
-    Double somarTotalComprado(@Param("listaId") Long listaId);
-
-    @Query("""
-        SELECT COALESCE(SUM(i.preco * i.quantidade), 0.0)
-        FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.deletado = false
-        AND i.comprado = false
-    """)
-    Double somarTotalPendente(@Param("listaId") Long listaId);
-
-    @Query("""
-        SELECT COUNT(i)
-        FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.deletado = false
-    """)
-    int contarItensAtivos(@Param("listaId") Long listaId);
-
-    @Query("""
-        SELECT COUNT(i)
-        FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.deletado = false
-        AND i.comprado = true
-    """)
-    int contarItensComprados(@Param("listaId") Long listaId);
-
-    @Query("""
-        SELECT COUNT(i)
-        FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.deletado = false
-        AND i.comprado = false
-    """)
-    int contarItensPendentes(@Param("listaId") Long listaId);
-
-    // =========================
-    // 📦 AGRUPAMENTO POR CATEGORIA
-    // =========================
-
-    @Query("""
-        SELECT i.produto.categoria.nome, COALESCE(SUM(i.preco * i.quantidade), 0.0)
+        SELECT i.produto.categoria.nome, COALESCE COUNT(i.id), 0.0)
         FROM Item i
         WHERE i.lista.id = :listaId
         AND i.deletado = false
