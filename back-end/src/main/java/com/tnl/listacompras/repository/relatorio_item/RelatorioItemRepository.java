@@ -20,17 +20,36 @@ public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
     """)
     List<Object[]> buscarItensMaisComprados();
 
-    
+    //Itens mais baratos
+    @Query("""
+    SELECT i
+    FROM Item i
+    WHERE i.lista.id = :listaId
+    AND i.deletado = false
+    ORDER BY i.preco ASC
+    """)
+    List<Item[]> buscarItensMaisBaratos();
+
+    //Itens mais caros
+    @Query("""
+    SELECT i
+    FROM Item i
+    WHERE i.lista.id = :listaId
+    AND i.deletado = false
+    ORDER BY i.preco DESC
+    """)
+    List<Item> buscarItensMaisCaros();
+
 
     //Agrupamento por categoria
 
-    @Query("""
-        SELECT i.produto.categoria.nome, COALESCE COUNT(i.id), 0.0)
-        FROM Item i
-        WHERE i.lista.id = :listaId
-        AND i.deletado = false
-        GROUP BY i.produto.categoria.nome
-        ORDER BY SUM(i.preco * i.quantidade) DESC
-    """)
-    List<Object[]> totalPorCategoria(@Param("listaId") Long listaId);
+ @Query("""
+    SELECT i.produto.categoria.nome, COUNT(i.id)
+    FROM Item i
+    WHERE i.lista.id = :listaId
+    AND i.deletado = false
+    GROUP BY i.produto.categoria.nome
+    ORDER BY COUNT(i.id) DESC
+""")
+List<Object[]> totalPorCategoria(@Param("listaId") Long listaId);
 }
