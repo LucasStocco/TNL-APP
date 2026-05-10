@@ -1,11 +1,11 @@
 package com.tnl.listacompras.dto.responseDTO.relatorio_item;
 
-public class RelatorioItemMaisCaroResponseDTO {
+public class RelatorioItemMaisBaratoResponseDTO {
 
     private String nomeProduto;
     private Double preco;
 
-    public RelatorioItemMaisCaroResponseDTO(String nomeProduto, Double preco) {
+    public RelatorioItemMaisBaratoResponseDTO(String nomeProduto, Double preco) {
         this.nomeProduto = nomeProduto;
         this.preco = preco;
     }
