@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.tnl.listacompras.dto.responseDTO.relatorio_item.RelatorioItemMaisCompradosResponseDTO;
+import com.tnl.listacompras.dto.responseDTO.relatorio_item.RelatorioItemPorCategoriaResponseDTO;
 import com.tnl.listacompras.repository.relatorio_item.RelatorioItemRepository;
 
 @Service
@@ -33,4 +34,23 @@ public class RelatorioItemService{
 
     return response;
 }
+
+        public List<RelatorioItemPorCategoriaResponseDTO> buscarItensPorCategoria(Long listaId) {
+    List<Object[]> resultados = repository.totalPorCategoria(listaId);
+
+    List<RelatorioItemPorCategoriaResponseDTO> response = new ArrayList<>();
+
+    for (Object[] resultado : resultados) {
+        RelatorioItemPorCategoriaResponseDTO dto =
+                new RelatorioItemPorCategoriaResponseDTO(
+                        (String) resultado[0],
+                        (Long) resultado[1]
+                );
+
+        response.add(dto);
+    }
+
+    return response;
+}
+
 }
