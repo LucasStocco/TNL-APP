@@ -32,13 +32,13 @@ public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
 
     //Itens mais caros
     @Query("""
-    SELECT i
+    SELECT i    
     FROM Item i
     WHERE i.lista.id = :listaId
     AND i.deletado = false
     ORDER BY i.preco DESC
     """)
-    List<Item> buscarItensMaisCaros();
+    List<Item> buscarItensMaisCaros(@Param("listaId") Long listaId);
 
 
     //Agrupamento por categoria
