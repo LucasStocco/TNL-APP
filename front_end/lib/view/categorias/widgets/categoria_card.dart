@@ -1,13 +1,14 @@
 import 'package:crud_flutter/model/cadastrar_categoria/categoria.dart';
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
-import 'package:crud_flutter/shared/helpers/categoria_icon_mapper.dart';
+import 'package:crud_flutter/shared/mappers/categoria_icon_mapper.dart';
 import 'package:crud_flutter/view/categorias/categoria_produtos_screen.dart';
 import 'package:crud_flutter/view/categorias/widgets/categoria_actions.dart';
-import 'package:crud_flutter/view/categorias/widgets/categoria_color_mapper.dart';
+import 'package:crud_flutter/shared/mappers/categoria_color_mapper.dart';
 import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_detalhes_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crud_flutter/service/cadastrar_categoria/categoria_service.dart';
 
 class CategoriaCard extends StatelessWidget {
   final Categoria categoria;
@@ -21,7 +22,9 @@ class CategoriaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final corCategoria = CategoriaColorMapper.cor(categoria.codigo);
+    final codigoSeguro = (categoria.codigo ?? '').toUpperCase();
+
+    final corCategoria = CategoriaColorMapper.cor(codigoSeguro);
 
     final bool isCategoriaPadrao = [
       'BEBIDAS',
@@ -37,13 +40,14 @@ class CategoriaCard extends StatelessWidget {
       'UTILIDADES',
       'BEBES',
       'SAZONAIS',
-    ].contains(categoria.codigo.toUpperCase());
+    ].contains(codigoSeguro);
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
+          final categoriaService = context.read<CategoriaService>();
           final produtoService = context.read<ProdutoService>();
           final itemService = context.read<ItemService>();
 
@@ -54,8 +58,9 @@ class CategoriaCard extends StatelessWidget {
                 create: (_) => CategoriaDetalhesViewModel(
                   produtoService: produtoService,
                   itemService: itemService,
+                  categoriaService: categoriaService,
                   idCategoria: categoria.id,
-                )..carregarProdutos(),
+                )..carregarSubcategoriasDaCategoria(), // ⚠️ corrigido aqui
                 child: CategoriasProdutosScreen(
                   nomeCategoria: categoria.nome,
                   idCategoria: categoria.id,
@@ -70,19 +75,12 @@ class CategoriaCard extends StatelessWidget {
         child: Container(
           height: isHorizontal ? 60 : null,
           decoration: BoxDecoration(
-            // 🎨 Cor do fundo do card
             color: corCategoria.withOpacity(0.32),
-
-            // 🔲 Bordas arredondadas
             borderRadius: BorderRadius.circular(16),
-
-            // 🖼️ Borda colorida
             border: Border.all(
               color: corCategoria.withOpacity(0.55),
               width: 1.2,
             ),
-
-            // 🌫️ Sombra suave
             boxShadow: [
               BoxShadow(
                 color: corCategoria.withOpacity(0.14),
@@ -92,21 +90,14 @@ class CategoriaCard extends StatelessWidget {
               ),
             ],
           ),
-
-          // 🔄 Layout dinâmico
           child: isHorizontal
-              // =========================
-              // 📋 LAYOUT HORIZONTAL
-              // =========================
               ? Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       Image.asset(
                         CategoriaIconMapper.icone(
-                          codigo: categoria.codigo,
+                          codigo: codigoSeguro,
                           isUsuario: !isCategoriaPadrao,
                         ),
                         width: 40,
@@ -130,16 +121,12 @@ class CategoriaCard extends StatelessWidget {
                     ],
                   ),
                 )
-
-              // =========================
-              // 🟦 LAYOUT GRID
-              // =========================
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
                       CategoriaIconMapper.icone(
-                        codigo: categoria.codigo,
+                        codigo: codigoSeguro,
                         isUsuario: !isCategoriaPadrao,
                       ),
                       width: 40,

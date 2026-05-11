@@ -8,9 +8,6 @@ class ListaService {
 
   ListaService(this._client);
 
-  // =========================
-  // LOGS
-  // =========================
   void _log(String msg) => print("[LISTA_SERVICE] $msg");
 
   void _logReq(String method, String url, [dynamic body]) {
@@ -80,11 +77,8 @@ class ListaService {
   // ATUALIZAR
   // =========================
   Future<Lista> update(Lista lista) async {
-    if (lista.id == null) {
-      throw Exception("Lista sem ID");
-    }
+    final url = ApiEndpoints.listaPorId(lista.id);
 
-    final url = "${ApiEndpoints.listas}/${lista.id}";
     final body = {"nome": lista.nome};
 
     _logReq("PUT", url, body);
@@ -106,42 +100,15 @@ class ListaService {
   }
 
   // =========================
-  // FINALIZAR
-  // =========================
-  Future<void> finalizarLista(int listaId) async {
-    final url = "${ApiEndpoints.listas}/$listaId/finalizar";
-
-    _logReq("POST", url);
-
-    try {
-      final res = await _client.post<void>(
-        url,
-        {},
-        null,
-      );
-
-      _logRes(res);
-
-      ServiceUtils.validate(res);
-    } catch (e, s) {
-      _logErr("POST", url, e, s);
-      rethrow;
-    }
-  }
-
-  // =========================
   // DELETE
   // =========================
   Future<void> delete(int id) async {
-    final url = "${ApiEndpoints.listas}/$id";
+    final url = ApiEndpoints.listaPorId(id);
 
     _logReq("DELETE", url);
 
     try {
-      final res = await _client.delete<void>(
-        url,
-        null,
-      );
+      final res = await _client.delete<void>(url);
 
       _logRes(res);
 
@@ -150,5 +117,14 @@ class ListaService {
       _logErr("DELETE", url, e, s);
       rethrow;
     }
+  }
+
+  // =========================
+  // FINALIZAR (⚠️ NÃO EXISTE NO BACKEND)
+  // =========================
+  Future<void> finalizarLista(int listaId) async {
+    throw Exception(
+      "Endpoint /listas/$listaId/finalizar NÃO existe no backend ainda",
+    );
   }
 }

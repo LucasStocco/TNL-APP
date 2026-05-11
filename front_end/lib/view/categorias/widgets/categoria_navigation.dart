@@ -1,3 +1,4 @@
+import 'package:crud_flutter/service/cadastrar_categoria/categoria_service.dart';
 import 'package:crud_flutter/view/categorias/categoria_produtos_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ class CategoriaNavigation {
     required int idCategoria,
     required String nomeCategoria,
   }) {
+    final categoriaService = context.read<CategoriaService>();
     final produtoService = context.read<ProdutoService>();
     final itemService = context.read<ItemService>();
 
@@ -23,8 +25,9 @@ class CategoriaNavigation {
             create: (_) => CategoriaDetalhesViewModel(
               produtoService: produtoService,
               itemService: itemService,
-              idCategoria: idCategoria, // ✅ agora vai no construtor
-            )..carregarProdutos(), // ✅ sem parâmetro
+              categoriaService: categoriaService,
+              idCategoria: idCategoria,
+            )..carregarSubcategoriasDaCategoria(),
             child: CategoriasProdutosScreen(
               nomeCategoria: nomeCategoria,
               idCategoria: idCategoria,

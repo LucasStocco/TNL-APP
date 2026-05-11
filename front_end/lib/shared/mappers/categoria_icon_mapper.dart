@@ -10,51 +10,51 @@ class CategoriaIconMapper {
 
     // categoria do usuário
     if (isUsuario) {
-      return "assets/icons/ic_estrela.png";
+      return "assets/icons/categorias/ic_estrela.png";
     }
 
     switch (c) {
       case 'BEBIDAS':
-        return "assets/icons/ic_bebidas.png";
+        return "assets/icons/categorias/ic_bebidas.png";
 
       case 'CARNES':
-        return "assets/icons/ic_acougue.png";
+        return "assets/icons/categorias/ic_acougue.png";
 
       case 'PADARIA':
-        return "assets/icons/ic_padaria.png";
+        return "assets/icons/categorias/ic_padaria.png";
 
       case 'HORTIFRUTI':
-        return "assets/icons/ic_hortifrut.png";
+        return "assets/icons/categorias/ic_hortifrut.png";
 
       case 'LATICINIOS':
-        return "assets/icons/ic_laticinios.png";
+        return "assets/icons/categorias/ic_laticinios.png";
 
       case 'MERCEARIA':
-        return "assets/icons/ic_mercearia.png";
+        return "assets/icons/categorias/ic_mercearia.png";
 
       case 'HIGIENE':
-        return "assets/icons/ic_higiene.png";
+        return "assets/icons/categorias/ic_higiene.png";
 
       case 'LIMPEZA':
-        return "assets/icons/ic_limpeza.png";
+        return "assets/icons/categorias/ic_limpeza.png";
 
       case 'PETS':
-        return "assets/icons/ic_pets.png";
+        return "assets/icons/categorias/ic_pets.png";
 
       case 'DOCES':
-        return "assets/icons/ic_doces.png";
+        return "assets/icons/categorias/ic_doces.png";
 
       case 'UTILIDADES':
-        return "assets/icons/ic_custom_category.png";
+        return "assets/icons/categorias/ic_custom_category.png";
 
       case 'BEBES':
-        return "assets/icons/ic_bebes.png";
+        return "assets/icons/categorias/ic_bebes.png";
 
       case 'SAZONAIS':
-        return "assets/icons/ic_sazonais.png";
+        return "assets/icons/categorias/ic_sazonais.png";
 
       default:
-        return "assets/icons/ic_estrela.png";
+        return "assets/icons/categorias/ic_estrela.png";
     }
   }
 

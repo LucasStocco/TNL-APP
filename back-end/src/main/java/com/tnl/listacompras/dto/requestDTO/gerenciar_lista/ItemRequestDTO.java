@@ -1,42 +1,41 @@
 package com.tnl.listacompras.dto.requestDTO.gerenciar_lista;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class ItemRequestDTO {
 
-    @NotNull(message = "Produto é obrigatório")
+    @NotNull
     private Long produtoId;
 
-    @NotNull(message = "Quantidade é obrigatória")
-    @Min(value = 1, message = "Quantidade deve ser no mínimo 1")
+    @NotNull
+    @Min(1)
     private Integer quantidade;
 
-    @NotNull(message = "Preço é obrigatório")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Preço não pode ser negativo")
+    @NotNull
+    @Min(0)
     private Double preco;
 
-    // GETTERS / SETTERS
-
+    // GETTERS
     public Long getProdutoId() {
         return produtoId;
-    }
-
-    public void setProdutoId(Long produtoId) {
-        this.produtoId = produtoId;
     }
 
     public Integer getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
     public Double getPreco() {
         return preco;
+    }
+
+    // SETTERS
+    public void setProdutoId(Long produtoId) {
+        this.produtoId = produtoId;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
     }
 
     public void setPreco(Double preco) {

@@ -13,16 +13,18 @@ public class ItemUpdateDTO {
     @Min(0)
     private Double preco;
 
+    // GETTERS
     public Integer getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
     public Double getPreco() {
         return preco;
+    }
+
+    // SETTERS
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
     }
 
     public void setPreco(Double preco) {

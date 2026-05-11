@@ -59,7 +59,6 @@ class ItemViewModel extends ChangeNotifier {
 
       final novo = await service.criar(listaId, dto);
 
-      // 🔥 MELHOR PRÁTICA: sincroniza com backend
       await carregar(listaId);
 
       return novo;

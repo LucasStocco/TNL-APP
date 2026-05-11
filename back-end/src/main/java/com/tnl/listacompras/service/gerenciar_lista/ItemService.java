@@ -78,29 +78,25 @@ public class ItemService {
         Produto produto = produtoRepository.findById(dto.getProdutoId())
                 .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
 
-        Optional<Item> itemExistente =
-                itemRepository.findByListaIdAndProdutoIdAndDeletadoFalse(
-                        listaId, produto.getId()
-                );
+        Item item = itemRepository
+                .findByListaIdAndProdutoIdAndDeletadoFalse(listaId, produto.getId())
+                .orElse(null);
 
-        if (itemExistente.isPresent()) {
-            Item item = itemExistente.get();
+        if (item != null) {
 
             item.setQuantidade(item.getQuantidade() + dto.getQuantidade());
-
-            // 🔥 ATUALIZA PREÇO TAMBÉM
-            item.setPreco(dto.getPreco());
+            item.setPreco(dto.getPreco()); // atualiza preço atual
 
             return new ItemResponseDTO(itemRepository.save(item));
         }
 
-        Item item = new Item();
-        item.setLista(lista);
-        item.setProduto(produto);
-        item.setQuantidade(dto.getQuantidade());
-        item.setPreco(dto.getPreco()); // 🔥 ESSENCIAL
+        Item novo = new Item();
+        novo.setLista(lista);
+        novo.setProduto(produto);
+        novo.setQuantidade(dto.getQuantidade());
+        novo.setPreco(dto.getPreco());
 
-        return new ItemResponseDTO(itemRepository.save(item));
+        return new ItemResponseDTO(itemRepository.save(novo));
     }
     // =========================
     // ATUALIZAR QUANTIDADE
@@ -109,16 +105,19 @@ public class ItemService {
 
         Item item = validarItem(listaId, itemId);
 
-        if (dto.getQuantidade() <= 0) {
+        if (dto.getQuantidade() == null || dto.getQuantidade() <= 0) {
             throw new BusinessException("Quantidade deve ser maior que zero");
         }
 
+        if (dto.getPreco() == null || dto.getPreco() < 0) {
+            throw new BusinessException("Preço não pode ser negativo");
+        }
+
         item.setQuantidade(dto.getQuantidade());
-        item.setPreco(dto.getPreco()); // 🔥 NOVO
+        item.setPreco(dto.getPreco());
 
         return new ItemResponseDTO(itemRepository.save(item));
     }
-
     // =========================
     // MARCAR COMO COMPRADO
     // =========================
