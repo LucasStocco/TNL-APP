@@ -28,7 +28,7 @@ public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
     AND i.deletado = false
     ORDER BY i.preco ASC
     """)
-    List<Item[]> buscarItensMaisBaratos();
+    List<Item> buscarItensMaisBaratos(@Param("listaId") Long listaId);
 
     //Itens mais caros
     @Query("""
