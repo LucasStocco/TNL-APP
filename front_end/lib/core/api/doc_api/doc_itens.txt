@@ -13,13 +13,13 @@ GET http://localhost:8088/itens/1
 ///////////////////////////////////////////////////////////////
 
 🟢 3. CRIAR ITEM
-POST http://localhost:8088/itens
+POST http://localhost:8088/listas/num/itens
 Content-Type: application/json
 
 {
   "quantidade": 2,
-  "produtoId": 1,
-  "listaId": 1
+  "produtoId": 2,
+  "preco": 10.50
 }
 
 ⚠️ IMPORTANTE:

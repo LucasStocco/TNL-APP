@@ -1,27 +1,19 @@
-// ===== Representa o que o backend retorna ====
-// Entidade item representa apenas a lista
+import 'package:crud_flutter/model/cadastrar_produto/produto.dart';
+
 class Item {
   final int id;
   final int quantidade;
   final bool comprado;
-
-  final int idProduto;
-  final String nomeProduto;
-
-  final int idCategoria;
-  final String nomeCategoria;
-
   final double preco;
+
+  final Produto produto;
 
   Item({
     required this.id,
     required this.quantidade,
     required this.comprado,
-    required this.idProduto,
-    required this.nomeProduto,
-    required this.idCategoria,
-    required this.nomeCategoria,
     required this.preco,
+    required this.produto,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -29,11 +21,8 @@ class Item {
       id: json['id'],
       quantidade: json['quantidade'],
       comprado: json['comprado'] ?? false,
-      idProduto: json['produtoId'],
-      nomeProduto: json['nomeProduto'] ?? '',
-      idCategoria: json['categoriaId'],
-      nomeCategoria: json['nomeCategoria'] ?? '',
       preco: (json['preco'] ?? 0).toDouble(),
+      produto: Produto.fromJson(json['produto']),
     );
   }
 
@@ -42,33 +31,27 @@ class Item {
       "id": id,
       "quantidade": quantidade,
       "comprado": comprado,
-      "produtoId": idProduto,
-      "nomeProduto": nomeProduto,
-      "categoriaId": idCategoria,
-      "nomeCategoria": nomeCategoria,
       "preco": preco,
+      "produto": produto.toJson(),
     };
   }
 
+  // =========================
+  // COPY WITH
+  // =========================
   Item copyWith({
     int? id,
     int? quantidade,
     bool? comprado,
-    int? idProduto,
-    String? nomeProduto,
-    int? idCategoria,
-    String? nomeCategoria,
     double? preco,
+    Produto? produto,
   }) {
     return Item(
       id: id ?? this.id,
       quantidade: quantidade ?? this.quantidade,
       comprado: comprado ?? this.comprado,
-      idProduto: idProduto ?? this.idProduto,
-      nomeProduto: nomeProduto ?? this.nomeProduto,
-      idCategoria: idCategoria ?? this.idCategoria,
-      nomeCategoria: nomeCategoria ?? this.nomeCategoria,
       preco: preco ?? this.preco,
+      produto: produto ?? this.produto,
     );
   }
 }

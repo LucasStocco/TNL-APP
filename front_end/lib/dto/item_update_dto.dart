@@ -12,6 +12,3 @@ class ItemUpdateDTO {
         "preco": preco,
       };
 }
-/*
-endpoint: PUT /listas/{id}/itens/{idItem}
- */

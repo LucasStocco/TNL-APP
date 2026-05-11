@@ -27,7 +27,9 @@ class _CategoriaGridState extends State<CategoriaGrid> {
     return Consumer<CategoriaViewModel>(
       builder: (context, vm, child) {
         if (vm.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
 
         final List<Categoria> categorias = vm.categorias;
@@ -38,18 +40,20 @@ class _CategoriaGridState extends State<CategoriaGrid> {
           );
         }
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1,
+        return ListView.builder(
+          padding: const EdgeInsets.fromLTRB(
+            16,
+            16,
+            16,
+            90,
           ),
           itemCount: categorias.length,
           itemBuilder: (context, index) {
-            return CategoriaCard(
-              categoria: categorias[index],
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: CategoriaCard(
+                categoria: categorias[index],
+              ),
             );
           },
         );

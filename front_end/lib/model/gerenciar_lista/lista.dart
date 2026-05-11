@@ -1,7 +1,7 @@
 import 'package:crud_flutter/model/gerenciar_lista/item.dart';
 
 class Lista {
-  final int? id;
+  final int id;
   final String nome;
   final int? idUsuario;
 
@@ -15,7 +15,7 @@ class Lista {
   final bool deletado;
 
   Lista({
-    this.id,
+    required this.id,
     required this.nome,
     this.idUsuario,
     this.itens = const [],

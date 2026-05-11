@@ -1,3 +1,6 @@
+import 'package:crud_flutter/core/api/api_response.dart';
+import 'package:crud_flutter/model/cadastrar_categoria/cadastrar_categoria_completa_model.dart';
+
 import '../../core/api/api_client.dart';
 import '../../core/api/api_endpoints.dart';
 import '../../model/cadastrar_produto/produto.dart';
@@ -9,9 +12,6 @@ class ProdutoService {
 
   ProdutoService(this._client);
 
-  // =========================
-  // LOGS
-  // =========================
   void _log(String msg) => print("[PRODUTO_SERVICE] $msg");
 
   void _logReq(String method, String url, [dynamic body]) {
@@ -27,7 +27,7 @@ class ProdutoService {
   // LISTAR TODOS
   // =========================
   Future<List<Produto>> listar() async {
-    const url = ApiEndpoints.produtos;
+    final url = ApiEndpoints.produtos;
 
     _logReq("GET", url);
 
@@ -49,25 +49,19 @@ class ProdutoService {
   // LISTAR POR CATEGORIA
   // =========================
   Future<List<Produto>> listarPorCategoria(int idCategoria) async {
-    final url = "/categorias/$idCategoria/produtos";
+    final url = ApiEndpoints.produtosPorCategoria(idCategoria);
 
     _logReq("GET", url);
 
     final res = await _client.get<List<Produto>>(
       url,
       (data) {
-        // 🔍 DEBUG FORTE
         if (data is! List) {
-          print("❌ ERRO: data não é lista -> $data");
+          print("❌ ERRO: esperado lista -> $data");
           return [];
         }
 
-        print("✅ DATA É LISTA: ${data.length} itens");
-
-        return data.map((e) {
-          print("🔹 item bruto: $e");
-          return Produto.fromJson(e);
-        }).toList();
+        return data.map((e) => Produto.fromJson(e)).toList();
       },
     );
 
@@ -77,17 +71,35 @@ class ProdutoService {
       throw Exception(res.message);
     }
 
-    // 🔥 AQUI O PRINT FINAL
-    print("🚀 LISTA FINAL: ${res.data}");
-
     return res.data ?? [];
+  }
+
+  // =========================
+  // CATEGORIA COMPLETA (SUBCATEGORIAS + PRODUTOS)
+  // =========================
+  Future<CategoriaCompletaModel> buscarCategoriaCompleta(int id) async {
+    final url = ApiEndpoints.categoriaCompleta(id);
+
+    _logReq("GET", url);
+
+    final res = await _client.get<ApiResponse<CategoriaCompletaModel>>(
+      url,
+      (json) => ApiResponse.fromJson(
+        json,
+        (data) => CategoriaCompletaModel.fromJson(data),
+      ),
+    );
+
+    _logRes(res);
+
+    return res.data.data;
   }
 
   // =========================
   // CRIAR PRODUTO
   // =========================
   Future<Produto> criar(ProdutoCreateDTO dto) async {
-    const url = ApiEndpoints.produtos;
+    final url = ApiEndpoints.produtos;
 
     _logReq("POST", url, dto.toJson());
 
@@ -110,7 +122,7 @@ class ProdutoService {
   // ATUALIZAR PRODUTO
   // =========================
   Future<Produto> atualizar(int id, ProdutoUpdateDTO dto) async {
-    final url = "${ApiEndpoints.produtos}/$id";
+    final url = ApiEndpoints.produtoPorId(id);
 
     _logReq("PUT", url, dto.toJson());
 
@@ -133,7 +145,7 @@ class ProdutoService {
   // DELETAR PRODUTO
   // =========================
   Future<void> deletar(int id) async {
-    final url = "${ApiEndpoints.produtos}/$id";
+    final url = ApiEndpoints.produtoPorId(id);
 
     _logReq("DELETE", url);
 

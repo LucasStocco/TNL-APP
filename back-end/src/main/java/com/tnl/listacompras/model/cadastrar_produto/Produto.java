@@ -1,7 +1,7 @@
 package com.tnl.listacompras.model.cadastrar_produto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tnl.listacompras.model.cadastrar_categoria.Categoria;
+import com.tnl.listacompras.model.cadastrar_categoria.Subcategoria;
 import com.tnl.listacompras.model.gerenciar_lista.Item;
 
 import jakarta.persistence.*;
@@ -21,14 +21,14 @@ public class Produto {
 
     private String descricao;
 
-    // 🔗 Muitos produtos → 1 categoria
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id", nullable = false)
-    private Categoria categoria;
+    // 🔵 Produto pertence a Subcategoria
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "subcategoria_id", nullable = false)
+    private Subcategoria subcategoria;
 
     // 🔗 1 produto → muitos itens
     @OneToMany(mappedBy = "produto")
-    @JsonIgnore // evita loop infinito
+    @JsonIgnore
     private List<Item> itens;
 
     @Column(name = "criado_em", nullable = false, updatable = false)
@@ -71,12 +71,16 @@ public class Produto {
         this.descricao = descricao;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    public Subcategoria getSubcategoria() {
+        return subcategoria;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setSubcategoria(Subcategoria subcategoria) {
+        this.subcategoria = subcategoria;
+    }
+
+    public List<Item> getItens() {
+        return itens;
     }
 
     public LocalDateTime getCriadoEm() {

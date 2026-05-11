@@ -13,10 +13,6 @@ public class ProdutoRequestDTO {
     @NotNull
     private Long idCategoria;
 
-    // =========================
-    // GETTERS
-    // =========================
-
     public String getNome() {
         return nome;
     }
@@ -28,10 +24,6 @@ public class ProdutoRequestDTO {
     public Long getIdCategoria() {
         return idCategoria;
     }
-
-    // =========================
-    // SETTERS
-    // =========================
 
     public void setNome(String nome) {
         this.nome = nome;

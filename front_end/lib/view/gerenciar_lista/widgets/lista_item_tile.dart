@@ -14,9 +14,9 @@ class ListaItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(item.nomeProduto),
+      title: Text(item.produto.nome),
       subtitle: Text(
-        "Qtd: ${item.quantidade} • ${item.nomeCategoria} • R\$ ${item.preco.toStringAsFixed(2)}",
+        "Qtd: ${item.quantidade} • R\$ ${item.preco.toStringAsFixed(2)}",
       ),
       trailing: Icon(
         item.comprado ? Icons.check_circle : Icons.radio_button_unchecked,

@@ -34,7 +34,7 @@ class AppHeaderWidget extends StatelessWidget {
             angle: -0.2,
             size: 85,
             alpha: 0.32,
-            asset: 'assets/bg_icons/icons8-bread-48.png',
+            asset: 'assets/icons/header_home/icons8-bread-48.png',
           ),
 
           buildIcon(
@@ -43,7 +43,7 @@ class AppHeaderWidget extends StatelessWidget {
             angle: 0.4,
             size: 70,
             alpha: 0.25,
-            asset: 'assets/bg_icons/icons8-cherry-48.png',
+            asset: 'assets/icons/header_home/icons8-cherry-48.png',
           ),
 
           buildIcon(
@@ -52,7 +52,7 @@ class AppHeaderWidget extends StatelessWidget {
             angle: 0.3,
             size: 65,
             alpha: 0.20,
-            asset: 'assets/bg_icons/icons8-american-pancakes-48.png',
+            asset: 'assets/icons/header_home/icons8-american-pancakes-48.png',
           ),
 
           // 🔥 CONTEÚDO DINÂMICO
