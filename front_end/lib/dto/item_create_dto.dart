@@ -10,11 +10,8 @@ class ItemCreateDTO {
   });
 
   Map<String, dynamic> toJson() => {
-    "produtoId": produtoId,
-    "quantidade": quantidade,
-    "preco": preco,
-  };
+        "produtoId": produtoId,
+        "quantidade": quantidade,
+        "preco": preco,
+      };
 }
-/*
-endpoint: POST /listas/{id}/itens
- */

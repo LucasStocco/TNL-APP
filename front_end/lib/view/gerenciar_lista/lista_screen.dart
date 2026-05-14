@@ -21,7 +21,6 @@ import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_fab_menu.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_item_tile.dart';
 import 'package:crud_flutter/view/cadastrar_produto/criar_item_screen.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_resumo_header.dart';
-import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_status_card.dart';
 
 class ListaScreen extends StatefulWidget {
   final int listaId;

@@ -8,57 +8,41 @@ public class ProdutoResponseDTO {
     private String nome;
     private String descricao;
 
+    private Long subcategoriaId;
+    private String nomeSubcategoria;
+
     private Long categoriaId;
     private String nomeCategoria;
 
     public ProdutoResponseDTO(Produto produto) {
-        this.setId(produto.getId());
-        this.setNome(produto.getNome());
-        this.setDescricao(produto.getDescricao());
 
-        this.setCategoriaId(produto.getCategoria().getId());
-        this.setNomeCategoria(produto.getCategoria().getNome());
+        this.id = produto.getId();
+        this.nome = produto.getNome();
+        this.descricao = produto.getDescricao();
+
+        if (produto.getSubcategoria() != null) {
+            this.subcategoriaId = produto.getSubcategoria().getId();
+            this.nomeSubcategoria = produto.getSubcategoria().getNome();
+
+            if (produto.getSubcategoria().getCategoria() != null) {
+                this.categoriaId = produto.getSubcategoria().getCategoria().getId();
+                this.nomeCategoria = produto.getSubcategoria().getCategoria().getNome();
+            }
+        }
     }
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public Long getCategoriaId() {
-		return categoriaId;
-	}
-
-	public void setCategoriaId(Long categoriaId) {
-		this.categoriaId = categoriaId;
-	}
-
-	public String getNomeCategoria() {
-		return nomeCategoria;
-	}
-
-	public void setNomeCategoria(String nomeCategoria) {
-		this.nomeCategoria = nomeCategoria;
-	}
-
-    // getters
+    public Long getId() { return id; }
+    public String getNome() { return nome; }
+    public String getDescricao() { return descricao; }
+    public Long getSubcategoriaId() { return subcategoriaId; }
+    public String getNomeSubcategoria() { return nomeSubcategoria; }
+    public Long getCategoriaId() { return categoriaId; }
+    public String getNomeCategoria() { return nomeCategoria; }
 }
+/*
+ * com as novas mudanças é possível garantir que, o DTO siga a hierarquia correta: categoria -> subcategoria -> produto.
+ * não quebra caso subcategoria for null
+ * não depende mais diretamente de Categoria no Produto
+ * evita erro futuro no Flutter
+ * 
+*/

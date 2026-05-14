@@ -24,12 +24,9 @@ public class Categoria {
     @Column(nullable = false)
     private Boolean deletado = false;
     
-    // 🏷 1 categoria → muitos produtos
-    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY) 
-    // ✅ ADICIONADO fetch LAZY (evita carregar produtos sem necessidade)
-    @JsonIgnore 
-    // ✅ ADICIONADO (evita loop infinito no JSON: categoria → produto → categoria...)
-    private List<Produto> produtos;
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Subcategoria> subcategorias;
 
     @Column(name = "criado_em", nullable = false, updatable = false) 
     // ✅ ADICIONADO name (garante compatibilidade com o banco)
@@ -74,6 +71,10 @@ public class Categoria {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+    
+    public List<Subcategoria> getSubcategorias() {
+        return subcategorias;
     }
 
     public String getCodigo() {

@@ -1,21 +1,21 @@
 class Categoria {
   final int id;
   final String nome;
-  final String codigo;
+  final String? codigo;
   final bool deletado;
 
   Categoria({
     required this.id,
     required this.nome,
-    required this.codigo,
-    required this.deletado,
+    this.codigo,
+    this.deletado = false,
   });
 
   factory Categoria.fromJson(Map<String, dynamic> json) {
     return Categoria(
-      id: json['id'],
-      nome: json['nome'],
-      codigo: json['codigo'] ?? '',
+      id: json['id'] ?? 0,
+      nome: json['nome'] ?? '',
+      codigo: json['codigo']?.toString(),
       deletado: json['deletado'] ?? false,
     );
   }
@@ -28,33 +28,4 @@ class Categoria {
       "deletado": deletado,
     };
   }
-
-  // =====================================================
-  // ✅ REGRA DE NEGÓCIO: categoria editável pelo usuário
-  // =====================================================
-  bool get isUsuario {
-    const categoriasPadrao = [
-      'BEBIDAS',
-      'CARNES',
-      'PADARIA',
-      'HORTIFRUTI',
-      'LATICINIOS',
-      'MERCEARIA',
-      'HIGIENE',
-      'LIMPEZA',
-      'PETS',
-      'DOCES',
-      'UTILIDADES',
-      'BEBES',
-      'SAZONAIS',
-    ];
-
-    return !categoriasPadrao.contains(codigo.toUpperCase());
-  }
 }
-/*
-beck retorna: 
-{
-  "id": 1,
-  "nome": "Alimentos"
-} */
