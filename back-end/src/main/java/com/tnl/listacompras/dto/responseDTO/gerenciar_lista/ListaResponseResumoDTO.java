@@ -1,6 +1,5 @@
 package com.tnl.listacompras.dto.responseDTO.gerenciar_lista;
 
-// Ele só muda como você entrega os dados para o Flutter
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ListaResponseResumoDTO {
@@ -8,10 +7,15 @@ public class ListaResponseResumoDTO {
     private Long id;
     private String nome;
 
-    private int totalItens;
-    private int itensComprados;
+    private Long totalItens;
+    private Long itensComprados;
 
-    public ListaResponseResumoDTO(Long id, String nome, int totalItens, int itensComprados) {
+    public ListaResponseResumoDTO(
+            Long id,
+            String nome,
+            Long totalItens,
+            Long itensComprados
+    ) {
         this.id = id;
         this.nome = nome;
         this.totalItens = totalItens;
@@ -20,7 +24,11 @@ public class ListaResponseResumoDTO {
 
     @JsonProperty("progresso")
     public double getProgresso() {
-        if (totalItens == 0) return 0;
+
+        if (totalItens == 0) {
+            return 0;
+        }
+
         return ((double) itensComprados / totalItens) * 100;
     }
 
@@ -32,11 +40,11 @@ public class ListaResponseResumoDTO {
         return nome;
     }
 
-    public int getTotalItens() {
+    public Long getTotalItens() {
         return totalItens;
     }
 
-    public int getItensComprados() {
+    public Long getItensComprados() {
         return itensComprados;
     }
 }

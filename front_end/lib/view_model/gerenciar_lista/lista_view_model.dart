@@ -2,21 +2,47 @@ import 'package:flutter/material.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import '../../service/gerenciar_lista/lista_service.dart';
 
+/* RESPONSABILIDADES DO VIEW MODEL
+1. Receber ação da UI
+2. Chamar Service
+3. Atualizar estado da UI
+4. Notificar mudanças*/
+
 class ListaViewModel extends ChangeNotifier {
   final ListaService _service;
-
+  // Aqui temos uma associação / dependencias injetada
   ListaViewModel(this._service);
 
   // =========================
   // STATE
   // =========================
-  List<Lista> listas = [];
-  Lista? listaAtual;
+  final List<Lista> _listas = [];
 
-  bool isLoading = false;
-  bool isSaving = false;
+  int? _listaAtualId;
 
-  String? erro;
+  bool _isLoading = false;
+  bool _isSaving = false;
+
+  String? _erro;
+
+  // getters públicos
+  List<Lista> get listas => List.unmodifiable(_listas);
+
+  int? get listaAtualId => _listaAtualId;
+
+  bool get isLoading => _isLoading;
+
+  bool get isSaving => _isSaving;
+
+  String? get erro => _erro;
+
+  Lista? get listaAtual {
+    try {
+      return _listas.firstWhere((l) => l.id == _listaAtualId);
+    } catch (_) {
+      return null;
+    }
+  }
 
   static const String TAG = "[LISTA_VM]";
 
@@ -25,44 +51,11 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
 
   void _setLoading(bool value) {
-    isLoading = value;
-    notifyListeners();
+    _isLoading = value;
   }
 
   void _setSaving(bool value) {
-    isSaving = value;
-    notifyListeners();
-  }
-
-  String _parseErro(Object e) {
-    return e.toString().replaceAll('Exception: ', '');
-  }
-
-  Future<T?> _execute<T>({
-    required String origem,
-    required Future<T> Function() action,
-    bool useSaving = false,
-  }) async {
-    erro = null;
-
-    if (useSaving) {
-      _setSaving(true);
-    } else {
-      _setLoading(true);
-    }
-
-    try {
-      return await action();
-    } catch (e) {
-      erro = _parseErro(e);
-      return null;
-    } finally {
-      if (useSaving) {
-        _setSaving(false);
-      } else {
-        _setLoading(false);
-      }
-    }
+    _isSaving = value;
   }
 
   // =========================
@@ -70,12 +63,14 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   Future<void> listar() async {
     final result = await _execute<List<Lista>>(
-      origem: "listar",
       action: () => _service.getAll(),
+      useLoading: true,
     );
 
     if (result != null) {
-      listas = result;
+      _listas.clear();
+      _listas.addAll(result);
+
       notifyListeners();
     }
   }
@@ -83,61 +78,106 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   // CRIAR
   // =========================
+  /*removeu repetição de try/catch
+  removeu repetição de loading/saving
+  removeu repetição de erro
+  método ficou focado apenas na regra da feature
+  _execute virou responsável pelo fluxo técnico*/
+
+  // Apenas: chamar service, atualizar estado, notificar UI
   Future<Lista?> criar(String nome) async {
     final criada = await _execute<Lista>(
-      origem: "criar",
-      useSaving: true,
       action: () => _service.create(nome),
     );
 
     if (criada != null) {
-      listas.add(criada);
-      listaAtual = criada;
+      _listas.add(criada);
+      _listaAtualId = criada.id;
+
       notifyListeners();
     }
 
     return criada;
   }
 
+  // Helper genérico para execução
+  Future<T?> _execute<T>({
+    required Future<T> Function() action,
+    bool useLoading = false,
+  }) async {
+    _erro = null;
+
+    if (useLoading) {
+      _setLoading(true);
+    } else {
+      _setSaving(true);
+    }
+
+    notifyListeners();
+
+    try {
+      return await action();
+    } catch (e) {
+      _erro = e.toString();
+      return null;
+    } finally {
+      if (useLoading) {
+        _setLoading(false);
+      } else {
+        _setSaving(false);
+      }
+
+      notifyListeners();
+    }
+  }
+
   // =========================
   // SELECIONAR
   // =========================
   void selecionarLista(Lista lista) {
-    listaAtual = lista;
+    _listaAtualId = lista.id;
     notifyListeners();
   }
 
   // =========================
   // ATUALIZAR
   // =========================
+  // Reponsavel por: chamar service, atualizar estado, notificar UI
   Future<Lista?> atualizar(Lista lista) async {
     if (lista.id == null) {
-      erro = "ID obrigatório";
+      _erro = "ID obrigatório";
       notifyListeners();
       return null;
     }
 
     final atualizada = await _execute<Lista>(
-      origem: "atualizar",
-      useSaving: true,
       action: () => _service.update(lista),
     );
 
     if (atualizada != null) {
-      final index = listas.indexWhere((l) => l.id == atualizada.id);
+      final index = _listas.indexWhere(
+        (l) => l.id == atualizada.id,
+      );
 
       if (index != -1) {
-        listas[index] = atualizada;
+        _listas[index] = atualizada;
+        notifyListeners();
       }
-
-      if (listaAtual?.id == atualizada.id) {
-        listaAtual = atualizada;
-      }
-
-      notifyListeners();
     }
 
     return atualizada;
+  }
+
+  // =========================
+  // SALVAR
+  // =========================
+  // temporario
+  Future<void> salvarLista(int? id, String nome) async {
+    if (id == null) {
+      await criar(nome);
+    } else {
+      await atualizar(Lista(id: id, nome: nome));
+    }
   }
 
   // =========================
@@ -145,17 +185,15 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   Future<void> deletar(int id) async {
     await _execute<void>(
-      origem: "deletar",
-      useSaving: true,
       action: () => _service.delete(id),
     );
 
-    if (erro != null) return;
+    if (_erro != null) return;
 
-    listas.removeWhere((l) => l.id == id);
+    _listas.removeWhere((l) => l.id == id);
 
-    if (listaAtual?.id == id) {
-      listaAtual = null;
+    if (_listaAtualId == id) {
+      _listaAtualId = null;
     }
 
     notifyListeners();
@@ -164,19 +202,18 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   // FINALIZAR
   // =========================
+  // ficou focado apenas na regra: finalizar no servic, atualizar estado local, notificar UI
   Future<void> finalizar(int id) async {
     await _execute<void>(
-      origem: "finalizar",
-      useSaving: true,
       action: () => _service.finalizarLista(id),
     );
 
-    if (erro != null) return;
+    if (_erro != null) return;
 
-    final index = listas.indexWhere((l) => l.id == id);
+    final index = _listas.indexWhere((l) => l.id == id);
 
     if (index != -1) {
-      listas[index] = listas[index].copyWith(
+      _listas[index] = _listas[index].copyWith(
         concluidoEm: DateTime.now(),
       );
     }
@@ -188,12 +225,35 @@ class ListaViewModel extends ChangeNotifier {
   // RESET
   // =========================
   void resetar() {
-    listas = [];
-    listaAtual = null;
-    isLoading = false;
-    isSaving = false;
-    erro = null;
+    _listas.clear();
+
+    _listaAtualId = null;
+    _isLoading = false;
+    _isSaving = false;
+    _erro = null;
 
     notifyListeners();
   }
 }
+
+/*OBSERVAÇÕES
+Internamente na VM, usar: _listas, _erro, _listaAtualId 
+Externamente(UI): Use getters: listas, erro, listaAtualId
+*/
+
+/* 
+REFATORAÇÃO REALIZADA
+
+- Estado interno encapsulado com atributos privados (_listas, _erro, etc.)
+- Exposição segura de dados via getters públicos
+- Redução de repetição de try/catch, loading e tratamento de erro
+- Centralização do fluxo técnico no método _execute()
+- Métodos focados apenas na responsabilidade da feature
+- Melhor separação de responsabilidades seguindo MVVM
+- Proteção da lista com List.unmodifiable()
+- ViewModel responsável apenas por:
+  -> gerenciar estado
+  -> chamar services
+  -> sincronizar UI
+  -> notificar mudanças
+*/

@@ -6,6 +6,8 @@ import '../../core/api/api_endpoints.dart';
 class ListaService {
   final ApiClient _client;
 
+  // injeção de dependência via construtor 
+  // ListaService faz chamadas no contrutor
   ListaService(this._client);
 
   void _log(String msg) => print("[LISTA_SERVICE] $msg");

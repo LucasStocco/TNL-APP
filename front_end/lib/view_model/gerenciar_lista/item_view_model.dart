@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:crud_flutter/model/gerenciar_lista/item.dart';
 import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
-import 'package:crud_flutter/dto/item_create_dto.dart';
-import 'package:crud_flutter/dto/item_update_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_create_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_update_dto.dart';
 
 class ItemViewModel extends ChangeNotifier {
   final ItemService service;

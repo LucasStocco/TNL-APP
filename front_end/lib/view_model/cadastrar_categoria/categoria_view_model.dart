@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../model/cadastrar_categoria/categoria.dart';
 import '../../service/cadastrar_categoria/categoria_service.dart';
-import '../../dto/categoria_create_dto.dart';
-import '../../dto/categoria_update_dto.dart';
+import '../../dto/request/cadastrar_categoria/categoria_request_create_dto.dart';
+import '../../dto/request/cadastrar_categoria/categoria_request_update_dto.dart';
 
 class CategoriaViewModel extends ChangeNotifier {
   final CategoriaService _service;
