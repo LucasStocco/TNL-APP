@@ -11,7 +11,10 @@ class MockAuthService implements AuthService {
   static const _keyUser = 'user';
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: ['email'],
+  scopes: [
+    'email',
+    'profile',
+  ],
   serverClientId:
       '605363260040-q8s2e93017d9786n152lk4ufhm9gsibc.apps.googleusercontent.com',
 );
@@ -64,7 +67,7 @@ class MockAuthService implements AuthService {
 
       final user = User(
         id: data["id"],
-        nome: data["nome"] ?? "",
+        nome: data["name"] ?? "",
         email: data["email"] ?? "",
         fotoUrl: data["fotoUrl"],
       );
