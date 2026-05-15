@@ -8,29 +8,39 @@ import java.util.Optional;
 
 public interface ListaRepository extends JpaRepository<Lista, Long> {
 
+    // TODO: Revisar consistência das queries de Listas
+    // Garantir que todas as consultas respeitem:
+    // - isolamento por usuário
+    // - soft delete
+    // - regras de segurança do domínio
+
+    // TODO: Avaliar concorrência na validação de nome
+    // existsBy... pode sofrer race condition em cenários concorrentes.
+    // Ideal complementar com constraint UNIQUE no banco.
+
+    // TODO: Manter repository focado apenas em persistência
+    // Evitar mover regras de negócio para esta camada.
+
     // =========================
     // 🔎 BUSCAS PRINCIPAIS
     // =========================
 
-    // Listas do usuário (já filtrando deletado)
+    // Listas ativas do usuário
     List<Lista> findByUsuarioIdAndDeletadoFalse(Long usuarioId);
 
-    // Buscar lista específica do usuário (segurança)
-    Optional<Lista> findByIdAndUsuarioIdAndDeletadoFalse(Long id, Long usuarioId);
-
-    // =========================
-    // 🔎 APOIO / OPCIONAIS
-    // =========================
-
-    // Todas listas do usuário (inclui deletadas)
-    List<Lista> findByUsuarioId(Long usuarioId);
-
-    // Listas ativas globais (caso admin)
-    List<Lista> findByDeletadoFalse();
-
-    // Verificar se já existe lista com nome (evitar duplicidade)
-    boolean existsByNomeIgnoreCaseAndUsuarioIdAndDeletadoFalse(
-            String nome,
+    // Buscar lista específica do usuário
+    Optional<Lista> findByIdAndUsuarioIdAndDeletadoFalse(
+            Long id,
             Long usuarioId
+    );
+
+    // =========================
+    // ✅ VALIDAÇÕES
+    // =========================
+
+    // Verificar duplicidade de nome da lista
+    boolean existsByUsuarioIdAndNomeIgnoreCaseAndDeletadoFalse(
+            Long usuarioId,
+            String nome
     );
 }

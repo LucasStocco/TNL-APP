@@ -2,99 +2,150 @@ import 'package:flutter/material.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import '../../service/gerenciar_lista/lista_service.dart';
 
+/* RESPONSABILIDADES DO VIEW MODEL
+1. Receber ação da UI
+2. Chamar Service
+3. Atualizar estado da UI
+4. Notificar mudanças
+*/
+
 class ListaViewModel extends ChangeNotifier {
   final ListaService _service;
 
+  // dependência injetada
   ListaViewModel(this._service);
 
   // =========================
   // STATE
   // =========================
-  List<Lista> listas = [];
-  Lista? listaAtual;
 
-  bool isLoading = false;
-  bool isSaving = false;
+  final List<Lista> _listas = [];
 
-  String? erro;
+  int? _listaAtualId;
+
+  bool _isLoading = false;
+  bool _isSaving = false;
+
+  String? _erro;
 
   static const String TAG = "[LISTA_VM]";
 
   // =========================
-  // HELPERS
+  // GETTERS
+  // =========================
+
+  List<Lista> get listas => List.unmodifiable(_listas);
+
+  int? get listaAtualId => _listaAtualId;
+
+  bool get isLoading => _isLoading;
+
+  bool get isSaving => _isSaving;
+
+  String? get erro => _erro;
+
+  Lista? get listaAtual {
+    try {
+      return _listas.firstWhere((l) => l.id == _listaAtualId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // =========================
+  // STATE HELPERS
   // =========================
 
   void _setLoading(bool value) {
-    isLoading = value;
+    _isLoading = value;
     notifyListeners();
   }
 
   void _setSaving(bool value) {
-    isSaving = value;
+    _isSaving = value;
     notifyListeners();
   }
 
-  String _parseErro(Object e) {
-    return e.toString().replaceAll('Exception: ', '');
+  void _setError(Object e) {
+    _erro = e.toString().replaceAll('Exception: ', '');
   }
 
-  Future<T?> _execute<T>({
-    required String origem,
-    required Future<T> Function() action,
-    bool useSaving = false,
-  }) async {
-    erro = null;
+  void _clearError() {
+    _erro = null;
+  }
 
-    if (useSaving) {
-      _setSaving(true);
-    } else {
-      _setLoading(true);
-    }
+  // =========================
+  // EXECUTION HELPERS
+  // =========================
+
+  Future<T?> _runLoading<T>(
+    Future<T> Function() action,
+  ) async {
+    _clearError();
+    _setLoading(true);
 
     try {
       return await action();
     } catch (e) {
-      erro = _parseErro(e);
+      _setError(e);
+      notifyListeners();
       return null;
     } finally {
-      if (useSaving) {
-        _setSaving(false);
-      } else {
-        _setLoading(false);
-      }
+      _setLoading(false);
+    }
+  }
+
+  Future<T?> _runSaving<T>(
+    Future<T> Function() action,
+  ) async {
+    _clearError();
+    _setSaving(true);
+
+    try {
+      return await action();
+    } catch (e) {
+      _setError(e);
+      notifyListeners();
+      return null;
+    } finally {
+      _setSaving(false);
     }
   }
 
   // =========================
   // LISTAR
   // =========================
+
   Future<void> listar() async {
-    final result = await _execute<List<Lista>>(
-      origem: "listar",
-      action: () => _service.getAll(),
+    final result = await _runLoading(
+      () => _service.getAll(),
     );
 
-    if (result != null) {
-      listas = result;
-      notifyListeners();
-    }
+    if (result == null) return;
+
+    _listas
+      ..clear()
+      ..addAll(result);
+
+    notifyListeners();
   }
 
   // =========================
   // CRIAR
   // =========================
+
   Future<Lista?> criar(String nome) async {
-    final criada = await _execute<Lista>(
-      origem: "criar",
-      useSaving: true,
-      action: () => _service.create(nome),
+    final criada = await _runSaving(
+      () => _service.create(nome),
     );
 
-    if (criada != null) {
-      listas.add(criada);
-      listaAtual = criada;
-      notifyListeners();
-    }
+    if (criada == null) return null;
+
+    _listas.add(criada);
+
+    _listaAtualId = criada.id;
+
+    notifyListeners();
 
     return criada;
   }
@@ -102,60 +153,77 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   // SELECIONAR
   // =========================
+
   void selecionarLista(Lista lista) {
-    listaAtual = lista;
+    _listaAtualId = lista.id;
     notifyListeners();
   }
 
   // =========================
   // ATUALIZAR
   // =========================
+
   Future<Lista?> atualizar(Lista lista) async {
     if (lista.id == null) {
-      erro = "ID obrigatório";
+      _setError("ID obrigatório");
       notifyListeners();
       return null;
     }
 
-    final atualizada = await _execute<Lista>(
-      origem: "atualizar",
-      useSaving: true,
-      action: () => _service.update(lista),
+    final atualizada = await _runSaving(
+      () => _service.update(lista),
     );
 
-    if (atualizada != null) {
-      final index = listas.indexWhere((l) => l.id == atualizada.id);
+    if (atualizada == null) return null;
 
-      if (index != -1) {
-        listas[index] = atualizada;
-      }
+    final index = _listas.indexWhere(
+      (l) => l.id == atualizada.id,
+    );
 
-      if (listaAtual?.id == atualizada.id) {
-        listaAtual = atualizada;
-      }
-
-      notifyListeners();
+    if (index != -1) {
+      _listas[index] = atualizada;
     }
+
+    notifyListeners();
 
     return atualizada;
   }
 
   // =========================
+  // SALVAR
+  // =========================
+
+  Future<void> salvarLista(
+    int? id,
+    String nome,
+  ) async {
+    if (id == null) {
+      await criar(nome);
+    } else {
+      await atualizar(
+        Lista(
+          id: id,
+          nome: nome,
+        ),
+      );
+    }
+  }
+
+  // =========================
   // DELETAR
   // =========================
+
   Future<void> deletar(int id) async {
-    await _execute<void>(
-      origem: "deletar",
-      useSaving: true,
-      action: () => _service.delete(id),
+    await _runSaving(
+      () => _service.delete(id),
     );
 
-    if (erro != null) return;
+    if (_erro != null) return;
 
-    listas.removeWhere((l) => l.id == id);
+    _listas.removeWhere((l) => l.id == id);
 
-    if (listaAtual?.id == id) {
-      listaAtual = null;
+    if (_listaAtualId == id) {
+      _listaAtualId = null;
     }
 
     notifyListeners();
@@ -164,19 +232,20 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   // FINALIZAR
   // =========================
+
   Future<void> finalizar(int id) async {
-    await _execute<void>(
-      origem: "finalizar",
-      useSaving: true,
-      action: () => _service.finalizarLista(id),
+    await _runSaving(
+      () => _service.finalizarLista(id),
     );
 
-    if (erro != null) return;
+    if (_erro != null) return;
 
-    final index = listas.indexWhere((l) => l.id == id);
+    final index = _listas.indexWhere(
+      (l) => l.id == id,
+    );
 
     if (index != -1) {
-      listas[index] = listas[index].copyWith(
+      _listas[index] = _listas[index].copyWith(
         concluidoEm: DateTime.now(),
       );
     }
@@ -187,13 +256,40 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   // RESET
   // =========================
+
   void resetar() {
-    listas = [];
-    listaAtual = null;
-    isLoading = false;
-    isSaving = false;
-    erro = null;
+    _listas.clear();
+
+    _listaAtualId = null;
+    _isLoading = false;
+    _isSaving = false;
+    _erro = null;
 
     notifyListeners();
   }
 }
+
+/* OBSERVAÇÕES
+
+Internamente:
+- _listas
+- _erro
+- _listaAtualId
+
+Externamente (UI):
+- listas
+- erro
+- listaAtualId
+
+*/
+
+/*
+REFATORAÇÃO REALIZADA
+
+- Estado interno encapsulado
+- Exposição segura via getters
+- Redução de repetição
+- Separação entre loading e saving
+- ViewModel focada em orquestração da UI
+- Melhor alinhamento com MVVM
+*/

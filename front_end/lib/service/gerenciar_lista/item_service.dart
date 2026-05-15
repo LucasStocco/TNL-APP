@@ -1,6 +1,6 @@
 import 'package:crud_flutter/core/api/api_client.dart';
-import 'package:crud_flutter/dto/item_create_dto.dart';
-import 'package:crud_flutter/dto/item_update_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_create_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_update_dto.dart';
 import 'package:crud_flutter/model/gerenciar_lista/item.dart';
 
 class ItemService {

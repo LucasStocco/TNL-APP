@@ -1,4 +1,4 @@
-import 'package:crud_flutter/dto/item_create_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_create_dto.dart';
 import 'package:crud_flutter/model/cadastrar_categoria/subcategoria_mode.dart';
 import 'package:crud_flutter/model/cadastrar_produto/produto.dart';
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';

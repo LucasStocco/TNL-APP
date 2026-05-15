@@ -10,12 +10,12 @@ class ListaResumoViewModel extends ChangeNotifier {
   ListaResumoViewModel(this.service);
 
   // =========================
-  // STATE (RESUMO)
+  // STATE (RESUMO - UI PRINCIPAL)
   // =========================
   List<ListaResumo> listas = [];
 
   // =========================
-  // STATE (CRUD)
+  // STATE (CRUD INTERNO)
   // =========================
   List<Lista> listasCrud = [];
   Lista? listaAtual;
@@ -109,9 +109,10 @@ class ListaResumoViewModel extends ChangeNotifier {
     if (criada != null) {
       listasCrud.add(criada);
       listaAtual = criada;
+
+      await carregarResumo(); // 🔥 sincroniza UI
     }
 
-    notifyListeners();
     return criada;
   }
 
@@ -142,24 +143,38 @@ class ListaResumoViewModel extends ChangeNotifier {
       if (listaAtual?.id == atualizada.id) {
         listaAtual = atualizada;
       }
+
+      await carregarResumo(); // 🔥 sincroniza UI
     }
 
-    notifyListeners();
     return atualizada;
   }
 
+  // =========================
+  // DELETE (CORRIGIDO)
+  // =========================
   Future<void> deletarLista(int id) async {
     await _execute<void>(
       useSaving: true,
       action: () => service.delete(id),
     );
 
-    // remove localmente SEM depender de result
-    listas.removeWhere((l) => l.id == id);
+    if (erro != null) return;
 
-    notifyListeners();
+    // 🔥 remove das duas fontes para evitar inconsistência
+    listas.removeWhere((l) => l.id == id);
+    listasCrud.removeWhere((l) => l.id == id);
+
+    if (listaAtual?.id == id) {
+      listaAtual = null;
+    }
+
+    await carregarResumo(); // 🔥 garante sync com backend
   }
 
+  // =========================
+  // FINALIZAR
+  // =========================
   Future<void> finalizar(int id) async {
     await _execute<void>(
       useSaving: true,
@@ -176,7 +191,7 @@ class ListaResumoViewModel extends ChangeNotifier {
       );
     }
 
-    notifyListeners();
+    await carregarResumo(); // 🔥 sync UI
   }
 
   // =========================
