@@ -79,7 +79,6 @@ class MyApp extends StatelessWidget {
             context.read<ItemService>(),
           ),
         ),
-
         ChangeNotifierProvider(
           create: (context) => ListaViewModel(
             context.read<ListaService>(),

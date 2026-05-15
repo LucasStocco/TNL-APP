@@ -5,40 +5,97 @@ import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_create_dto
 import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_update_dto.dart';
 
 class ItemViewModel extends ChangeNotifier {
-  final ItemService service;
+  final ItemService _service;
 
-  ItemViewModel(this.service);
+  ItemViewModel(this._service);
 
   // =========================
   // STATE
   // =========================
-  List<Item> itens = [];
+  final List<Item> _itens = [];
 
-  bool isLoading = false;
-  bool isSaving = false;
+  bool _isLoading = false;
+  bool _isSaving = false;
 
-  String? erro;
+  String? _erro;
 
   // =========================
-  // LISTAR ITENS
+  // GETTERS
   // =========================
-  Future<void> carregar(int listaId) async {
-    isLoading = true;
-    erro = null;
+  List<Item> get itens => List.unmodifiable(_itens);
+  bool get isLoading => _isLoading;
+  bool get isSaving => _isSaving;
+  String? get erro => _erro;
+
+  // =========================
+  // STATE HELPERS
+  // =========================
+  void _setLoading(bool value) {
+    _isLoading = value;
     notifyListeners();
+  }
 
-    try {
-      itens = await service.listar(listaId);
-    } catch (e) {
-      erro = e.toString();
-    }
+  void _setSaving(bool value) {
+    _isSaving = value;
+    notifyListeners();
+  }
 
-    isLoading = false;
+  void _setError(Object e) {
+    _erro = e.toString();
+    notifyListeners();
+  }
+
+  void _clearError() {
+    _erro = null;
     notifyListeners();
   }
 
   // =========================
-  // CRIAR ITEM
+  // EXECUTION HELPERS
+  // =========================
+  Future<T?> _runLoading<T>(Future<T> Function() action) async {
+    try {
+      _clearError();
+      _setLoading(true);
+      return await action();
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<T?> _runSaving<T>(Future<T> Function() action) async {
+    try {
+      _clearError();
+      _setSaving(true);
+      return await action();
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setSaving(false);
+    }
+  }
+
+  // =========================
+  // LISTAR ITENS (SOURCE OF TRUTH)
+  // =========================
+  Future<void> carregar(int listaId) async {
+    final resultado = await _runLoading(
+      () => _service.listar(listaId),
+    );
+
+    if (resultado != null) {
+      _itens
+        ..clear()
+        ..addAll(resultado);
+    }
+  }
+
+  // =========================
+  // CRIAR ITEM (RELOAD)
   // =========================
   Future<Item?> criar({
     required int listaId,
@@ -46,33 +103,23 @@ class ItemViewModel extends ChangeNotifier {
     required int quantidade,
     required double preco,
   }) async {
-    isSaving = true;
-    erro = null;
-    notifyListeners();
-
-    try {
+    return await _runSaving(() async {
       final dto = ItemCreateDTO(
         produtoId: idProduto,
         quantidade: quantidade,
         preco: preco,
       );
 
-      final novo = await service.criar(listaId, dto);
+      final novo = await _service.criar(listaId, dto);
 
-      await carregar(listaId);
+      await carregar(listaId); // 🔥 única fonte da verdade
 
       return novo;
-    } catch (e) {
-      erro = e.toString();
-      return null;
-    } finally {
-      isSaving = false;
-      notifyListeners();
-    }
+    });
   }
 
   // =========================
-  // ATUALIZAR
+  // ATUALIZAR (RELOAD)
   // =========================
   Future<Item?> atualizar({
     required int listaId,
@@ -80,70 +127,54 @@ class ItemViewModel extends ChangeNotifier {
     required int quantidade,
     required double preco,
   }) async {
-    isSaving = true;
-    erro = null;
-    notifyListeners();
-
-    try {
+    return await _runSaving(() async {
       final dto = ItemUpdateDTO(
         quantidade: quantidade,
         preco: preco,
       );
 
-      final atualizado = await service.atualizar(listaId, idItem, dto);
+      final atualizado = await _service.atualizar(
+        listaId,
+        idItem,
+        dto,
+      );
 
-      // 🔥 GARANTE CONSISTÊNCIA COM BACKEND
-      await carregar(listaId);
+      await carregar(listaId); // 🔥 reload
 
       return atualizado;
-    } catch (e) {
-      erro = e.toString();
-      return null;
-    } finally {
-      isSaving = false;
-      notifyListeners();
-    }
+    });
   }
 
   // =========================
-  // TOGGLE COMPRADO
+  // TOGGLE COMPRADO (RELOAD CENTRALIZADO)
   // =========================
   Future<void> marcarComprado(
     int listaId,
     int idItem,
     bool comprado,
   ) async {
-    try {
+    await _runSaving(() async {
       if (comprado) {
-        await service.marcarComprado(listaId, idItem);
+        await _service.marcarComprado(listaId, idItem);
       } else {
-        await service.desmarcarComprado(listaId, idItem);
+        await _service.desmarcarComprado(listaId, idItem);
       }
 
-      final index = itens.indexWhere((i) => i.id == idItem);
-
-      if (index != -1) {
-        itens[index] = itens[index].copyWith(comprado: comprado);
-        notifyListeners();
-      }
-    } catch (e) {
-      erro = e.toString();
-      notifyListeners();
-    }
+      await carregar(listaId); // 🔥 centralizado
+    });
   }
 
   // =========================
-  // DELETAR ITEM
+  // DELETAR ITEM (RELOAD CENTRALIZADO)
   // =========================
-  Future<void> deletar(int listaId, int idItem) async {
-    try {
-      await service.deletar(listaId, idItem);
+  Future<void> deletar(
+    int listaId,
+    int idItem,
+  ) async {
+    await _runSaving(() async {
+      await _service.deletar(listaId, idItem);
 
-      itens.removeWhere((i) => i.id == idItem);
-      notifyListeners();
-    } catch (e) {
-      erro = e.toString();
-      notifyListeners();
-    }
+      await carregar(listaId); // 🔥 centralizado
+    });
   }
 }
