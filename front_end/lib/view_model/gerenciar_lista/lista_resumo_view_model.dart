@@ -10,14 +10,10 @@ class ListaResumoViewModel extends ChangeNotifier {
   ListaResumoViewModel(this.service);
 
   // =========================
-  // STATE (RESUMO - UI PRINCIPAL)
+  // STATE (ÚNICA FONTE DE VERDADE)
   // =========================
   List<ListaResumo> listas = [];
 
-  // =========================
-  // STATE (CRUD INTERNO)
-  // =========================
-  List<Lista> listasCrud = [];
   Lista? listaAtual;
 
   bool isLoading = false;
@@ -39,38 +35,36 @@ class ListaResumoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _parseErro(Object e) {
-    return e.toString().replaceAll('Exception: ', '');
+  void _setError(Object e) {
+    erro = e.toString().replaceAll('Exception: ', '');
+    notifyListeners();
+  }
+
+  void _clearError() {
+    erro = null;
+    notifyListeners();
   }
 
   Future<T?> _execute<T>({
     required Future<T> Function() action,
     bool useSaving = false,
   }) async {
-    erro = null;
-
-    if (useSaving) {
-      _setSaving(true);
-    } else {
-      _setLoading(true);
-    }
-
     try {
+      _clearError();
+
+      useSaving ? _setSaving(true) : _setLoading(true);
+
       return await action();
     } catch (e) {
-      erro = _parseErro(e);
+      _setError(e);
       return null;
     } finally {
-      if (useSaving) {
-        _setSaving(false);
-      } else {
-        _setLoading(false);
-      }
+      useSaving ? _setSaving(false) : _setLoading(false);
     }
   }
 
   // =========================
-  // RESUMO
+  // RESUMO (ÚNICA FONTE DE LISTA)
   // =========================
   Future<void> carregarResumo() async {
     final result = await _execute<List<ListaResumo>>(
@@ -80,24 +74,14 @@ class ListaResumoViewModel extends ChangeNotifier {
     if (result != null) {
       listas = result;
     }
-
-    notifyListeners();
   }
 
   // =========================
-  // CRUD
+  // CRUD (SEM LISTA DUPLICADA)
   // =========================
 
   Future<void> listar() async {
-    final result = await _execute<List<Lista>>(
-      action: () => service.getAll(),
-    );
-
-    if (result != null) {
-      listasCrud = result;
-    }
-
-    notifyListeners();
+    await carregarResumo(); // agora tudo vem do resumo
   }
 
   Future<Lista?> criar(String nome) async {
@@ -107,10 +91,8 @@ class ListaResumoViewModel extends ChangeNotifier {
     );
 
     if (criada != null) {
-      listasCrud.add(criada);
       listaAtual = criada;
-
-      await carregarResumo(); // 🔥 sincroniza UI
+      await carregarResumo(); // 🔥 source of truth
     }
 
     return criada;
@@ -123,8 +105,7 @@ class ListaResumoViewModel extends ChangeNotifier {
 
   Future<Lista?> atualizar(Lista lista) async {
     if (lista.id == null) {
-      erro = "ID obrigatório";
-      notifyListeners();
+      _setError("ID obrigatório");
       return null;
     }
 
@@ -134,24 +115,35 @@ class ListaResumoViewModel extends ChangeNotifier {
     );
 
     if (atualizada != null) {
-      final index = listasCrud.indexWhere((l) => l.id == atualizada.id);
-
-      if (index != -1) {
-        listasCrud[index] = atualizada;
-      }
-
       if (listaAtual?.id == atualizada.id) {
         listaAtual = atualizada;
       }
 
-      await carregarResumo(); // 🔥 sincroniza UI
+      await carregarResumo();
     }
 
     return atualizada;
   }
 
+  /// =========================
+  /// RENOMEAR (ESPECIAL PARA NÃO DUPLICAR LISTA)
+  /// =========================
+  Future<void> renomearLista(int id, String novoNome) async {
+    await _execute<void>(
+      useSaving: true,
+      action: () => service.update(
+        Lista(
+          id: id,
+          nome: novoNome,
+        ),
+      ),
+    );
+
+    await carregarResumo();
+  }
+
   // =========================
-  // DELETE (CORRIGIDO)
+  // DELETE
   // =========================
   Future<void> deletarLista(int id) async {
     await _execute<void>(
@@ -161,15 +153,11 @@ class ListaResumoViewModel extends ChangeNotifier {
 
     if (erro != null) return;
 
-    // 🔥 remove das duas fontes para evitar inconsistência
-    listas.removeWhere((l) => l.id == id);
-    listasCrud.removeWhere((l) => l.id == id);
-
     if (listaAtual?.id == id) {
       listaAtual = null;
     }
 
-    await carregarResumo(); // 🔥 garante sync com backend
+    await carregarResumo();
   }
 
   // =========================
@@ -183,34 +171,7 @@ class ListaResumoViewModel extends ChangeNotifier {
 
     if (erro != null) return;
 
-    final index = listasCrud.indexWhere((l) => l.id == id);
-
-    if (index != -1) {
-      listasCrud[index] = listasCrud[index].copyWith(
-        concluidoEm: DateTime.now(),
-      );
-    }
-
-    await carregarResumo(); // 🔥 sync UI
-  }
-
-  // =========================
-  // RENOMEAR (RESUMO)
-  // =========================
-  Future<void> renomearLista(int id, String novoNome) async {
-    final result = await _execute<Lista>(
-      useSaving: true,
-      action: () => service.update(
-        Lista(
-          id: id,
-          nome: novoNome,
-        ),
-      ),
-    );
-
-    if (result != null) {
-      await carregarResumo();
-    }
+    await carregarResumo();
   }
 
   // =========================
@@ -218,7 +179,6 @@ class ListaResumoViewModel extends ChangeNotifier {
   // =========================
   void resetar() {
     listas = [];
-    listasCrud = [];
     listaAtual = null;
     isLoading = false;
     isSaving = false;
