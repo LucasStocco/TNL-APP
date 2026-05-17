@@ -11,14 +11,14 @@ public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
 
     //Itens mais comprados.
     @Query("""
-    SELECT i.produto.nome, COUNT(i.id)
+    SELECT i.produto.nome, SUM(i.quantidade), COUNT(DISTINCT i.lista.id)
     FROM Item i
-    WHERE i.comprado = true
-    AND i.deletado = false
-    GROUP BY i.produto.nome
-    ORDER BY COUNT(i.id) DESC
+    WHERE i.deletado = false
+    AND i.lista.usuario.id = :usuarioId
+    GROUP BY i.produto.id, i.produto.nome
+    ORDER BY SUM(i.quantidade) DESC
     """)
-    List<Object[]> buscarItensMaisComprados();
+    List<Object[]> buscarItensMaisComprados(@Param("usuarioId") Long usuarioId);
 
     //Itens mais baratos
     @Query("""
