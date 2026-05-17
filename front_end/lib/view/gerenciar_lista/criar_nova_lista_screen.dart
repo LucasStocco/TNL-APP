@@ -1,4 +1,5 @@
 import 'package:crud_flutter/view/gerenciar_lista/widgets/submit_loading_button.dart';
+import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,21 +39,26 @@ class _CriarNovaListaScreenState extends State<CriarNovaListaScreen> {
   Future<void> _salvar() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final vm = context.read<ListaViewModel>();
+    final listaVm = context.read<ListaViewModel>();
+    final resumoVm = context.read<ListaResumoViewModel>();
+
     final nome = _nomeController.text;
 
-    await vm.salvarLista(widget.listaId, nome);
+    await listaVm.criar(nome);
 
-    if (vm.erro != null) {
+    if (!mounted) return;
+
+    if (listaVm.erro != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(vm.erro!)),
+        SnackBar(content: Text(listaVm.erro!)),
       );
       return;
     }
 
-    if (mounted) {
-      Navigator.pop(context);
-    }
+    // 🔥 ATUALIZA A TELA QUE REALMENTE MOSTRA AS LISTAS
+    await resumoVm.carregarResumo();
+
+    Navigator.pop(context, true);
   }
 
   @override
