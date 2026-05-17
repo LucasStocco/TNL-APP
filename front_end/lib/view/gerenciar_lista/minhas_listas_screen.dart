@@ -1,5 +1,6 @@
 import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
 import 'package:crud_flutter/shared/widgets/navigation/section_header.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/empty_minhas_listas_widget.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -124,8 +125,9 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
+        // Estado vazio das minhas listas
         if (viewModel.listas.isEmpty) {
-          return const Center(child: Text('Nenhuma lista encontrada'));
+          return const EmptyMinhasListasWidget();
         }
 
         return SafeArea(

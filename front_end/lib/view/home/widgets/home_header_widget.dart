@@ -162,7 +162,7 @@ class AppHeaderWidget extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: Icon(icon, color: Colors.red),
+        icon: Icon(icon, color: const Color(0xFFF44336)),
         onPressed: onTap,
       ),
     );
