@@ -20,36 +20,37 @@ public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
     """)
     List<Object[]> buscarItensMaisComprados(@Param("usuarioId") Long usuarioId);
 
-    //Itens mais baratos
+    //Mais Baratos
     @Query("""
-    SELECT i
+    SELECT i.produto.nome, i.produto.subcategoria.categoria.nome, MIN(i.preco)
     FROM Item i
-    WHERE i.lista.id = :listaId
-    AND i.deletado = false
-    ORDER BY i.preco ASC
+    WHERE i.deletado = false
+    AND i.lista.usuario.id = :usuarioId
+    GROUP BY i.produto.id, i.produto.nome, i.produto.subcategoria.categoria.nome
+    ORDER BY MIN(i.preco) ASC
     """)
-    List<Item> buscarItensMaisBaratos(@Param("listaId") Long listaId);
+    List<Object[]> buscarItensMaisBaratos(@Param("usuarioId") Long usuarioId);
 
-    //Itens mais caros
+    //Mais Caros
     @Query("""
-    SELECT i    
+    SELECT i.produto.nome, i.produto.subcategoria.categoria.nome, MAX(i.preco)
     FROM Item i
-    WHERE i.lista.id = :listaId
-    AND i.deletado = false
-    ORDER BY i.preco DESC
+    WHERE i.deletado = false
+    AND i.lista.usuario.id = :usuarioId
+    GROUP BY i.produto.id, i.produto.nome, i.produto.subcategoria.categoria.nome
+    ORDER BY MAX(i.preco) DESC
     """)
-    List<Item> buscarItensMaisCaros(@Param("listaId") Long listaId);
+    List<Object[]> buscarItensMaisCaros(@Param("usuarioId") Long usuarioId);
 
 
     //Agrupamento por categoria
-
- @Query("""
-    SELECT i.produto.categoria.nome, COUNT(i.id)
+    @Query("""
+    SELECT i.produto.subcategoria.categoria.nome, COUNT(DISTINCT i.produto.id), SUM(i.quantidade), SUM(i.preco * i.quantidade)
     FROM Item i
-    WHERE i.lista.id = :listaId
-    AND i.deletado = false
-    GROUP BY i.produto.categoria.nome
-    ORDER BY COUNT(i.id) DESC
-""")
-List<Object[]> totalPorCategoria(@Param("listaId") Long listaId);
+    WHERE i.deletado = false
+    AND i.lista.usuario.id = :usuarioId
+    GROUP BY i.produto.subcategoria.categoria.id, i.produto.subcategoria.categoria.nome
+    ORDER BY SUM(i.preco * i.quantidade) DESC
+    """)
+    List<Object[]> buscarItensPorCategoria(@Param("usuarioId") Long usuarioId);
 }
