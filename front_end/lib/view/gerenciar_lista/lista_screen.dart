@@ -1,4 +1,5 @@
 // ================= PACKAGES =================
+import 'package:crud_flutter/view/gerenciar_lista/widgets/empty_lista_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -85,8 +86,9 @@ class _ListaScreenState extends State<ListaScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // Estado vazio da lista
           if (vm.itens.isEmpty) {
-            return const Center(child: Text("Nenhum item na lista"));
+            return const EmptyListaWidget();
           }
 
           return Column(
