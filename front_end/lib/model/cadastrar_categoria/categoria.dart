@@ -28,6 +28,29 @@ class Categoria {
       "deletado": deletado,
     };
   }
+
+  // =====================================================
+  // ✅ REGRA DE NEGÓCIO: categoria editável pelo usuário
+  // =====================================================
+  bool get isUsuario {
+    const categoriasPadrao = [
+      'BEBIDAS',
+      'CARNES',
+      'PADARIA',
+      'HORTIFRUTI',
+      'LATICINIOS',
+      'MERCEARIA',
+      'HIGIENE',
+      'LIMPEZA',
+      'PETS',
+      'DOCES',
+      'UTILIDADES',
+      'BEBES',
+      'SAZONAIS',
+    ];
+
+    return !categoriasPadrao.contains(codigo.toUpperCase());
+  }
 }
 /*
 beck retorna: 

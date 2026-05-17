@@ -112,21 +112,49 @@ class CategoriaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // DELETAR
+  // RENOMEAR CATEGORIA
   // =========================
-  Future<void> deletar(int id) async {
+  Future<void> renomearCategoria(int id, String novoNome) async {
     _setSaving(true);
     erro = null;
 
     try {
-      await _service.deletarCategoria(id);
+      final atualizada = await _service.atualizarCategoria(
+        id,
+        CategoriaUpdateDTO(nome: novoNome),
+      );
 
-      categorias.removeWhere((c) => c.id == id);
+      categorias = categorias.map((c) {
+        return c.id == id ? atualizada : c;
+      }).toList();
+
+      notifyListeners();
     } catch (e) {
       _setError(e);
     } finally {
       _setSaving(false);
+    }
+  }
+
+  // =========================
+  // DELETAR
+  // =========================
+  Future<void> deletar(int id) async {
+    print("🔥 DELETE CHAMADO: $id"); // <<<<<< ADICIONA ISSO
+
+    _setSaving(true);
+
+    try {
+      await _service.deletarCategoria(id);
+
+      print("🔥 DELETE OK NO SERVICE");
+
+      categorias.removeWhere((c) => c.id == id);
       notifyListeners();
+    } catch (e) {
+      print("❌ ERRO DELETE: $e");
+    } finally {
+      _setSaving(false);
     }
   }
 

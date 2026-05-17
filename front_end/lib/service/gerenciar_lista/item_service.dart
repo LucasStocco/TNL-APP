@@ -95,6 +95,36 @@ class ItemService {
   }
 
   // =====================================================
+  // ADICIONAR PRODUTO NA LISTA
+  // =====================================================
+  Future<Item> adicionarProdutoNaLista({
+    required int listaId,
+    required int produtoId,
+    double preco = 0.0,
+    int quantidade = 1,
+  }) async {
+    final url = '/listas/$listaId/itens';
+
+    final body = {
+      "produtoId": produtoId,
+      "preco": preco,
+      "quantidade": quantidade,
+    };
+
+    final result = await _client.post<Item>(
+      url,
+      body,
+      (data) => Item.fromJson(data),
+    );
+
+    if (!result.success || result.data == null) {
+      throw Exception(result.message);
+    }
+
+    return result.data!;
+  }
+
+  // =====================================================
   // ✅ MARCAR COMO COMPRADO
   // =====================================================
   Future<void> marcarComprado(int listaId, int idItem) async {

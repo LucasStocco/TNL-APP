@@ -6,6 +6,7 @@ class Lista {
   final int? idUsuario;
 
   final List<Item> itens;
+  final int totalItens;
 
   final DateTime? criadoEm;
   final DateTime? atualizadoEm;
@@ -18,6 +19,7 @@ class Lista {
     required this.nome,
     this.idUsuario,
     this.itens = const [],
+    this.totalItens = 0,
     this.criadoEm,
     this.atualizadoEm,
     this.concluidoEm,
@@ -33,6 +35,7 @@ class Lista {
               ?.map((i) => Item.fromJson(i))
               .toList() ??
           [],
+      totalItens: json['totalItens'] ?? 0,
       criadoEm: DateTime.tryParse(json['criadoEm'] ?? ''),
       atualizadoEm: DateTime.tryParse(json['atualizadoEm'] ?? ''),
       concluidoEm: DateTime.tryParse(json['concluidoEm'] ?? ''),
