@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   intl: ^0.18.1
   shared_preferences: ^2.2.2
 
@@ -22,14 +23,24 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+
+  image_path: "assets/images/logo_esquilo_branco.png"
+
+  adaptive_icon_background: "#F44336"
+  adaptive_icon_foreground: "assets/images/logo_esquilo_branco.png"
 
 flutter:
   uses-material-design: true
 
   assets:
-  - assets/icons/categorias/
-  - assets/icons/header_home/
-  - assets/icons/subcategorias/
-  - assets/images/
-  
+    - assets/icons/categorias/
+    - assets/icons/header_home/
+    - assets/icons/subcategorias/
+    - assets/images/
