@@ -2,18 +2,12 @@ import 'package:flutter/material.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import '../../service/gerenciar_lista/lista_service.dart';
 
-/* RESPONSABILIDADES DO VIEW MODEL
-1. Receber ação da UI
-2. Chamar Service
-3. Atualizar estado da UI
-4. Notificar mudanças
-*/
-
 class ListaViewModel extends ChangeNotifier {
   final ListaService _service;
 
-  // dependência injetada
-  ListaViewModel(this._service);
+  ListaViewModel(this._service) {
+    print('[LISTA_VM] INSTÂNCIA CRIADA -> ${identityHashCode(this)}');
+  }
 
   // =========================
   // STATE
@@ -58,16 +52,19 @@ class ListaViewModel extends ChangeNotifier {
 
   void _setLoading(bool value) {
     _isLoading = value;
+    print('$TAG loading -> $value');
     notifyListeners();
   }
 
   void _setSaving(bool value) {
     _isSaving = value;
+    print('$TAG saving -> $value');
     notifyListeners();
   }
 
   void _setError(Object e) {
     _erro = e.toString().replaceAll('Exception: ', '');
+    print('$TAG ERROR -> $_erro');
   }
 
   void _clearError() {
@@ -75,57 +72,21 @@ class ListaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // EXECUTION HELPERS
-  // =========================
-
-  Future<T?> _runLoading<T>(
-    Future<T> Function() action,
-  ) async {
-    _clearError();
-    _setLoading(true);
-
-    try {
-      return await action();
-    } catch (e) {
-      _setError(e);
-      notifyListeners();
-      return null;
-    } finally {
-      _setLoading(false);
-    }
-  }
-
-  Future<T?> _runSaving<T>(
-    Future<T> Function() action,
-  ) async {
-    _clearError();
-    _setSaving(true);
-
-    try {
-      return await action();
-    } catch (e) {
-      _setError(e);
-      notifyListeners();
-      return null;
-    } finally {
-      _setSaving(false);
-    }
-  }
-
-  // =========================
   // LISTAR
   // =========================
 
   Future<void> listar() async {
-    final result = await _runLoading(
-      () => _service.getAll(),
-    );
+    print('$TAG listar() -> VM ${identityHashCode(this)}');
 
-    if (result == null) return;
+    final result = await _service.getAll();
+
+    print('$TAG resultado listar -> ${result.length} itens');
 
     _listas
       ..clear()
       ..addAll(result);
+
+    print('$TAG listas atualizadas -> ${_listas.length}');
 
     notifyListeners();
   }
@@ -135,68 +96,43 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
 
   Future<Lista?> criar(String nome) async {
-    final criada = await _runSaving(
-      () => _service.create(nome),
-    );
+    print('$TAG criar() -> VM ${identityHashCode(this)}');
 
-    if (criada == null) return null;
+    _setSaving(true);
+    _clearError();
 
-    _listas.add(criada);
+    try {
+      final criada = await _service.create(nome);
 
-    _listaAtualId = criada.id;
+      print('$TAG criada -> ${criada.nome} (id: ${criada.id})');
 
-    notifyListeners();
+      // 🔥 MELHOR PRÁTICA: sincroniza com backend
+      final result = await _service.getAll();
 
-    return criada;
-  }
+      _listas
+        ..clear()
+        ..addAll(result);
 
-  // =========================
-  // SELECIONAR
-  // =========================
+      print('$TAG listas sincronizadas -> ${_listas.length}');
 
-  void selecionarLista(Lista lista) {
-    _listaAtualId = lista.id;
-    notifyListeners();
-  }
+      _listaAtualId = criada.id;
 
-  // =========================
-  // ATUALIZAR
-  // =========================
-
-  Future<Lista?> atualizar(Lista lista) async {
-    if (lista.id == null) {
-      _setError("ID obrigatório");
       notifyListeners();
+      print('$TAG notifyListeners() após criar + sync');
+
+      return criada;
+    } catch (e) {
+      _setError(e);
       return null;
+    } finally {
+      _setSaving(false);
     }
-
-    final atualizada = await _runSaving(
-      () => _service.update(lista),
-    );
-
-    if (atualizada == null) return null;
-
-    final index = _listas.indexWhere(
-      (l) => l.id == atualizada.id,
-    );
-
-    if (index != -1) {
-      _listas[index] = atualizada;
-    }
-
-    notifyListeners();
-
-    return atualizada;
   }
 
   // =========================
   // SALVAR
   // =========================
-
-  Future<void> salvarLista(
-    int? id,
-    String nome,
-  ) async {
+  Future<void> salvarLista(int? id, String nome) async {
     if (id == null) {
       await criar(nome);
     } else {
@@ -208,49 +144,76 @@ class ListaViewModel extends ChangeNotifier {
       );
     }
   }
+  // =========================
+  // SELECIONAR
+  // =========================
+
+  void selecionarLista(Lista lista) {
+    print('$TAG selecionarLista -> ${lista.id}');
+
+    _listaAtualId = lista.id;
+    notifyListeners();
+  }
+
+  // =========================
+  // ATUALIZAR
+  // =========================
+
+  Future<Lista?> atualizar(Lista lista) async {
+    print('$TAG atualizar -> ${lista.id}');
+
+    if (lista.id == null) {
+      _setError("ID obrigatório");
+      notifyListeners();
+      return null;
+    }
+
+    _setSaving(true);
+
+    try {
+      final atualizada = await _service.update(lista);
+
+      final index = _listas.indexWhere((l) => l.id == atualizada.id);
+
+      if (index != -1) {
+        _listas[index] = atualizada;
+      }
+
+      notifyListeners();
+
+      return atualizada;
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setSaving(false);
+    }
+  }
 
   // =========================
   // DELETAR
   // =========================
 
   Future<void> deletar(int id) async {
-    await _runSaving(
-      () => _service.delete(id),
-    );
+    print('$TAG deletar -> $id');
 
-    if (_erro != null) return;
+    _setSaving(true);
 
-    _listas.removeWhere((l) => l.id == id);
+    try {
+      await _service.delete(id);
 
-    if (_listaAtualId == id) {
-      _listaAtualId = null;
+      _listas.removeWhere((l) => l.id == id);
+
+      if (_listaAtualId == id) {
+        _listaAtualId = null;
+      }
+
+      notifyListeners();
+    } catch (e) {
+      _setError(e);
+    } finally {
+      _setSaving(false);
     }
-
-    notifyListeners();
-  }
-
-  // =========================
-  // FINALIZAR
-  // =========================
-
-  Future<void> finalizar(int id) async {
-    await _runSaving(
-      () => _service.finalizarLista(id),
-    );
-
-    if (_erro != null) return;
-
-    final index = _listas.indexWhere(
-      (l) => l.id == id,
-    );
-
-    if (index != -1) {
-      _listas[index] = _listas[index].copyWith(
-        concluidoEm: DateTime.now(),
-      );
-    }
-
-    notifyListeners();
   }
 
   // =========================
@@ -258,8 +221,9 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
 
   void resetar() {
-    _listas.clear();
+    print('$TAG resetar()');
 
+    _listas.clear();
     _listaAtualId = null;
     _isLoading = false;
     _isSaving = false;
@@ -268,28 +232,3 @@ class ListaViewModel extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-/* OBSERVAÇÕES
-
-Internamente:
-- _listas
-- _erro
-- _listaAtualId
-
-Externamente (UI):
-- listas
-- erro
-- listaAtualId
-
-*/
-
-/*
-REFATORAÇÃO REALIZADA
-
-- Estado interno encapsulado
-- Exposição segura via getters
-- Redução de repetição
-- Separação entre loading e saving
-- ViewModel focada em orquestração da UI
-- Melhor alinhamento com MVVM
-*/

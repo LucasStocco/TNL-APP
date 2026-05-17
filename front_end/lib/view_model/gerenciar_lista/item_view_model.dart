@@ -160,7 +160,19 @@ class ItemViewModel extends ChangeNotifier {
         await _service.desmarcarComprado(listaId, idItem);
       }
 
-      await carregar(listaId); // 🔥 centralizado
+      // ✅ RECONSTRUÇÃO SEGURA E CONSISTENTE
+      final updated = _itens.map((item) {
+        if (item.id == idItem) {
+          return item.copyWith(comprado: comprado);
+        }
+        return item;
+      }).toList();
+
+      _itens
+        ..clear()
+        ..addAll(updated);
+
+      notifyListeners();
     });
   }
 
