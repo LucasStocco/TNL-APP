@@ -6,7 +6,7 @@ class ListaItemTileWithDivider extends StatelessWidget {
   final Item item;
   final bool isLast;
   final VoidCallback onLongPress;
-  final VoidCallback onDoubleTap; // 👈 novo
+  final VoidCallback onDoubleTap;
 
   const ListaItemTileWithDivider({
     super.key,
@@ -18,19 +18,19 @@ class ListaItemTileWithDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListaItemTile(
-          item: item,
-          onLongPress: onLongPress,
-          onDoubleTap: onDoubleTap,
-        ),
-        if (!isLast)
-          const Divider(
-            height: 1,
-            thickness: 1,
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      child: Column(
+        children: [
+          ListaItemTile(
+            item: item,
+            onLongPress: onLongPress,
+            onDoubleTap: onDoubleTap,
           ),
-      ],
+          if (!isLast) const Divider(height: 1, thickness: 1),
+        ],
+      ),
     );
   }
 }

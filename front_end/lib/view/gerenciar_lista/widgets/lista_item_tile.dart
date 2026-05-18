@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ListaItemTile extends StatelessWidget {
   final Item item;
   final VoidCallback onLongPress;
-  final VoidCallback onDoubleTap; // 👈 novo
+  final VoidCallback onDoubleTap;
 
   const ListaItemTile({
     super.key,
@@ -13,6 +13,36 @@ class ListaItemTile extends StatelessWidget {
     required this.onLongPress,
     required this.onDoubleTap,
   });
+
+  Widget _buildChecked() {
+  return Container(
+    key: const ValueKey("checked"),
+    width: 22,
+    height: 22,
+    decoration: BoxDecoration(
+      color: Colors.green,
+      borderRadius: BorderRadius.circular(6),
+    ),
+    child: const Icon(
+      Icons.check,
+      color: Colors.white,
+      size: 16,
+    ),
+  );
+}
+
+Widget _buildUnchecked() {
+  return Container(
+    key: const ValueKey("unchecked"),
+    width: 22,
+    height: 22,
+    decoration: BoxDecoration(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(color: Colors.grey),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -22,58 +52,76 @@ class ListaItemTile extends StatelessWidget {
         ? CategoriaColorMapper.cor(categoria)
         : Colors.grey.shade200;
 
-    return GestureDetector(
-      onDoubleTap: onDoubleTap, // 👈 ação de toggle
+    return ListTile(
+      onLongPress: onLongPress,
+      onTap: onDoubleTap, // mais natural que GestureDetector aqui
 
-      child: ListTile(
-        onLongPress: onLongPress,
-
-        // 🔲 quadrado status
-        leading: Container(
-          width: 18,
-          height: 18,
-          decoration: BoxDecoration(
-            color: item.comprado ? Colors.green : Colors.transparent,
-            border: Border.all(
-              color: item.comprado ? Colors.green : Colors.grey,
+      // =========================
+      // CHECK ANIMADO
+      // =========================
+      leading: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        switchInCurve: Curves.easeOutBack,
+        switchOutCurve: Curves.easeIn,
+        transitionBuilder: (child, animation) {
+          return ScaleTransition(
+            scale: animation,
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
             ),
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
+          );
+        },
+        child: item.comprado ? _buildChecked() : _buildUnchecked(),
+      ),
 
-        // nome + categoria
-        title: Row(
-          children: [
-            Expanded(
+      // =========================
+      // TITULO + CATEGORIA
+      // =========================
+      title: Row(
+        children: [
+          Expanded(
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                decoration: item.comprado
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+                color: item.comprado ? Colors.grey : Colors.black,
+              ),
               child: Text(
                 item.produto.nome,
-                style: const TextStyle(fontWeight: FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            if (categoria != null) ...[
-              const SizedBox(width: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 2,
-                ),
-                decoration: BoxDecoration(
-                  color: corCategoria.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  categoria,
-                  style: const TextStyle(fontSize: 11),
-                ),
+          ),
+          if (categoria != null) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
               ),
-            ],
+              decoration: BoxDecoration(
+                color: corCategoria.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                categoria,
+                style: const TextStyle(fontSize: 11),
+              ),
+            ),
           ],
-        ),
+        ],
+      ),
 
-        subtitle: Text(
-          "Qtd: ${item.quantidade} • R\$ ${item.preco.toStringAsFixed(2)}",
-        ),
+      // =========================
+      // SUBTITULO
+      // =========================
+      subtitle: Text(
+        "Qtd: ${item.quantidade} • R\$ ${item.preco.toStringAsFixed(2)}",
       ),
     );
   }
