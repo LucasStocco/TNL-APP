@@ -16,6 +16,7 @@ class ItemViewModel extends ChangeNotifier {
 
   bool _isLoading = false;
   bool _isSaving = false;
+  bool _showingCompletion = false;
 
   String? _erro;
 
@@ -26,6 +27,7 @@ class ItemViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
   String? get erro => _erro;
+  bool get showingCompletion => _showingCompletion;
 
   // =========================
   // STATE HELPERS
@@ -91,6 +93,11 @@ class ItemViewModel extends ChangeNotifier {
       _itens
         ..clear()
         ..addAll(resultado);
+
+      // reset de conclusão ao trocar/recarregar lista
+      _showingCompletion = false;
+
+      notifyListeners();
     }
   }
 
@@ -160,11 +167,12 @@ class ItemViewModel extends ChangeNotifier {
         await _service.desmarcarComprado(listaId, idItem);
       }
 
-      // ✅ RECONSTRUÇÃO SEGURA E CONSISTENTE
+      // atualização local otimista
       final updated = _itens.map((item) {
         if (item.id == idItem) {
           return item.copyWith(comprado: comprado);
         }
+
         return item;
       }).toList();
 
@@ -173,7 +181,32 @@ class ItemViewModel extends ChangeNotifier {
         ..addAll(updated);
 
       notifyListeners();
+
+      // verifica se a lista foi concluída
+      checkListCompletion();
     });
+  }
+
+  bool isListCompleted() {
+    return _itens.isNotEmpty && _itens.every((i) => i.comprado);
+  }
+
+  bool checkListCompletion() {
+    final completed = isListCompleted();
+
+    if (completed && !_showingCompletion) {
+      _showingCompletion = true;
+
+      notifyListeners();
+
+      return true;
+    }
+
+    if (!completed && _showingCompletion) {
+      _showingCompletion = false;
+    }
+
+    return false;
   }
 
   // =========================

@@ -106,7 +106,6 @@ class ListaViewModel extends ChangeNotifier {
 
       print('$TAG criada -> ${criada.nome} (id: ${criada.id})');
 
-      // 🔥 MELHOR PRÁTICA: sincroniza com backend
       final result = await _service.getAll();
 
       _listas
@@ -118,6 +117,7 @@ class ListaViewModel extends ChangeNotifier {
       _listaAtualId = criada.id;
 
       notifyListeners();
+
       print('$TAG notifyListeners() após criar + sync');
 
       return criada;
@@ -132,6 +132,7 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   // SALVAR
   // =========================
+
   Future<void> salvarLista(int? id, String nome) async {
     if (id == null) {
       await criar(nome);
@@ -144,6 +145,7 @@ class ListaViewModel extends ChangeNotifier {
       );
     }
   }
+
   // =========================
   // SELECIONAR
   // =========================
@@ -152,6 +154,7 @@ class ListaViewModel extends ChangeNotifier {
     print('$TAG selecionarLista -> ${lista.id}');
 
     _listaAtualId = lista.id;
+
     notifyListeners();
   }
 
@@ -164,7 +167,9 @@ class ListaViewModel extends ChangeNotifier {
 
     if (lista.id == null) {
       _setError("ID obrigatório");
+
       notifyListeners();
+
       return null;
     }
 
@@ -173,7 +178,9 @@ class ListaViewModel extends ChangeNotifier {
     try {
       final atualizada = await _service.update(lista);
 
-      final index = _listas.indexWhere((l) => l.id == atualizada.id);
+      final index = _listas.indexWhere(
+        (l) => l.id == atualizada.id,
+      );
 
       if (index != -1) {
         _listas[index] = atualizada;
@@ -184,6 +191,7 @@ class ListaViewModel extends ChangeNotifier {
       return atualizada;
     } catch (e) {
       _setError(e);
+
       return null;
     } finally {
       _setSaving(false);
@@ -224,9 +232,12 @@ class ListaViewModel extends ChangeNotifier {
     print('$TAG resetar()');
 
     _listas.clear();
+
     _listaAtualId = null;
+
     _isLoading = false;
     _isSaving = false;
+
     _erro = null;
 
     notifyListeners();
