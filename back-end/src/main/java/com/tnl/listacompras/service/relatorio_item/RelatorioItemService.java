@@ -5,93 +5,86 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.tnl.listacompras.dto.responseDTO.relatorio_item.RelatorioItemMaisBaratoResponseDTO;
-import com.tnl.listacompras.dto.responseDTO.relatorio_item.RelatorioItemMaisCaroResponseDTO;
-import com.tnl.listacompras.dto.responseDTO.relatorio_item.RelatorioItemMaisCompradosResponseDTO;
-import com.tnl.listacompras.dto.responseDTO.relatorio_item.RelatorioItemPorCategoriaResponseDTO;
-import com.tnl.listacompras.model.gerenciar_lista.Item;
+import com.tnl.listacompras.dto.responseDTO.relatorio_item.ItemMaisCompradoDTO;
+import com.tnl.listacompras.dto.responseDTO.relatorio_item.ItemPorCategoriaDTO;
+import com.tnl.listacompras.dto.responseDTO.relatorio_item.ItemRankingPrecoDTO;
 import com.tnl.listacompras.repository.relatorio_item.RelatorioItemRepository;
 
 @Service
-public class RelatorioItemService{
-        private final RelatorioItemRepository repository;
+public class RelatorioItemService {
 
-        public RelatorioItemService(RelatorioItemRepository repository) {
+    private final RelatorioItemRepository repository;
+
+    public RelatorioItemService(RelatorioItemRepository repository) {
         this.repository = repository;
     }
 
-    public List<RelatorioItemMaisCompradosResponseDTO> buscarItensMaisComprados() {
-    List<Object[]> resultados = repository.buscarItensMaisComprados();
+    public List<ItemMaisCompradoDTO> buscarItemMaisComprados(Long usuarioId) {
+        List<Object[]> resultados = repository.buscarItensMaisComprados(usuarioId);
 
-    List<RelatorioItemMaisCompradosResponseDTO> response = new ArrayList<>();
+        List<ItemMaisCompradoDTO> response = new ArrayList<>();
 
-    for (Object[] resultado : resultados) {
-        RelatorioItemMaisCompradosResponseDTO dto =
-                new RelatorioItemMaisCompradosResponseDTO(
-                        (String) resultado[0],
-                        (Long) resultado[1]
-                );
+        for (Object[] resultado : resultados) {
+            ItemMaisCompradoDTO dto = new ItemMaisCompradoDTO(
+                    (String) resultado[0],
+                    (Long) resultado[1],
+                    (Long) resultado[2]
+            );
+            response.add(dto);
+        }
 
-        response.add(dto);
+        return response;
     }
 
-    return response;
-}
+    public List<ItemPorCategoriaDTO> buscarItemPorCategoria(Long usuarioId) {
+        List<Object[]> resultados = repository.buscarItensPorCategoria(usuarioId);
 
-        public List<RelatorioItemPorCategoriaResponseDTO> buscarItensPorCategoria(Long listaId) {
-    List<Object[]> resultados = repository.totalPorCategoria(listaId);
+        List<ItemPorCategoriaDTO> response = new ArrayList<>();
 
-    List<RelatorioItemPorCategoriaResponseDTO> response = new ArrayList<>();
+        for (Object[] resultado : resultados) {
+            ItemPorCategoriaDTO dto = new ItemPorCategoriaDTO(
+                    (String) resultado[0],
+                    (Long) resultado[1],
+                    (Long) resultado[2],
+                    (Double) resultado[3]
+            );
+            response.add(dto);
+        }
 
-    for (Object[] resultado : resultados) {
-        RelatorioItemPorCategoriaResponseDTO dto =
-                new RelatorioItemPorCategoriaResponseDTO(
-                        (String) resultado[0],
-                        (Long) resultado[1]
-                );
-
-        response.add(dto);
+        return response;
     }
 
-    return response;
-}
+    public List<ItemRankingPrecoDTO> buscarItemMaisCaros(Long usuarioId) {
+        List<Object[]> resultados = repository.buscarItensMaisCaros(usuarioId);
 
-        public List<RelatorioItemMaisCaroResponseDTO> buscarItensMaisCaros(Long listaId) {
+        List<ItemRankingPrecoDTO> response = new ArrayList<>();
 
-    List<Item> resultados = repository.buscarItensMaisCaros(listaId);
+        for (Object[] resultado : resultados) {
+            ItemRankingPrecoDTO dto = new ItemRankingPrecoDTO(
+                    (String) resultado[0],
+                    (String) resultado[1],
+                    (Double) resultado[2]
+            );
+            response.add(dto);
+        }
 
-    List<RelatorioItemMaisCaroResponseDTO> response = new ArrayList<>();
-
-    for (Item item : resultados) {
-        RelatorioItemMaisCaroResponseDTO dto =
-                new RelatorioItemMaisCaroResponseDTO(
-                        item.getProduto().getNome(),
-                        item.getPreco()
-                );
-
-        response.add(dto);
+        return response;
     }
 
-    return response;
-}
+    public List<ItemRankingPrecoDTO> buscarItemMaisBaratos(Long usuarioId) {
+        List<Object[]> resultados = repository.buscarItensMaisBaratos(usuarioId);
 
-public List<RelatorioItemMaisBaratoResponseDTO> buscarItensMaisBaratos(Long listaId) {
+        List<ItemRankingPrecoDTO> response = new ArrayList<>();
 
-    List<Item> resultados = repository.buscarItensMaisBaratos(listaId);
+        for (Object[] resultado : resultados) {
+            ItemRankingPrecoDTO dto = new ItemRankingPrecoDTO(
+                    (String) resultado[0],
+                    (String) resultado[1],
+                    (Double) resultado[2]
+            );
+            response.add(dto);
+        }
 
-    List<RelatorioItemMaisBaratoResponseDTO> response = new ArrayList<>();
-
-    for (Item item : resultados) {
-        RelatorioItemMaisBaratoResponseDTO dto =
-                new RelatorioItemMaisBaratoResponseDTO(
-                        item.getProduto().getNome(),
-                        item.getPreco()
-                );
-
-        response.add(dto);
+        return response;
     }
-
-    return response;
-}
-
 }

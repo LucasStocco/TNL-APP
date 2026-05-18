@@ -9,48 +9,43 @@ import java.util.List;
 
 public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
 
-    //Itens mais comprados.
     @Query("""
-    SELECT i.produto.nome, SUM(i.quantidade), COUNT(DISTINCT i.lista.id)
-    FROM Item i
-    WHERE i.deletado = false
-    AND i.lista.usuario.id = :usuarioId
-    GROUP BY i.produto.id, i.produto.nome
-    ORDER BY SUM(i.quantidade) DESC
+        SELECT i.produto.nome, SUM(i.quantidade), COUNT(DISTINCT i.lista.id)
+        FROM Item i
+        WHERE i.deletado = false
+        AND i.lista.id = :listaId
+        GROUP BY i.produto.id, i.produto.nome
+        ORDER BY SUM(i.quantidade) DESC
     """)
-    List<Object[]> buscarItensMaisComprados(@Param("usuarioId") Long usuarioId);
+    List<Object[]> buscarItensMaisComprados(@Param("listaId") Long listaId);
 
-    //Mais Baratos
     @Query("""
-    SELECT i.produto.nome, i.produto.subcategoria.categoria.nome, MIN(i.preco)
-    FROM Item i
-    WHERE i.deletado = false
-    AND i.lista.usuario.id = :usuarioId
-    GROUP BY i.produto.id, i.produto.nome, i.produto.subcategoria.categoria.nome
-    ORDER BY MIN(i.preco) ASC
+        SELECT i.produto.categoria.nome, COUNT(DISTINCT i.produto.id), SUM(i.quantidade), SUM(i.preco * i.quantidade)
+        FROM Item i
+        WHERE i.deletado = false
+        AND i.lista.id = :listaId
+        GROUP BY i.produto.categoria.id, i.produto.categoria.nome
+        ORDER BY SUM(i.preco * i.quantidade) DESC
     """)
-    List<Object[]> buscarItensMaisBaratos(@Param("usuarioId") Long usuarioId);
+    List<Object[]> buscarItensPorCategoria(@Param("listaId") Long listaId);
 
-    //Mais Caros
     @Query("""
-    SELECT i.produto.nome, i.produto.subcategoria.categoria.nome, MAX(i.preco)
-    FROM Item i
-    WHERE i.deletado = false
-    AND i.lista.usuario.id = :usuarioId
-    GROUP BY i.produto.id, i.produto.nome, i.produto.subcategoria.categoria.nome
-    ORDER BY MAX(i.preco) DESC
+        SELECT i.produto.nome, i.produto.categoria.nome, MAX(i.preco)
+        FROM Item i
+        WHERE i.deletado = false
+        AND i.lista.id = :listaId
+        GROUP BY i.produto.id, i.produto.nome, i.produto.categoria.nome
+        ORDER BY MAX(i.preco) DESC
     """)
-    List<Object[]> buscarItensMaisCaros(@Param("usuarioId") Long usuarioId);
+    List<Object[]> buscarItensMaisCaros(@Param("listaId") Long listaId);
 
-
-    //Agrupamento por categoria
     @Query("""
-    SELECT i.produto.subcategoria.categoria.nome, COUNT(DISTINCT i.produto.id), SUM(i.quantidade), SUM(i.preco * i.quantidade)
-    FROM Item i
-    WHERE i.deletado = false
-    AND i.lista.usuario.id = :usuarioId
-    GROUP BY i.produto.subcategoria.categoria.id, i.produto.subcategoria.categoria.nome
-    ORDER BY SUM(i.preco * i.quantidade) DESC
+        SELECT i.produto.nome, i.produto.categoria.nome, MIN(i.preco)
+        FROM Item i
+        WHERE i.deletado = false
+        AND i.lista.id = :listaId
+        GROUP BY i.produto.id, i.produto.nome, i.produto.categoria.nome
+        ORDER BY MIN(i.preco) ASC
     """)
-    List<Object[]> buscarItensPorCategoria(@Param("usuarioId") Long usuarioId);
+    List<Object[]> buscarItensMaisBaratos(@Param("listaId") Long listaId);
 }
