@@ -42,10 +42,15 @@ class MockAuthService implements AuthService {
       print("ID TOKEN: ${auth.idToken}");
 
       final idToken = auth.idToken;
-
+//
+//
+//    TROCAR O IP COM BASE NO DISPOSITIVO QUE VAI ACESSAR O BAGULHO, 
+//POR EXEMPLO O IP ABAIXO É DO MEU CELULAR, ACREDITO QUE IRA MUDAR QUANTO FOR NA WEB, AI SERIA O IP DA INSTÂNCIA
+//
+//
       // CHAMADA BACKEND
       final response = await http.post(
-        Uri.parse("http://172.16.89.60:8088/auth/google"),
+        Uri.parse("http://10.21.35.28:8088/auth/google"),
         headers: {
           "Content-Type": "application/json",
         },
