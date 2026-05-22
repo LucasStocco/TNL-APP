@@ -1,3 +1,4 @@
+import 'package:crud_flutter/view/home/widgets/home_carousel.dart';
 import 'package:crud_flutter/view/home/widgets/home_header_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -27,23 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     _pages = [
       // 🏠 HOME
-      SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 24),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/img_super_oferta.jpg',
-                height: 250,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
+      const HomeCarousel(),
 
       // 📂 CATEGORIAS
       const CategoriasScreen(),
@@ -127,17 +112,20 @@ class _HomeScreenState extends State<HomeScreen> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 700),
             curve: Curves.easeInOutCubic,
-            top: isHome ? 200 : 0,
+            top: isHome ? 180 : 0,
             left: 0,
             right: 0,
             bottom: isHome ? 90 : 0,
             child: isHome
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: HomeContentContainer(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 400),
-                        child: _pages[_selectedIndex],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: HomeContentContainer(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 400),
+                          child: _pages[_selectedIndex],
+                        ),
                       ),
                     ),
                   )
