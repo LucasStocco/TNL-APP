@@ -1,4 +1,4 @@
-package com.tnl.listacompras.dto.responseDTO.auto_cadastro;
+package com.tnl.listacompras.dto.responsedto.auto_cadastro;
 
 import com.tnl.listacompras.model.auto_cadastro.Usuario;
 

@@ -5,8 +5,11 @@ import 'package:crud_flutter/service/auto_cadastro/auth_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:crud_flutter/dto/auto_cadastro/user_response_dto.dart';
+import 'package:crud_flutter/dto/auto_cadastro/google_login_request_dto.dart';
+import 'package:crud_flutter/core/api/api_config.dart';
 
-class MockAuthService implements AuthService {
+class GoogleAuthService implements AuthService {
 
   static const _keyUser = 'user';
 
@@ -42,6 +45,12 @@ class MockAuthService implements AuthService {
       print("ID TOKEN: ${auth.idToken}");
 
       final idToken = auth.idToken;
+
+
+            // DTO REQUEST
+      final requestDTO = GoogleLoginRequestDTO(
+        idToken: idToken!,
+      );
 //
 //
 //    TROCAR O IP COM BASE NO DISPOSITIVO QUE VAI ACESSAR O BAGULHO, 
@@ -50,13 +59,11 @@ class MockAuthService implements AuthService {
 //
       // CHAMADA BACKEND
       final response = await http.post(
-        Uri.parse("http://10.21.35.28:8088/auth/google"),
+        Uri.parse("${ApiConfig.baseUrl}/auth/google"),
         headers: {
           "Content-Type": "application/json",
         },
-        body: jsonEncode({
-          "idToken": idToken,
-        }),
+        body: jsonEncode(requestDTO.toJson()),
       );
 
       print("STATUS BACKEND: ${response.statusCode}");
@@ -66,16 +73,12 @@ class MockAuthService implements AuthService {
         throw Exception("Erro no backend");
       }
 
+  
       final data = jsonDecode(response.body);
 
-      print(data);
+      final dto = UserResponseDTO.fromJson(data);
 
-      final user = User(
-        id: data["id"],
-        nome: data["name"] ?? "",
-        email: data["email"] ?? "",
-        fotoUrl: data["fotoUrl"],
-      );
+      final user = dto.toModel();
 
       // SALVA LOCALMENTE
       final prefs = await SharedPreferences.getInstance();

@@ -14,6 +14,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.tnl.listacompras.dto.responseDTO.auto_cadastro.UsuarioResponseDTO;
 import com.tnl.listacompras.model.auto_cadastro.Usuario;
 import com.tnl.listacompras.repository.auto_cadastro.UsuarioRepository;
+import com.tnl.listacompras.session.Session;
 
 @Service
 public class UsuarioService {
@@ -78,6 +79,9 @@ public class UsuarioService {
                     novo.setFotoUrl(foto);
                     return usuarioRepository.save(novo);
                 });
+
+                // salva a sessão do cabloco
+                Session.setUsuarioId(usuario.getId());
 
         return new UsuarioResponseDTO(usuario);
     }
