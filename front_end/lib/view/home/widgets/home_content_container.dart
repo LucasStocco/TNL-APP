@@ -16,14 +16,17 @@ class HomeContentContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      elevation: 10,
-      borderRadius: BorderRadius.circular(30),
-      clipBehavior: Clip.antiAlias, // 🔥 ESSENCIAL
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-        child: child,
+    return IgnorePointer(
+      ignoring: false,
+      child: Material(
+        color: Colors.white,
+        elevation: 10,
+        borderRadius: BorderRadius.circular(30),
+        clipBehavior: Clip.antiAlias,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          child: child,
+        ),
       ),
     );
   }
