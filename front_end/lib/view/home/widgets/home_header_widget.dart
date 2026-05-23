@@ -1,5 +1,5 @@
 import 'package:crud_flutter/view/auto_cadastro/user_screen.dart';
-import 'package:crud_flutter/view/settings_screen.dart';
+import 'package:crud_flutter/view/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
