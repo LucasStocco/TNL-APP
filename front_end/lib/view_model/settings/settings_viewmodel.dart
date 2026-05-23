@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:crud_flutter/service/notification/notification_preferences_service.dart';
 
 class SettingsViewModel extends ChangeNotifier {
-  static const String notificationsKey = 'notifications_enabled';
-
   bool _notificationsEnabled = true;
 
   bool get notificationsEnabled => _notificationsEnabled;
@@ -12,25 +10,17 @@ class SettingsViewModel extends ChangeNotifier {
     loadNotificationsPreference();
   }
 
-  /// CARREGAR PREFERÊNCIA
   Future<void> loadNotificationsPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    _notificationsEnabled = prefs.getBool(notificationsKey) ?? true;
+    _notificationsEnabled =
+        await NotificationPreferencesService.isNotificationsEnabled();
 
     notifyListeners();
   }
 
-  /// ALTERAR + SALVAR
   Future<void> toggleNotifications(bool value) async {
     _notificationsEnabled = value;
 
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setBool(
-      notificationsKey,
-      value,
-    );
+    await NotificationPreferencesService.setNotificationsEnabled(value);
 
     notifyListeners();
   }

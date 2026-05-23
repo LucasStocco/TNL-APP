@@ -1,3 +1,4 @@
+import 'package:crud_flutter/service/notification/notification_service.dart';
 import 'package:crud_flutter/view/settings/widgets/privacy_policy_bottom_sheet.dart';
 import 'package:crud_flutter/view/settings/widgets/settings_card.dart';
 import 'package:crud_flutter/view/settings/widgets/settings_section_title.dart';
@@ -130,6 +131,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
 
             const SizedBox(height: 12),
+
+            /// Botão temporário para testar notificação
+            ElevatedButton(
+              onPressed: () async {
+                await NotificationService.showTestNotification();
+              },
+              child: const Text('Testar Notificação'),
+            ),
+
+            const SizedBox(height: 16),
 
             /// Card com opções institucionais
             SettingsCard(
