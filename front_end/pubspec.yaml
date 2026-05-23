@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # =========================
+  # UI / UTILITIES
+  # =========================
   smooth_page_indicator: ^1.1.0
   intl: ^0.18.1
   shared_preferences: ^2.2.2
@@ -19,6 +22,17 @@ dependencies:
   http: ^1.2.1
   google_fonts: ^6.2.1
   dio: ^5.9.2
+
+  # =========================
+  # NOTIFICAÇÕES LOCAIS
+  # =========================
+  flutter_local_notifications: ^17.2.1
+
+  # =========================
+  # TIMEZONE (OBRIGATÓRIO PARA SCHEDULE)
+  # =========================
+  timezone: ^0.9.4
+  workmanager: ^0.7.0
 
 dev_dependencies:
   flutter_test:
