@@ -9,8 +9,8 @@ import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_service.dart';
 
-import 'package:crud_flutter/service/notification/notification_service.dart';
-import 'package:crud_flutter/service/notification/engine/notification_engine.dart';
+import 'package:crud_flutter/service/notifications/notification_service.dart';
+import 'package:crud_flutter/service/notifications/engine/notification_engine.dart';
 
 import 'package:crud_flutter/view/splash/splash_screen.dart';
 
@@ -57,7 +57,6 @@ void main() async {
   //
   // ⚠️ REMOVER EM PRODUÇÃO
   //
-  await NotificationEngine.resetDailyNotification();
 
   // =========================
   // INIT WORKMANAGER

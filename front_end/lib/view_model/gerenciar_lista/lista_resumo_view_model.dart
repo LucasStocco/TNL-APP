@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import '../../model/gerenciar_lista/lista_resumo.dart';
 import '../../service/gerenciar_lista/lista_resumo_service.dart';
-import 'package:crud_flutter/service/notification/scheduler/notification_scheduler.dart';
+import 'package:crud_flutter/service/notifications/scheduler/notification_scheduler.dart';
 
 class ListaResumoViewModel extends ChangeNotifier {
   final ListaResumoService service;

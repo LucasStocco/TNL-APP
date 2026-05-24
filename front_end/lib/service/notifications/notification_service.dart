@@ -1,4 +1,4 @@
-import 'package:crud_flutter/service/notification/notification_preferences_service.dart';
+import 'package:crud_flutter/service/notifications/notification_preferences_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:timezone/timezone.dart' as tz;
