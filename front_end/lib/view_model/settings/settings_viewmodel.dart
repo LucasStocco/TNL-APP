@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:crud_flutter/service/notification/notification_preferences_service.dart';
+import 'package:crud_flutter/service/notifications/notification_preferences_service.dart';
 
 class SettingsViewModel extends ChangeNotifier {
   bool _notificationsEnabled = true;

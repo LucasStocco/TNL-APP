@@ -1,45 +1,15 @@
 import 'package:workmanager/workmanager.dart';
-
-// Cria cliente HTTP para chamadas da API.
 import 'package:http/http.dart' as http;
 
-// Wrapper central de requisições.
 import 'package:crud_flutter/core/api/api_client.dart';
-
-// Busca os dados das listas.
 import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
 
-// Executa as regras de negócio.
-import 'package:crud_flutter/service/notification/engine/notification_engine.dart';
+import 'package:crud_flutter/service/notifications/notification_context_builder.dart';
+import 'package:crud_flutter/service/notifications/engine/notification_engine.dart';
 
-/// =============================================
-/// BACKGROUND WORKMANAGER ENTRY POINT
-/// =============================================
-///
-/// Este arquivo é o ponto de entrada do Workmanager.
-/// Ele é executado em um isolate separado do Flutter.
-///
-/// 📌 Função:
-/// - Permitir execução de tarefas em background
-/// - Rodar notificações mesmo com o app fechado
-/// - Ativar o lembrete diário do sistema
-///
-/// ⚠️ IMPORTANTE:
-/// - Este código NÃO roda na UI do Flutter
-/// - Não pode acessar contexto de widgets
-/// - Deve ser leve e rápido (sem operações pesadas)
-///
-/// Fluxo:
-/// Android Workmanager
-///        ↓
-/// callbackDispatcher
-///        ↓
-/// Busca listas na API
-///        ↓
-/// NotificationEngine
-///        ↓
-/// NotificationService (notificação local)
-///
+// IMPORT DAS RULES
+import 'package:crud_flutter/service/notifications/rules/list/pending_items_rule.dart';
+import 'package:crud_flutter/service/notifications/rules/daily/daily_reminder_rule.dart';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
@@ -50,24 +20,41 @@ void callbackDispatcher() {
       case "dailyReminderTask":
         print("🔥 EXECUTANDO DAILY REMINDER");
 
-        // Cria cliente HTTP
+        // =========================
+        // 1. API
+        // =========================
         final apiClient = ApiClient(http.Client());
+        final listaService = ListaResumoService(apiClient);
 
-        // Cria service de resumo
-        final listaResumoService = ListaResumoService(apiClient);
+        final listas = await listaService.getResumo();
 
-        // Busca listas reais da API
-        final listas = await listaResumoService.getResumo();
         print("📦 LISTAS RECEBIDAS: ${listas.length}");
 
         // =========================
-        // TESTE INSTANTÂNEO
+        // 2. CONTEXT BUILDER
         // =========================
-        //
-        // Executa imediatamente o lembrete diário
-        // usando dados reais da API.
-        //
-        await NotificationEngine.runDailyReminder(listas);
+        final context = NotificationContextBuilder.build(listas);
+
+        // =========================
+        // 3. ENGINE + RULES
+        // =========================
+        final engine = NotificationEngine([
+          PendingItemsRule(),
+          DailyReminderRule(),
+        ]);
+
+        final notifications = engine.evaluate(context);
+
+        // =========================
+        // 4. DISPATCH (TEMPORÁRIO)
+        // =========================
+        for (final n in notifications) {
+          print("🔔 ${n.title}");
+          print("📝 ${n.body}");
+
+          // FUTURO:
+          // NotificationService.show(...)
+        }
 
         break;
     }
