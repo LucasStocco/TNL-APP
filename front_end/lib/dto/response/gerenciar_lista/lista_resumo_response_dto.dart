@@ -1,11 +1,11 @@
-class ListaResumo {
+class ListaResumoResponseDTO {
   final int id;
   final String nome;
   final int totalItens;
   final int itensComprados;
   final double progresso;
 
-  ListaResumo({
+  ListaResumoResponseDTO({
     required this.id,
     required this.nome,
     required this.totalItens,
@@ -13,8 +13,8 @@ class ListaResumo {
     required this.progresso,
   });
 
-  factory ListaResumo.fromJson(Map<String, dynamic> json) {
-    return ListaResumo(
+  factory ListaResumoResponseDTO.fromJson(Map<String, dynamic> json) {
+    return ListaResumoResponseDTO(
       id: json['id'],
       nome: json['nome'],
       totalItens: json['totalItens'],
