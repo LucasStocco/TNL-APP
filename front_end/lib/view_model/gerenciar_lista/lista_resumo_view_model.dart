@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+
+import '../../dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import '../../model/gerenciar_lista/lista_resumo.dart';
 import '../../service/gerenciar_lista/lista_resumo_service.dart';
+
 import 'package:crud_flutter/service/notifications/scheduler/notification_scheduler.dart';
 
 class ListaResumoViewModel extends ChangeNotifier {
@@ -10,19 +13,21 @@ class ListaResumoViewModel extends ChangeNotifier {
   ListaResumoViewModel(this.service);
 
   List<ListaResumo> listas = [];
+
   Lista? listaAtual;
 
   bool isLoading = false;
   bool isSaving = false;
+
   String? erro;
 
-  void _setLoading(bool v) {
-    isLoading = v;
+  void _setLoading(bool value) {
+    isLoading = value;
     notifyListeners();
   }
 
-  void _setSaving(bool v) {
-    isSaving = v;
+  void _setSaving(bool value) {
+    isSaving = value;
     notifyListeners();
   }
 
@@ -38,7 +43,20 @@ class ListaResumoViewModel extends ChangeNotifier {
     _setLoading(true);
 
     try {
-      listas = await service.getResumo();
+      final List<ListaResumoResponseDTO> resultado = await service.getResumo();
+
+      // ✅ DTO -> MODEL
+      listas = resultado
+          .map(
+            (dto) => ListaResumo(
+              id: dto.id,
+              nome: dto.nome,
+              totalItens: dto.totalItens,
+              itensComprados: dto.itensComprados,
+              progresso: dto.progresso,
+            ),
+          )
+          .toList();
 
       NotificationScheduler.push(listas);
 
@@ -91,9 +109,12 @@ class ListaResumoViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // 📝 RENOMEAR LISTA
+  // RENOMEAR
   // =========================
-  Future<Lista?> renomearLista(int id, String novoNome) async {
+  Future<Lista?> renomearLista(
+    int id,
+    String novoNome,
+  ) async {
     _setSaving(true);
 
     try {
@@ -120,7 +141,7 @@ class ListaResumoViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // 🗑 DELETAR LISTA
+  // DELETAR
   // =========================
   Future<void> deletarLista(int id) async {
     _setSaving(true);
@@ -145,7 +166,7 @@ class ListaResumoViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // FINALIZAR LISTA
+  // FINALIZAR
   // =========================
   Future<void> finalizarLista(int id) async {
     _setSaving(true);
@@ -166,6 +187,7 @@ class ListaResumoViewModel extends ChangeNotifier {
   // =========================
   void selecionarLista(Lista lista) {
     listaAtual = lista;
+
     notifyListeners();
   }
 
@@ -174,8 +196,11 @@ class ListaResumoViewModel extends ChangeNotifier {
   // =========================
   void resetar() {
     listas = [];
+
     listaAtual = null;
+
     erro = null;
+
     isLoading = false;
     isSaving = false;
 

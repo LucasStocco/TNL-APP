@@ -1,13 +1,11 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- =========================
          PERMISSÕES
     ========================== -->
 
-    <!-- Notificações Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-
-    <!-- Permite rodar tarefas após reinício do celular -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <!-- =========================
@@ -31,12 +29,10 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
 
-            <!-- Tema inicial do Flutter -->
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
 
-            <!-- Launcher -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -49,10 +45,44 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
+        <!-- =========================
+             WORKMANAGER FIX (IMPORTANTE)
+        ========================== -->
+
+        <receiver
+            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:enabled" />
+
+        <receiver
+            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:enabled" />
+
+        <receiver
+            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:enabled" />
+
+        <receiver
+            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:enabled" />
+
+        <receiver
+            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:enabled" />
+
     </application>
 
     <!-- =========================
-         QUERIES (necessário Android 11+)
+         QUERIES (Android 11+)
     ========================== -->
     <queries>
         <intent>

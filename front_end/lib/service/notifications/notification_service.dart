@@ -1,40 +1,21 @@
 import 'package:crud_flutter/service/notifications/notification_preferences_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
 /// =========================
 /// NOTIFICATION SERVICE
 /// =========================
-///
-/// Central de notificações do app.
-///
-/// Responsável por:
-/// - inicialização
-/// - permissões
-/// - timezone
-/// - exibição de notificações
-/// - agendamento
-///
-/// Este service NÃO possui regras de negócio.
-///
-/// Toda inteligência fica no:
-/// NotificationEngine.
-///
-///
 class NotificationService {
-  // Plugin principal de notificações
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
 
   // =========================
-  // INIT
+  // INIT (SAFE + NORMAL)
   // =========================
-  //
-  // Inicializa plugin e permissões.
-  //
-  static Future<void> initialize() async {
+  static Future<void> initialize({bool background = false}) async {
+    print("⚙️ [NOTIFICATION] INIT iniciando...");
+
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
@@ -43,74 +24,67 @@ class NotificationService {
       android: androidSettings,
     );
 
-    await _notifications.initialize(
-      settings,
-    );
+    await _notifications.initialize(settings);
 
-    // Android 13+
-    await requestPermissions();
+    print("✅ [NOTIFICATION] plugin inicializado");
 
-    // Necessário para schedule
-    initTimezone();
+    if (!background) {
+      await requestPermissions();
+      initTimezone();
+    } else {
+      print("⚠️ [NOTIFICATION] modo background - init reduzido");
+    }
+
+    print("🚀 [NOTIFICATION] INIT finalizado");
   }
 
   // =========================
-  // PERMISSÃO ANDROID 13+
+  // PUBLIC METHOD (WORKER USE)
   // =========================
-  //
-  // Solicita permissão para
-  // enviar notificações.
-  //
-  static Future<void> requestPermissions() async {
-    await _notifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-  }
-
-  // =========================
-  // TIMEZONE
-  // =========================
-  //
-  // Necessário para notificações
-  // agendadas corretamente.
-  //
-  static void initTimezone() {
-    tz.initializeTimeZones();
-
-    tz.setLocalLocation(
-      tz.getLocation(
-        'America/Sao_Paulo',
-      ),
+  static Future<void> showNotification(
+    String title,
+    String body,
+  ) async {
+    await _showNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: title,
+      body: body,
     );
   }
 
   // =========================
-  // VERIFICA PERMISSÃO
+  // TEST NOTIFICATION
   // =========================
-  //
-  // Verifica se usuário deixou
-  // notificações ativadas.
-  //
-  static Future<bool> _canSendNotifications() async {
-    return await NotificationPreferencesService.isNotificationsEnabled();
+  static Future<void> showTestNotification() async {
+    print("🧪 [NOTIFICATION] TESTE disparado");
+
+    await showNotification(
+      'TNL 🛒',
+      'Teste de notificação funcionando com sucesso.',
+    );
   }
 
   // =========================
-  // BASE NOTIFICATION
+  // INTERNAL NOTIFICATION
   // =========================
-  //
-  // Método central usado por
-  // todas notificações.
-  //
   static Future<void> _showNotification({
     required int id,
     required String title,
     required String body,
   }) async {
-    final canSend = await _canSendNotifications();
+    print("📤 [NOTIFICATION] preparando envio...");
+    print("📤 [NOTIFICATION] title: $title");
+    print("📤 [NOTIFICATION] body: $body");
 
-    if (!canSend) return;
+    final canSend =
+        await NotificationPreferencesService.isNotificationsEnabled();
+
+    print("🔎 [NOTIFICATION] pode enviar? $canSend");
+
+    if (!canSend) {
+      print("⛔ [NOTIFICATION] bloqueado por preferências");
+      return;
+    }
 
     const androidDetails = AndroidNotificationDetails(
       'tnl_channel',
@@ -120,9 +94,7 @@ class NotificationService {
       priority: Priority.high,
     );
 
-    const details = NotificationDetails(
-      android: androidDetails,
-    );
+    const details = NotificationDetails(android: androidDetails);
 
     await _notifications.show(
       id,
@@ -130,106 +102,36 @@ class NotificationService {
       body,
       details,
     );
+
+    print("🔔 [NOTIFICATION] enviada com sucesso");
   }
 
   // =========================
-  // TESTE
+  // PERMISSION (ONLY FOREGROUND)
   // =========================
-  //
-  // Notificação usada para
-  // testes rápidos.
-  //
-  static Future<void> showTestNotification() async {
-    await _showNotification(
-      id: 0,
-      title: 'TNL 🛒',
-      body: 'Teste de notificação funcionando com sucesso.',
-    );
+  static Future<void> requestPermissions() async {
+    print("🔐 [NOTIFICATION] solicitando permissões...");
+
+    final result = await _notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
+    print("🔐 [NOTIFICATION] permissão resultado: $result");
   }
 
   // =========================
-  // LISTAS PENDENTES
+  // TIMEZONE
   // =========================
-  //
-  // Exibe lembretes inteligentes
-  // de listas pendentes.
-  //
-  static Future<void> showPendingItemsNotification(
-    String title,
-    String body,
-  ) async {
-    await _showNotification(
-      id: 1,
-      title: title,
-      body: body,
-    );
-  }
+  static void initTimezone() {
+    print("🌍 [NOTIFICATION] inicializando timezone...");
 
-  // =========================
-  // AGENDAMENTO DIÁRIO
-  // =========================
-  //
-  // Agenda lembrete diário fixo.
-  //
-  // (Opcional futuramente,
-  // pois Workmanager já executa
-  // em background.)
-  //
-  static Future<void> scheduleDailyReminder() async {
-    final canSend = await _canSendNotifications();
+    tz.initializeTimeZones();
 
-    if (!canSend) return;
-
-    const androidDetails = AndroidNotificationDetails(
-      'tnl_channel_reminder',
-      'TNL Reminders',
-      channelDescription: 'Lembretes diários do TNL',
-      importance: Importance.max,
-      priority: Priority.high,
+    tz.setLocalLocation(
+      tz.getLocation('America/Sao_Paulo'),
     );
 
-    const details = NotificationDetails(
-      android: androidDetails,
-    );
-
-    await _notifications.zonedSchedule(
-      10,
-      '🛒 Lembrete TNL',
-      'Você ainda possui listas pendentes.',
-      _nextInstanceOfHour(18),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
-  }
-
-  // =========================
-  // CALCULA PRÓXIMA HORA
-  // =========================
-  //
-  // Utilizado pelo schedule.
-  //
-  static tz.TZDateTime _nextInstanceOfHour(
-    int hour,
-  ) {
-    final now = tz.TZDateTime.now(tz.local);
-
-    var scheduled = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      hour,
-    );
-
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(
-        const Duration(days: 1),
-      );
-    }
-
-    return scheduled;
+    print("🌍 [NOTIFICATION] timezone configurado SP");
   }
 }
