@@ -59,7 +59,7 @@ class NotificationWorker {
           ? "Você tem itens pendentes 📋"
           : "Tudo certo 🎉";
 
-      final body = "Pendentes: ${context.pendingCount}";
+      final body = "Pendentes: ${context.pendingLists}";
 
       // =========================
       // 6. SEND NOTIFICATION (ONLY ONE SYSTEM)

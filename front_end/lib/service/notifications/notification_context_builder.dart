@@ -31,10 +31,18 @@ class NotificationContextBuilder {
     // CONTEXTO FINAL
     // =========================
     return NotificationContext(
-      hasPendingItems: pendentes.isNotEmpty,
-      pendingCount: quantidadePendentes,
+      totalLists: listas.length,
+      pendingLists: quantidadePendentes,
+      completedLists: listas.where((l) => l.progresso >= 100).length,
       remainingItems: faltantes,
-      hasAlmostCompletedList: faltantes <= 3,
+      hasPendingItems: pendentes.isNotEmpty,
+      hasAlmostCompletedList: faltantes > 0 && faltantes <= 3,
+      lastActivity: DateTime.now(), // mock temporário
+      urgencyLevel: faltantes >= 10
+          ? 2
+          : faltantes >= 5
+              ? 1
+              : 0,
     );
   }
 }
@@ -95,4 +103,3 @@ class NotificationContextBuilder {
 /// O ContextBuilder atua como um "tradutor" entre os dados do app
 /// e o sistema de regras de notificação, preparando um contexto limpo
 /// e fácil de ser interpretado pelo NotificationEngine.
-///
