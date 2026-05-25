@@ -4,6 +4,9 @@ import 'package:crud_flutter/background/services/notification_context_builder.da
 import 'package:crud_flutter/core/utils/notification_dedup.dart';
 import 'package:crud_flutter/core/utils/notification_hash.dart';
 
+import 'package:crud_flutter/core/utils/rules/notification_engine.dart';
+import 'package:crud_flutter/core/utils/rules/model/notification_decision.dart';
+
 class NotificationWorker {
   static const String taskName = "dailyReminderTask";
 
@@ -20,58 +23,67 @@ class NotificationWorker {
         return true;
       }
 
-      // =========================
-      // 1. FETCH API
-      // =========================
+      /// =========================
+      /// 1. FETCH API
+      /// =========================
       final apiService = ApiBackgroundService();
+
       final data = await apiService.fetchData();
 
-      if (data == null || data.isEmpty) {
+      if (data.isEmpty) {
         print("⚠️ [API] sem dados");
+
         return true;
       }
 
-      // =========================
-      // 2. CONTEXT BUILD
-      // =========================
+      /// =========================
+      /// 2. BUILD CONTEXT
+      /// =========================
       final context = NotificationContextBuilder.build(data);
 
-      // =========================
-      // 3. ANTI DUPLICATE
-      // =========================
-      final hash = NotificationHash.generate(context.toString());
+      /// =========================
+      /// 3. ENGINE DECISION
+      /// =========================
+      final NotificationDecision decision =
+          NotificationEngine.evaluate(context);
 
-      final isDuplicate = await NotificationDedup.isDuplicate(hash);
-      if (isDuplicate) {
-        print("⛔ DUPLICADO - ignorando");
+      if (!decision.shouldNotify) {
+        print("🔕 [ENGINE] decidiu não notificar");
+
         return true;
       }
 
-      // =========================
-      // 4. NOTIFICATION INIT (ONLY ONCE)
-      // =========================
-      await NotificationBackgroundService.initialize();
-
-      // =========================
-      // 5. DECISION MESSAGE
-      // =========================
-      final title = context.hasPendingItems
-          ? "Você tem itens pendentes 📋"
-          : "Tudo certo 🎉";
-
-      final body = "Pendentes: ${context.pendingLists}";
-
-      // =========================
-      // 6. SEND NOTIFICATION (ONLY ONE SYSTEM)
-      // =========================
-      await NotificationBackgroundService.show(
-        title: title,
-        body: body,
+      /// =========================
+      /// 4. HASH
+      /// =========================
+      final hash = NotificationHash.generate(
+        "${decision.title}${decision.body}",
       );
 
-      // =========================
-      // 7. SAVE HASH
-      // =========================
+      final isDuplicate = await NotificationDedup.isDuplicate(hash);
+
+      if (isDuplicate) {
+        print("⛔ DUPLICADO - ignorando");
+
+        return true;
+      }
+
+      /// =========================
+      /// 5. INIT NOTIFICATION
+      /// =========================
+      await NotificationBackgroundService.initialize();
+
+      /// =========================
+      /// 6. SHOW NOTIFICATION
+      /// =========================
+      await NotificationBackgroundService.show(
+        title: decision.title,
+        body: decision.body,
+      );
+
+      /// =========================
+      /// 7. SAVE HASH
+      /// =========================
       await NotificationDedup.save(hash);
 
       print("✅ WORKER OK FINALIZADO");
@@ -79,6 +91,7 @@ class NotificationWorker {
       return true;
     } catch (e) {
       print("❌ WORKER ERROR: $e");
+
       return false;
     }
   }
