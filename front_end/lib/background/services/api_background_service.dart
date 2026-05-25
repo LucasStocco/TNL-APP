@@ -8,23 +8,30 @@ class ApiBackgroundService {
   late final ListaResumoService _listaService;
 
   ApiBackgroundService() {
-    _client = ApiClient(http.Client());
+    final httpClient = http.Client();
+
+    _client = ApiClient(httpClient);
     _listaService = ListaResumoService(_client);
   }
 
-  Future<List<ListaResumoResponseDTO>?> fetchData() async {
+  /// =========================
+  /// FETCH DATA (RAW STATE)
+  /// =========================
+  Future<List<ListaResumoResponseDTO>> fetchData() async {
     print("🌐 [API SERVICE] iniciando chamada...");
 
     try {
       final response = await _listaService.getResumo();
 
-      print("📥 [API SERVICE] resposta recebida com sucesso");
-      print("📊 [API SERVICE] tipo: ${response.runtimeType}");
+      print("📥 [API SERVICE] resposta recebida");
+      print("📊 [API SERVICE] items: ${response.length}");
 
       return response;
     } catch (e) {
       print("❌ [API SERVICE ERROR]: $e");
-      return null;
+
+      // background-safe fallback
+      return [];
     }
   }
 }

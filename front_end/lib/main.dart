@@ -25,9 +25,13 @@ import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 
 /// =========================
-/// CONFIG TESTE / PRODUÇÃO
+/// CONFIG
 /// =========================
 const bool isTestMode = true;
+
+/// TASK IDS
+const String notificationTaskId = "daily_notification_task";
+const String notificationTaskName = "dailyNotificationTask";
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,32 +59,27 @@ Future<void> _initCore() async {
 
   print("⚙️ [MAIN] WorkManager initialized");
 
-  /// ❌ REMOVIDO: cancelAll()
-  /// (causava comportamento inconsistente e duplicação)
-
   if (isTestMode) {
-    print("🧪 [MAIN] TEST MODE - PERIODIC ONLY");
+    print("🧪 [MAIN] TEST MODE - DAILY JOB (FAST)");
 
     await Workmanager().registerPeriodicTask(
-      NotificationWorker.taskName, // taskId (único)
-      NotificationWorker.taskName, // taskName
-      existingWorkPolicy: ExistingWorkPolicy.replace,
-      frequency: const Duration(minutes: 15),
+      notificationTaskId,
+      notificationTaskName,
+      frequency: const Duration(minutes: 15), // teste rápido
       initialDelay: const Duration(seconds: 5),
+      existingWorkPolicy: ExistingWorkPolicy.replace,
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),
     );
-
-    print("📌 [MAIN] Periodic TEST registrado");
   } else {
-    print("🚀 [MAIN] PRODUCTION MODE");
+    print("🚀 [MAIN] PRODUCTION MODE - DAILY JOB");
 
     await Workmanager().registerPeriodicTask(
-      NotificationWorker.taskName, // taskId (UNIQUE)
-      NotificationWorker.taskName, // taskName
-      frequency: const Duration(minutes: 15),
-      initialDelay: const Duration(seconds: 5),
+      notificationTaskId,
+      notificationTaskName,
+      frequency: const Duration(hours: 24), // diário real
+      initialDelay: _calculateInitialDelay(), // manhã
       existingWorkPolicy: ExistingWorkPolicy.replace,
       constraints: Constraints(
         networkType: NetworkType.connected,
@@ -89,6 +88,26 @@ Future<void> _initCore() async {
   }
 
   print("✅ [MAIN] WORKMANAGER READY");
+}
+
+/// =========================
+/// DEFINE HORÁRIO (09:00 AM)
+/// =========================
+Duration _calculateInitialDelay() {
+  final now = DateTime.now();
+
+  final target = DateTime(
+    now.year,
+    now.month,
+    now.day,
+    9, // 9h da manhã
+  );
+
+  if (now.isAfter(target)) {
+    return const Duration(hours: 24) - now.difference(target);
+  }
+
+  return target.difference(now);
 }
 
 /// =========================
