@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
+// Orquestrador 
 class NotificationHash {
   static String generate(String input) {
     print("🔐 [HASH] gerando hash...");

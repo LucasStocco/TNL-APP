@@ -1,8 +1,9 @@
+import 'package:crud_flutter/core/utils/notification/notification_message_generator.dart';
 import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
-import 'package:crud_flutter/core/utils/rules/model/notification_decision.dart';
+import 'package:crud_flutter/core/utils/rules/model/notification_data.dart';
 
 class NotificationEngine {
-  static NotificationDecision evaluate(
+  static NotificationData? evaluate(
     NotificationContext context,
   ) {
     print("🧠 [ENGINE] avaliando contexto");
@@ -15,11 +16,7 @@ class NotificationEngine {
     if (!context.hasPendingItems) {
       print("✅ [ENGINE] nada pendente");
 
-      return const NotificationDecision(
-        shouldNotify: false,
-        title: '',
-        body: '',
-      );
+      return null;
     }
 
     /// =========================
@@ -28,10 +25,8 @@ class NotificationEngine {
     if (context.urgencyLevel == 2) {
       print("🚨 [ENGINE] urgência alta");
 
-      return NotificationDecision(
-        shouldNotify: true,
-        title: "Sua lista precisa de atenção 📋",
-        body: "Você ainda possui ${context.remainingItems} itens pendentes.",
+      return NotificationMessageGenerator.highUrgency(
+        context,
       );
     }
 
@@ -41,10 +36,8 @@ class NotificationEngine {
     if (context.hasAlmostCompletedList) {
       print("🔥 [ENGINE] lista quase concluída");
 
-      return NotificationDecision(
-        shouldNotify: true,
-        title: "Você está quase terminando 🎯",
-        body: "Faltam apenas ${context.remainingItems} itens na sua lista.",
+      return NotificationMessageGenerator.almostCompleted(
+        context,
       );
     }
 
@@ -53,10 +46,8 @@ class NotificationEngine {
     /// =========================
     print("📌 [ENGINE] lembrete padrão");
 
-    return NotificationDecision(
-      shouldNotify: true,
-      title: "Você possui listas pendentes 📋",
-      body: "${context.pendingLists} listas aguardam finalização.",
+    return NotificationMessageGenerator.pendingLists(
+      context,
     );
   }
 }

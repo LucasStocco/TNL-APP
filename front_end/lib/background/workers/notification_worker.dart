@@ -1,11 +1,11 @@
 import 'package:crud_flutter/background/services/api_background_service.dart';
 import 'package:crud_flutter/background/services/notification_background_service.dart';
 import 'package:crud_flutter/background/services/notification_context_builder.dart';
+
 import 'package:crud_flutter/core/utils/notification_dedup.dart';
 import 'package:crud_flutter/core/utils/notification_hash.dart';
 
 import 'package:crud_flutter/core/utils/rules/notification_engine.dart';
-import 'package:crud_flutter/core/utils/rules/model/notification_decision.dart';
 
 class NotificationWorker {
   static const String taskName = "dailyReminderTask";
@@ -20,6 +20,7 @@ class NotificationWorker {
 
       if (task != taskName) {
         print("⛔ [WORKER] task ignorada");
+
         return true;
       }
 
@@ -44,11 +45,10 @@ class NotificationWorker {
       /// =========================
       /// 3. ENGINE DECISION
       /// =========================
-      final NotificationDecision decision =
-          NotificationEngine.evaluate(context);
+      final notification = NotificationEngine.evaluate(context);
 
-      if (!decision.shouldNotify) {
-        print("🔕 [ENGINE] decidiu não notificar");
+      if (notification == null) {
+        print("🔕 nenhuma notificação necessária");
 
         return true;
       }
@@ -57,7 +57,7 @@ class NotificationWorker {
       /// 4. HASH
       /// =========================
       final hash = NotificationHash.generate(
-        "${decision.title}${decision.body}",
+        "${notification.title}${notification.body}",
       );
 
       final isDuplicate = await NotificationDedup.isDuplicate(hash);
@@ -72,13 +72,13 @@ class NotificationWorker {
       /// 5. INIT NOTIFICATION
       /// =========================
       await NotificationBackgroundService.initialize();
-
+  
       /// =========================
       /// 6. SHOW NOTIFICATION
       /// =========================
       await NotificationBackgroundService.show(
-        title: decision.title,
-        body: decision.body,
+        title: notification.title,
+        body: notification.body,
       );
 
       /// =========================
