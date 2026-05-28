@@ -1,9 +1,9 @@
 import 'package:crud_flutter/core/utils/notification/notification_message_generator.dart';
 import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
-import 'package:crud_flutter/core/utils/rules/model/notification_data.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 
 class NotificationEngine {
-  static NotificationData? evaluate(
+  static NotificationResult evaluate(
     NotificationContext context,
   ) {
     print("🧠 [ENGINE] avaliando contexto");
@@ -16,7 +16,7 @@ class NotificationEngine {
     if (!context.hasPendingItems) {
       print("✅ [ENGINE] nada pendente");
 
-      return null;
+      return NotificationResult.noNotification();
     }
 
     /// =========================

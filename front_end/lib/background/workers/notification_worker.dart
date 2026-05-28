@@ -4,8 +4,11 @@ import 'package:crud_flutter/background/services/notification_context_builder.da
 
 import 'package:crud_flutter/core/utils/notification_dedup.dart';
 import 'package:crud_flutter/core/utils/notification_hash.dart';
-
 import 'package:crud_flutter/core/utils/rules/notification_engine.dart';
+
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
+
+import 'package:crud_flutter/service/notifications/notification_service.dart';
 
 class NotificationWorker {
   static const String taskName = "dailyReminderTask";
@@ -40,14 +43,17 @@ class NotificationWorker {
       /// =========================
       /// 2. BUILD CONTEXT
       /// =========================
-      final context = NotificationContextBuilder.build(data);
+      final context = NotificationContextBuilder.build(
+        data,
+      );
 
       /// =========================
-      /// 3. ENGINE DECISION
+      /// 3. ENGINE
       /// =========================
-      final notification = NotificationEngine.evaluate(context);
+      final NotificationResult notification =
+          NotificationEngine.evaluate(context);
 
-      if (notification == null) {
+      if (!notification.shouldNotify) {
         print("🔕 nenhuma notificação necessária");
 
         return true;
@@ -72,13 +78,12 @@ class NotificationWorker {
       /// 5. INIT NOTIFICATION
       /// =========================
       await NotificationBackgroundService.initialize();
-  
+
       /// =========================
-      /// 6. SHOW NOTIFICATION
+      /// 6. SEND NOTIFICATION
       /// =========================
-      await NotificationBackgroundService.show(
-        title: notification.title,
-        body: notification.body,
+      await NotificationService.sendNotificationResult(
+        notification,
       );
 
       /// =========================

@@ -4,20 +4,21 @@ import 'package:crud_flutter/core/utils/notification/messages/pending_messages.d
 import 'package:crud_flutter/core/utils/notification/messages/urgency_messages.dart';
 
 import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
-import 'package:crud_flutter/core/utils/rules/model/notification_data.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 
 class NotificationMessageGenerator {
   /// =========================
   /// PENDÊNCIAS
   /// =========================
-  static NotificationData pendingLists(
+  static NotificationResult pendingLists(
     NotificationContext context,
   ) {
     final selected = MessageRandomizer.pick(
       pendingMessages,
     );
 
-    return NotificationData(
+    return NotificationResult(
+      shouldNotify: true,
       title: selected.$1,
       body: selected.$2,
       type: "pending_lists",
@@ -27,14 +28,15 @@ class NotificationMessageGenerator {
   /// =========================
   /// URGÊNCIA
   /// =========================
-  static NotificationData highUrgency(
+  static NotificationResult highUrgency(
     NotificationContext context,
   ) {
     final selected = MessageRandomizer.pick(
       urgencyMessages,
     );
 
-    return NotificationData(
+    return NotificationResult(
+      shouldNotify: true,
       title: selected.$1,
       body: selected.$2,
       type: "high_urgency",
@@ -44,14 +46,15 @@ class NotificationMessageGenerator {
   /// =========================
   /// QUASE FINALIZADA
   /// =========================
-  static NotificationData almostCompleted(
+  static NotificationResult almostCompleted(
     NotificationContext context,
   ) {
     final selected = MessageRandomizer.pick(
       almostCompletedMessages,
     );
 
-    return NotificationData(
+    return NotificationResult(
+      shouldNotify: true,
       title: selected.$1,
       body: selected.$2,
       type: "almost_completed",
