@@ -1,6 +1,7 @@
 import 'package:crud_flutter/background/services/api_background_service.dart';
 import 'package:crud_flutter/background/services/notification_background_service.dart';
 import 'package:crud_flutter/background/services/notification_context_builder.dart';
+import 'package:crud_flutter/core/utils/notification_cooldown_manager.dart';
 
 import 'package:crud_flutter/core/utils/notification_dedup.dart';
 import 'package:crud_flutter/core/utils/notification_hash.dart';
@@ -23,6 +24,23 @@ class NotificationWorker {
 
       if (task != taskName) {
         print("⛔ [WORKER] task ignorada");
+
+        return true;
+      }
+
+      if (task != taskName) {
+        print("⛔ [WORKER] task ignorada");
+
+        return true;
+      }
+
+      /// =========================
+      /// COOLDOWN
+      /// =========================
+      final canSend = await NotificationCooldownManager.canSend();
+
+      if (!canSend) {
+        print("⏳ [COOLDOWN] envio já realizado hoje");
 
         return true;
       }
@@ -83,6 +101,10 @@ class NotificationWorker {
       /// 6. SEND NOTIFICATION
       /// =========================
       await NotificationService.sendNotificationResult(
+        notification,
+      );
+      // Salva data + tipo da notificação
+      await NotificationCooldownManager.saveSendData(
         notification,
       );
 
