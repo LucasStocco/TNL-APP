@@ -26,18 +26,19 @@ class NotificationWorker {
 
       if (task != taskName) {
         print("⛔ [WORKER] task ignorada");
-
         return true;
       }
 
       /// =========================
       /// COOLDOWN
       /// =========================
-      final canSend = await NotificationCooldownManager.canSend();
+      final cooldown = await NotificationCooldownManager.checkCooldown();
 
-      if (!canSend) {
+      if (!cooldown.canSend) {
         print(
-          "⏳ [COOLDOWN] envio já realizado hoje",
+          "⏳ COOLDOWN ativo - faltam: "
+          "${cooldown.remaining.inMinutes}m "
+          "${cooldown.remaining.inSeconds % 60}s",
         );
 
         return true;
@@ -53,28 +54,20 @@ class NotificationWorker {
       try {
         data = await apiService.fetchData();
 
-        /// Salva cache se API funcionar
-        await NotificationCacheManager.saveCache(
-          data,
-        );
+        await NotificationCacheManager.saveCache(data);
 
         print("🌐 [API] dados atualizados");
       } catch (e) {
         print("⚠️ [API] falha ao buscar dados");
 
-        /// Tenta recuperar cache
         final cached = await NotificationCacheManager.getCache();
 
         if (cached == null || cached.isEmpty) {
-          print(
-            "📭 [CACHE] nenhum cache disponível",
-          );
-
+          print("📭 [CACHE] nenhum cache disponível");
           return true;
         }
 
         print("💾 [CACHE] usando dados offline");
-
         data = cached;
       }
 
@@ -91,7 +84,6 @@ class NotificationWorker {
 
       if (!notification.shouldNotify) {
         print("🔕 nenhuma notificação necessária");
-
         return true;
       }
 
@@ -106,7 +98,6 @@ class NotificationWorker {
 
       if (isDuplicate) {
         print("⛔ DUPLICADO - ignorando");
-
         return true;
       }
 
@@ -120,12 +111,10 @@ class NotificationWorker {
       /// =========================
       await NotificationService.sendNotificationResult(notification);
 
-      /// Salva data + tipo da notificação
+      /// =========================
+      /// 7. SAVE STATE
+      /// =========================
       await NotificationCooldownManager.saveSendData(notification);
-
-      /// =========================
-      /// 7. SAVE HASH
-      /// =========================
       await NotificationDedup.save(hash);
 
       print("✅ WORKER OK FINALIZADO");
@@ -133,7 +122,6 @@ class NotificationWorker {
       return true;
     } catch (e) {
       print("❌ WORKER ERROR: $e");
-
       return false;
     }
   }

@@ -1,68 +1,91 @@
-import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
+import 'package:crud_flutter/model/sistema_notificações/notification_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationCooldownManager {
-  /// Chave da última data de envio
-  static const _lastNotificationKey = 'last_notification_date';
+class CooldownTimer {
+  final bool canSend;
+  final Duration remaining;
 
-  /// Chave do último tipo enviado
+  CooldownTimer({
+    required this.canSend,
+    required this.remaining,
+  });
+}
+
+class NotificationCooldownManager {
+  static const _lastNotificationKey = 'last_notification_date';
   static const _lastNotificationTypeKey = 'last_notification_type';
 
   /// =========================
-  /// CAN SEND
+  /// 🔧 FLAG DE TESTE
   /// =========================
-  /// Verifica se já foi enviada
-  /// alguma notificação hoje.
-  ///
-  /// Retorna:
-  /// - true  → pode enviar
-  /// - false → bloqueia envio
-  static Future<bool> canSend() async {
+  static const bool TEST_MODE = true;
+
+  /// intervalo de teste (30 segundos)
+  static const Duration testCooldown = Duration(seconds: 30);
+
+  /// cooldown real (1 dia)
+  static const Duration realCooldown = Duration(days: 1);
+
+  /// =========================
+  /// CHECK COOLDOWN
+  /// =========================
+  static Future<CooldownTimer> checkCooldown() async {
     final prefs = await SharedPreferences.getInstance();
 
     final savedDate = prefs.getString(_lastNotificationKey);
 
-    /// Nunca enviou notificação
+    final cooldown = TEST_MODE ? testCooldown : realCooldown;
+
     if (savedDate == null) {
-      return true;
+      return CooldownTimer(
+        canSend: true,
+        remaining: Duration.zero,
+      );
     }
 
     final lastDate = DateTime.parse(savedDate);
-
     final now = DateTime.now();
 
-    /// Verifica se é o mesmo dia
-    final isSameDay = lastDate.year == now.year &&
-        lastDate.month == now.month &&
-        lastDate.day == now.day;
+    final difference = now.difference(lastDate);
+    final remaining = cooldown - difference;
 
-    /// Se já enviou hoje:
-    /// bloqueia
-    return !isSameDay;
+    final canSend = difference >= cooldown;
+
+    return CooldownTimer(
+      canSend: canSend,
+      remaining: remaining.isNegative ? Duration.zero : remaining,
+    );
   }
 
   /// =========================
   /// SAVE SEND DATA
   /// =========================
-  /// Salva informações do último envio.
   static Future<void> saveSendData(
     NotificationResult notification,
   ) async {
     final prefs = await SharedPreferences.getInstance();
 
-    /// Salva data
     await prefs.setString(
       _lastNotificationKey,
       DateTime.now().toIso8601String(),
     );
 
-    /// Salva tipo
     await prefs.setString(
       _lastNotificationTypeKey,
       notification.type ?? 'unknown',
     );
   }
+
+  /// =========================
+  /// 🧪 RESET (TESTE)
+  /// =========================
+  static Future<void> reset() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_lastNotificationKey);
+    await prefs.remove(_lastNotificationTypeKey);
+  }
 }
+
 /* CLASSE NOTIFICATION COOLDOWN MANAGER (UM CONTROLADOR DE FREQUÊNCIA)
 - A responsabilidade desta classe é impedir spa de notificaçõe
 - O CooldownManager é uma regra que faz com que só pode enviar uma notificação por dia
