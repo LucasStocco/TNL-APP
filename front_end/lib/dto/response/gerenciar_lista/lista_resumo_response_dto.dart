@@ -13,7 +13,14 @@ class ListaResumoResponseDTO {
     required this.progresso,
   });
 
-  factory ListaResumoResponseDTO.fromJson(Map<String, dynamic> json) {
+  /// =========================
+  /// FROM JSON
+  /// =========================
+  /// Converte JSON da API
+  /// em objeto Dart.
+  factory ListaResumoResponseDTO.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return ListaResumoResponseDTO(
       id: json['id'],
       nome: json['nome'],
@@ -21,5 +28,20 @@ class ListaResumoResponseDTO {
       itensComprados: json['itensComprados'],
       progresso: (json['progresso'] as num).toDouble(),
     );
+  }
+
+  /// =========================
+  /// TO JSON
+  /// =========================
+  /// Converte objeto Dart
+  /// em JSON serializável.
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nome': nome,
+      'totalItens': totalItens,
+      'itensComprados': itensComprados,
+      'progresso': progresso,
+    };
   }
 }
