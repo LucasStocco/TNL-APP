@@ -27,10 +27,11 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     context.read<RelatorioItemViewModel>().carregar(lista.id!);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final listaVm = context.watch<ListaResumoViewModel>();
-    final relatorioVm = context.watch<RelatorioItemViewModel>();
+@override
+Widget build(BuildContext context) {
+  final listaVm = context.watch<ListaResumoViewModel>();
+  print('DEBUG listasCrud: ${listaVm.listasCrud.length}');
+  final relatorioVm = context.watch<RelatorioItemViewModel>();
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
