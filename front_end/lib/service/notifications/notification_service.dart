@@ -1,7 +1,9 @@
+import 'package:crud_flutter/core/utils/rules/model/notification_decision.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 import 'package:crud_flutter/service/notifications/notification_preferences_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 /// =========================
 /// NOTIFICATION SERVICE
@@ -10,10 +12,22 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
 
-  // =========================
-  // INIT (SAFE + NORMAL)
-  // =========================
-  static Future<void> initialize({bool background = false}) async {
+  /// =========================
+  /// ANDROID CHANNEL
+  /// =========================
+  static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
+    'tnl_channel',
+    'TNL Notifications',
+    description: 'Canal principal de notificações do TNL',
+    importance: Importance.high,
+  );
+
+  /// =========================
+  /// INIT (SAFE + NORMAL)
+  /// =========================
+  static Future<void> initialize({
+    bool background = false,
+  }) async {
     print("⚙️ [NOTIFICATION] INIT iniciando...");
 
     const androidSettings = AndroidInitializationSettings(
@@ -28,19 +42,56 @@ class NotificationService {
 
     print("✅ [NOTIFICATION] plugin inicializado");
 
+    /// =========================
+    /// CREATE CHANNEL
+    /// =========================
+    await _createChannel();
+
     if (!background) {
       await requestPermissions();
+
       initTimezone();
     } else {
-      print("⚠️ [NOTIFICATION] modo background - init reduzido");
+      print(
+        "⚠️ [NOTIFICATION] modo background - init reduzido",
+      );
     }
 
     print("🚀 [NOTIFICATION] INIT finalizado");
   }
 
-  // =========================
-  // PUBLIC METHOD (WORKER USE)
-  // =========================
+  /// =========================
+  /// CREATE CHANNEL
+  /// =========================
+  static Future<void> _createChannel() async {
+    final androidPlugin = _notifications.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidPlugin?.createNotificationChannel(
+      _channel,
+    );
+
+    print("📢 [NOTIFICATION] canal criado");
+  }
+
+  /// =========================
+  /// SEND NOTIFICATION RESULT
+  /// =========================
+  static Future<void> sendNotificationResult(
+    NotificationResult notification,
+  ) async {
+    /// Evita envio desnecessário
+    if (!notification.shouldNotify) return;
+
+    await showNotification(
+      notification.title ?? '',
+      notification.body ?? '',
+    );
+  }
+
+  /// =========================
+  /// PUBLIC METHOD (WORKER USE)
+  /// =========================
   static Future<void> showNotification(
     String title,
     String body,
@@ -52,9 +103,9 @@ class NotificationService {
     );
   }
 
-  // =========================
-  // TEST NOTIFICATION
-  // =========================
+  /// =========================
+  /// TEST NOTIFICATION
+  /// =========================
   static Future<void> showTestNotification() async {
     print("🧪 [NOTIFICATION] TESTE disparado");
 
@@ -64,9 +115,9 @@ class NotificationService {
     );
   }
 
-  // =========================
-  // INTERNAL NOTIFICATION
-  // =========================
+  /// =========================
+  /// INTERNAL NOTIFICATION
+  /// =========================
   static Future<void> _showNotification({
     required int id,
     required String title,
@@ -82,7 +133,10 @@ class NotificationService {
     print("🔎 [NOTIFICATION] pode enviar? $canSend");
 
     if (!canSend) {
-      print("⛔ [NOTIFICATION] bloqueado por preferências");
+      print(
+        "⛔ [NOTIFICATION] bloqueado por preferências",
+      );
+
       return;
     }
 
@@ -94,7 +148,9 @@ class NotificationService {
       priority: Priority.high,
     );
 
-    const details = NotificationDetails(android: androidDetails);
+    const details = NotificationDetails(
+      android: androidDetails,
+    );
 
     await _notifications.show(
       id,
@@ -106,25 +162,46 @@ class NotificationService {
     print("🔔 [NOTIFICATION] enviada com sucesso");
   }
 
-  // =========================
-  // PERMISSION (ONLY FOREGROUND)
-  // =========================
+  /// =========================
+  /// PERMISSION (ONLY FOREGROUND)
+  /// =========================
   static Future<void> requestPermissions() async {
-    print("🔐 [NOTIFICATION] solicitando permissões...");
+    print(
+      "🔐 [NOTIFICATION] solicitando permissões...",
+    );
 
     final result = await _notifications
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
-    print("🔐 [NOTIFICATION] permissão resultado: $result");
+    print(
+      "🔐 [NOTIFICATION] permissão resultado: $result",
+    );
   }
 
-  // =========================
-  // TIMEZONE
-  // =========================
+  static Future<void> sendDecision(
+    NotificationDecision decision,
+  ) async {
+    if (!decision.shouldNotify) {
+      print("🔕 [SERVICE] notificação cancelada");
+
+      return;
+    }
+
+    await showNotification(
+      decision.title,
+      decision.body,
+    );
+  }
+
+  /// =========================
+  /// TIMEZONE
+  /// =========================
   static void initTimezone() {
-    print("🌍 [NOTIFICATION] inicializando timezone...");
+    print(
+      "🌍 [NOTIFICATION] inicializando timezone...",
+    );
 
     tz.initializeTimeZones();
 
@@ -132,6 +209,8 @@ class NotificationService {
       tz.getLocation('America/Sao_Paulo'),
     );
 
-    print("🌍 [NOTIFICATION] timezone configurado SP");
+    print(
+      "🌍 [NOTIFICATION] timezone configurado SP",
+    );
   }
 }

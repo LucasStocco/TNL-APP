@@ -1,15 +1,17 @@
-import 'package:crud_flutter/service/notifications/rules/model/notification_context.dart';
-import 'package:crud_flutter/service/notifications/rules/model/notification_data.dart';
+import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 
-import '../rules/base/notification_rule.dart';
+import '../../../core/utils/rules/base/notification_rule.dart';
 
 class NotificationEngine {
   final List<NotificationRule> rules;
 
   NotificationEngine(this.rules);
 
-  List<NotificationData> evaluate(NotificationContext context) {
-    final result = <NotificationData>[];
+  List<NotificationResult> evaluate(
+    NotificationContext context,
+  ) {
+    final result = <NotificationResult>[];
 
     for (final rule in rules) {
       if (rule.shouldNotify(context)) {
@@ -34,7 +36,7 @@ class NotificationEngine {
 /// ✔ Receber um NotificationContext (estado atual do app)
 /// ✔ Receber uma lista de NotificationRule (regras)
 /// ✔ Avaliar quais regras devem ser executadas
-/// ✔ Gerar uma lista de NotificationData (notificações prontas)
+/// ✔ Gerar uma lista de NotificationResult (notificações prontas)
 ///
 /// Fluxo de execução:
 ///
@@ -46,7 +48,7 @@ class NotificationEngine {
 ///        ↓
 /// NotificationRule.build()
 ///        ↓
-/// List<NotificationData>
+/// List<NotificationResult>
 ///
 /// =========================
 /// O QUE ELE NÃO FAZ

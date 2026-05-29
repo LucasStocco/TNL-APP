@@ -1,6 +1,6 @@
-import 'package:crud_flutter/service/notifications/rules/base/notification_rule.dart';
-import 'package:crud_flutter/service/notifications/rules/model/notification_context.dart';
-import 'package:crud_flutter/service/notifications/rules/model/notification_data.dart';
+import 'package:crud_flutter/core/utils/rules/base/notification_rule.dart';
+import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 
 class DailyReminderRule implements NotificationRule {
   @override
@@ -12,23 +12,26 @@ class DailyReminderRule implements NotificationRule {
   }
 
   @override
-  NotificationData build(NotificationContext context) {
+  NotificationResult build(
+    NotificationContext context,
+  ) {
     if (context.hasAlmostCompletedList) {
-      return NotificationData(
+      return NotificationResult(
+        shouldNotify: true,
         title: "Quase lá! 🛒",
         body: "Suas listas estão quase finalizadas!",
         type: id,
       );
     }
 
-    return NotificationData(
+    return NotificationResult(
+      shouldNotify: true,
       title: "Lembrete diário 📋",
       body: "Você ainda tem listas pendentes para organizar.",
       type: id,
     );
   }
 }
-
 /// =========================
 /// DAILY REMINDER RULE
 /// =========================
@@ -64,7 +67,7 @@ class DailyReminderRule implements NotificationRule {
 ///        ↓
 /// DailyReminderRule
 ///        ↓
-/// NotificationData
+/// NotificationResult
 ///        ↓
 /// NotificationService
 ///

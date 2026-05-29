@@ -4,6 +4,22 @@ class NotificationBackgroundService {
   static final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
+  /// =========================
+  /// INIT (OBRIGATÓRIO)
+  /// =========================
+  static Future<void> initialize() async {
+    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const initSettings = InitializationSettings(
+      android: androidInit,
+    );
+
+    await _plugin.initialize(initSettings);
+  }
+
+  /// =========================
+  /// SHOW NOTIFICATION
+  /// =========================
   static Future<void> show({
     required String title,
     required String body,
@@ -26,7 +42,6 @@ class NotificationBackgroundService {
     );
   }
 }
-
 /* executor final (não pensa, só mostra)
 - cria notificação
 - configura Android

@@ -1,10 +1,17 @@
 import 'package:crud_flutter/background/services/api_background_service.dart';
+import 'package:crud_flutter/background/services/notification_background_service.dart';
 import 'package:crud_flutter/background/services/notification_context_builder.dart';
+
+import 'package:crud_flutter/core/utils/notification_cache_manager.dart';
+import 'package:crud_flutter/core/utils/notification_cooldown_manager.dart';
 import 'package:crud_flutter/core/utils/notification_dedup.dart';
 import 'package:crud_flutter/core/utils/notification_hash.dart';
+import 'package:crud_flutter/core/utils/rules/notification_engine.dart';
 import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
+
+import 'package:crud_flutter/model/sistema_notificações/notification_result.dart';
+
 import 'package:crud_flutter/service/notifications/notification_service.dart';
-import 'package:crud_flutter/service/notifications/rules/model/notification_context.dart';
 
 class NotificationWorker {
   static const String taskName = "dailyReminderTask";
@@ -22,25 +29,69 @@ class NotificationWorker {
         return true;
       }
 
-      final apiService = ApiBackgroundService();
+      /// =========================
+      /// COOLDOWN
+      /// =========================
+      final cooldown = await NotificationCooldownManager.checkCooldown();
 
-      final data = await apiService.fetchData();
+      if (!cooldown.canSend) {
+        print(
+          "⏳ COOLDOWN ativo - faltam: "
+          "${cooldown.remaining.inMinutes}m "
+          "${cooldown.remaining.inSeconds % 60}s",
+        );
 
-      if (data == null || data.isEmpty) {
-        print("⚠️ [API] sem dados");
         return true;
       }
 
-      // ✅ DTO
-      final List<ListaResumoResponseDTO> listas = data;
+      /// =========================
+      /// 1. FETCH API
+      /// =========================
+      final apiService = ApiBackgroundService();
 
-      // ✅ CONTEXTO
-      final NotificationContext context =
-          NotificationContextBuilder.build(listas);
+      List<ListaResumoResponseDTO> data = [];
 
-      // ✅ HASH
+      try {
+        data = await apiService.fetchData();
+
+        await NotificationCacheManager.saveCache(data);
+
+        print("🌐 [API] dados atualizados");
+      } catch (e) {
+        print("⚠️ [API] falha ao buscar dados");
+
+        final cached = await NotificationCacheManager.getCache();
+
+        if (cached == null || cached.isEmpty) {
+          print("📭 [CACHE] nenhum cache disponível");
+          return true;
+        }
+
+        print("💾 [CACHE] usando dados offline");
+        data = cached;
+      }
+
+      /// =========================
+      /// 2. BUILD CONTEXT
+      /// =========================
+      final context = NotificationContextBuilder.build(data);
+
+      /// =========================
+      /// 3. ENGINE
+      /// =========================
+      final NotificationResult notification =
+          NotificationEngine.evaluate(context);
+
+      if (!notification.shouldNotify) {
+        print("🔕 nenhuma notificação necessária");
+        return true;
+      }
+
+      /// =========================
+      /// 4. HASH
+      /// =========================
       final hash = NotificationHash.generate(
-        context.toString(),
+        "${notification.title}${notification.body}",
       );
 
       final isDuplicate = await NotificationDedup.isDuplicate(hash);
@@ -50,20 +101,20 @@ class NotificationWorker {
         return true;
       }
 
-      // ✅ INIT BACKGROUND SAFE
-      await NotificationService.initialize(
-        background: true,
-      );
+      /// =========================
+      /// 5. INIT NOTIFICATION
+      /// =========================
+      await NotificationBackgroundService.initialize();
 
-      // ✅ ENVIO
-      await NotificationService.showNotification(
-        context.hasPendingItems
-            ? "Você tem itens pendentes 📋"
-            : "Tudo certo 🎉",
-        "Pendentes: ${context.pendingCount}",
-      );
+      /// =========================
+      /// 6. SEND NOTIFICATION
+      /// =========================
+      await NotificationService.sendNotificationResult(notification);
 
-      // ✅ SAVE HASH
+      /// =========================
+      /// 7. SAVE STATE
+      /// =========================
+      await NotificationCooldownManager.saveSendData(notification);
       await NotificationDedup.save(hash);
 
       print("✅ WORKER OK FINALIZADO");

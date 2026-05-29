@@ -1,6 +1,6 @@
-import 'package:crud_flutter/service/notifications/rules/base/notification_rule.dart';
-import 'package:crud_flutter/service/notifications/rules/model/notification_context.dart';
-import 'package:crud_flutter/service/notifications/rules/model/notification_data.dart';
+import 'package:crud_flutter/core/utils/rules/base/notification_rule.dart';
+import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 
 /// =========================
 /// RULE: ITENS PENDENTES
@@ -18,8 +18,11 @@ class PendingItemsRule implements NotificationRule {
   }
 
   @override
-  NotificationData build(NotificationContext context) {
-    return NotificationData(
+  NotificationResult build(
+    NotificationContext context,
+  ) {
+    return NotificationResult(
+      shouldNotify: true,
       title: "Itens pendentes",
       body: "Você ainda tem itens na lista para finalizar 🛒",
       type: id,

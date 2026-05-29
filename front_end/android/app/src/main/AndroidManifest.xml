@@ -7,6 +7,8 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <!-- =========================
          APLICAÇÃO
@@ -16,9 +18,7 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        <!-- =========================
-             MAIN ACTIVITY
-        ========================== -->
+        <!-- MAIN ACTIVITY -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -45,45 +45,9 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- =========================
-             WORKMANAGER FIX (IMPORTANTE)
-        ========================== -->
-
-        <receiver
-            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
-            android:enabled="true"
-            android:exported="false"
-            tools:replace="android:enabled" />
-
-        <receiver
-            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
-            android:enabled="true"
-            android:exported="false"
-            tools:replace="android:enabled" />
-
-        <receiver
-            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
-            android:enabled="true"
-            android:exported="false"
-            tools:replace="android:enabled" />
-
-        <receiver
-            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
-            android:enabled="true"
-            android:exported="false"
-            tools:replace="android:enabled" />
-
-        <receiver
-            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
-            android:enabled="true"
-            android:exported="false"
-            tools:replace="android:enabled" />
-
     </application>
 
-    <!-- =========================
-         QUERIES (Android 11+)
-    ========================== -->
+    <!-- Android 11+ queries -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
