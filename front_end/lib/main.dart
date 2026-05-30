@@ -10,12 +10,14 @@ import 'package:crud_flutter/service/gerenciar_lista/lista_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
 
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
+import 'package:crud_flutter/service/relatorio_item/relatorio_item_service.dart'; // 👈 novo
 
 import 'package:crud_flutter/view_model/gerenciar_lista/item_view_model.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model.dart';
 import 'package:crud_flutter/view_model/auto_cadastro/user_view_model.dart';
+import 'package:crud_flutter/view_model/relatorio_item/relatorio_item_view_model.dart'; // 👈 novo
 
 import 'package:crud_flutter/service/auto_cadastro/mock_auth_service.dart';
 import 'package:crud_flutter/view/home_screen.dart';
@@ -42,64 +44,44 @@ class MyApp extends StatelessWidget {
         // SERVICES
         // =========================
         Provider<ItemService>(
-          create: (context) => ItemService(
-            context.read<ApiClient>(),
-          ),
+          create: (context) => ItemService(context.read<ApiClient>()),
         ),
-
         Provider<ProdutoService>(
-          create: (context) => ProdutoService(
-            context.read<ApiClient>(),
-          ),
+          create: (context) => ProdutoService(context.read<ApiClient>()),
         ),
-
         Provider<ListaService>(
-          create: (context) => ListaService(
-            context.read<ApiClient>(),
-          ),
+          create: (context) => ListaService(context.read<ApiClient>()),
         ),
-
         Provider<ListaResumoService>(
-          create: (context) => ListaResumoService(
-            context.read<ApiClient>(),
-          ),
+          create: (context) => ListaResumoService(context.read<ApiClient>()),
         ),
-
         Provider<CategoriaService>(
-          create: (context) => CategoriaService(
-            context.read<ApiClient>(),
-          ),
+          create: (context) => CategoriaService(context.read<ApiClient>()),
+        ),
+        Provider<RelatorioItemService>(                              // 👈 novo
+          create: (context) => RelatorioItemService(context.read<ApiClient>()),
         ),
 
         // =========================
         // VIEWMODELS
         // =========================
         ChangeNotifierProvider(
-          create: (context) => ItemViewModel(
-            context.read<ItemService>(),
-          ),
+          create: (context) => ItemViewModel(context.read<ItemService>()),
         ),
-
         ChangeNotifierProvider(
-          create: (context) => ListaViewModel(
-            context.read<ListaService>(),
-          ),
+          create: (context) => ListaViewModel(context.read<ListaService>()),
         ),
-
         ChangeNotifierProvider(
-          create: (context) => ListaResumoViewModel(
-            context.read<ListaResumoService>(),
-          ),
+          create: (context) => ListaResumoViewModel(context.read<ListaResumoService>()),
         ),
-
         ChangeNotifierProvider(
-          create: (context) => CategoriaViewModel(
-            context.read<CategoriaService>(),
-          ),
+          create: (context) => CategoriaViewModel(context.read<CategoriaService>()),
         ),
-
         ChangeNotifierProvider(
           create: (_) => UserViewModel(MockAuthService()),
+        ),
+        ChangeNotifierProvider(                                      // 👈 novo
+          create: (context) => RelatorioItemViewModel(context.read<RelatorioItemService>()),
         ),
       ],
       child: const MaterialApp(

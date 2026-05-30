@@ -14,7 +14,7 @@ import response.ApiResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/relatorios")
+@RequestMapping("/relatorios/")
 public class RelatorioItemController {
 
     private final RelatorioItemService service;
