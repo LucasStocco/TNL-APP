@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:crud_flutter/core/utils/model/notification_decision.dart';
 import 'package:crud_flutter/core/utils/notification/rules/notification_frequency_rule.dart';
 import 'package:crud_flutter/core/utils/notification_click_handler.dart';
@@ -51,7 +53,6 @@ class NotificationService {
     const settings = InitializationSettings(
       android: androidSettings,
     );
-
 
     // dispara quando o usuário clica na notificação
     await _notifications.initialize(
@@ -182,7 +183,6 @@ class NotificationService {
     String title,
     String body,
   ) async {
-    /// Envia real da notificação
     await _showNotification(
       id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title: title,
@@ -197,6 +197,7 @@ class NotificationService {
     required int id,
     required String title,
     required String body,
+    int? listId,
   }) async {
     print("📤 preparando envio...");
 
@@ -219,7 +220,19 @@ class NotificationService {
 
     const details = NotificationDetails(android: androidDetails);
 
-    await _notifications.show(id, title, body, details);
+    // payload da notificação (deep link)
+    final payload = jsonEncode({
+      "type": "open_list",
+      "listId": 12,
+    });
+
+    await _notifications.show(
+      id,
+      title,
+      body,
+      details,
+      payload: payload,
+    );
 
     print("🔔 notificação enviada com sucesso");
   }
