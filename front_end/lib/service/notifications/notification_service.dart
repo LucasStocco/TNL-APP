@@ -1,5 +1,6 @@
 import 'package:crud_flutter/core/utils/model/notification_decision.dart';
 import 'package:crud_flutter/core/utils/notification/rules/notification_frequency_rule.dart';
+import 'package:crud_flutter/core/utils/notification_click_handler.dart';
 import 'package:crud_flutter/model/sistema_notificações/notification_result.dart';
 import 'package:crud_flutter/service/notifications/notification_preferences_service.dart';
 import 'package:crud_flutter/service/notifications/notification_settings_service.dart';
@@ -51,7 +52,14 @@ class NotificationService {
       android: androidSettings,
     );
 
-    await _notifications.initialize(settings);
+
+    // dispara quando o usuário clica na notificação
+    await _notifications.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        NotificationClickHandler.handle(response.payload);
+      },
+    );
     await _createChannel();
 
     if (!background) {
