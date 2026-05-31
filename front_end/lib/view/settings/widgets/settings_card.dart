@@ -3,9 +3,17 @@ import 'package:flutter/material.dart';
 class SettingsCard extends StatelessWidget {
   final List<Widget> children;
 
+  /// novo: controla padding interno
+  final EdgeInsetsGeometry padding;
+
+  /// novo: controla espaçamento entre itens
+  final double spacing;
+
   const SettingsCard({
     super.key,
     required this.children,
+    this.padding = EdgeInsets.zero,
+    this.spacing = 0,
   });
 
   @override
@@ -22,9 +30,24 @@ class SettingsCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        children: children,
+      child: Padding(
+        padding: padding,
+        child: Column(
+          children: _buildChildren(),
+        ),
       ),
     );
+  }
+
+  List<Widget> _buildChildren() {
+    if (spacing == 0) return children;
+
+    return children
+        .expand((child) => [
+              child,
+              SizedBox(height: spacing),
+            ])
+        .toList()
+      ..removeLast();
   }
 }

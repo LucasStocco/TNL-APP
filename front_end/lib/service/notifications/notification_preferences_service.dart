@@ -1,50 +1,131 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:crud_flutter/core/utils/notification/messages/notification_frequency.dart';
 
 /// =========================
 /// NOTIFICATION PREFERENCES SERVICE
 /// =========================
-/// Responsável por armazenar e recuperar preferências do usuário
-/// relacionadas às notificações.
-///
-/// Funções principais:
-/// - Salvar se o usuário ativou/desativou notificações
-/// - Recuperar estado salvo no SharedPreferences
-///
-/// ⚠️ NÃO envia notificações e NÃO lida com UI.
-/// Apenas persistência de dados.
-///
-/// Usado para garantir que o estado do switch
-/// seja mantido mesmo após fechar o app.
-
+/// Responsável por armazenar e recuperar preferências do usuário.
+/// Apenas persistência local (SharedPreferences).
 class NotificationPreferencesService {
   static const String _notificationsKey = 'notifications_enabled';
+  static const String _hourKey = 'preferred_hour';
+  static const String _minuteKey = 'preferred_minute';
+  static const String _frequencyKey = 'notification_frequency';
+  static const String preferredTimeEnabledKey = 'preferred_time_enabled';
 
   // =========================
-  // Salva estado das notificações
+  // NOTIFICATIONS ENABLED
   // =========================
-  // Guarda se o usuário ativou ou desativou as notificações
-  static Future<void> setNotificationsEnabled(
-    bool enabled,
-  ) async {
+  static Future<void> setNotificationsEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_notificationsKey, enabled);
+  }
+
+  static Future<bool> isNotificationsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_notificationsKey) ?? true;
+  }
+
+  // =========================
+  // PREFERRED TIME
+  // =========================
+  static Future<void> setPreferredTime(TimeOfDay time) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_hourKey, time.hour);
+    await prefs.setInt(_minuteKey, time.minute);
+  }
+
+  static Future<TimeOfDay> getPreferredTime() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return TimeOfDay(
+      hour: prefs.getInt(_hourKey) ?? 19,
+      minute: prefs.getInt(_minuteKey) ?? 0,
+    );
+  }
+
+  static Future<void> setPreferredTimeEnabled(bool value) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setBool(
-      _notificationsKey,
-      enabled,
+      preferredTimeEnabledKey,
+      value,
+    );
+  }
+
+  static Future<bool> isPreferredTimeEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getBool(
+          preferredTimeEnabledKey,
+        ) ??
+        false;
+  }
+
+  // =========================
+  // FREQUENCY
+  // =========================
+  static Future<void> setFrequency(FrequenciaNotificacao frequency) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_frequencyKey, frequency.name);
+  }
+
+  static Future<FrequenciaNotificacao> getFrequency() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final value = prefs.getString(_frequencyKey);
+
+    return FrequenciaNotificacao.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => FrequenciaNotificacao.normal,
     );
   }
 
   // =========================
-  // Retorna estado salvo
+  // REMINDERS
   // =========================
-  // Retorna se notificações estão ativas ou não, com base no valor salvo
-  static Future<bool> isNotificationsEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
+  static const String _remindersKey = 'reminders_enabled';
 
-    return prefs.getBool(
-          _notificationsKey,
-        ) ??
-        true;
+  static Future<void> setRemindersEnabled(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_remindersKey, value);
+  }
+
+  static Future<bool> isRemindersEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_remindersKey) ?? true;
+  }
+
+  // =========================
+  // CONTEXT
+  // =========================
+  static const String _contextKey = 'context_enabled';
+
+  static Future<void> setContextEnabled(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_contextKey, value);
+  }
+
+  static Future<bool> isContextEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_contextKey) ?? true;
+  }
+
+  // =========================
+  // INCENTIVES
+  // =========================
+  static const String _incentivesKey = 'incentives_enabled';
+
+  static Future<void> setIncentivesEnabled(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_incentivesKey, value);
+  }
+
+  static Future<bool> isIncentivesEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_incentivesKey) ?? true;
   }
 }
 
