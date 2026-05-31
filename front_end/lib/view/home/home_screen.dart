@@ -20,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  bool _showSettingsFeedback = false;
+
   late final List<Widget> _pages;
 
   @override
@@ -51,6 +53,20 @@ class _HomeScreenState extends State<HomeScreen> {
         MaterialPageRoute(builder: (_) => const CriarNovaListaScreen()),
       );
       return;
+    }
+
+    void showSettingsFeedback() {
+      setState(() {
+        _showSettingsFeedback = true;
+      });
+
+      Future.delayed(const Duration(seconds: 2), () {
+        if (!mounted) return;
+
+        setState(() {
+          _showSettingsFeedback = false;
+        });
+      });
     }
 
     setState(() {

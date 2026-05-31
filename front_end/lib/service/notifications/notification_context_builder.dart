@@ -1,5 +1,5 @@
 import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
-import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
+import 'package:crud_flutter/core/utils/model/notification_context.dart';
 
 class NotificationContextBuilder {
   // =========================

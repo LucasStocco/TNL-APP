@@ -1,20 +1,24 @@
 import 'package:crud_flutter/background/services/api_background_service.dart';
 import 'package:crud_flutter/background/services/notification_background_service.dart';
 import 'package:crud_flutter/background/services/notification_context_builder.dart';
+import 'package:crud_flutter/core/utils/notification/messages/notification_frequency.dart';
 
-import 'package:crud_flutter/core/utils/notification_cache_manager.dart';
-import 'package:crud_flutter/core/utils/notification_cooldown_manager.dart';
-import 'package:crud_flutter/core/utils/notification_dedup.dart';
-import 'package:crud_flutter/core/utils/notification_hash.dart';
-import 'package:crud_flutter/core/utils/rules/notification_engine.dart';
+import 'package:crud_flutter/core/utils/notification/notification_cache_manager.dart';
+import 'package:crud_flutter/core/utils/notification/notification_cooldown_manager.dart';
+import 'package:crud_flutter/core/utils/notification/notification_dedup.dart';
+import 'package:crud_flutter/core/utils/notification/notification_hash.dart';
+import 'package:crud_flutter/core/utils/notification/rules/notification_engine.dart';
 import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
-
-import 'package:crud_flutter/model/sistema_notificações/notification_result.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_settings_model.dart';
+import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_type.dart';
 
 import 'package:crud_flutter/service/notifications/notification_service.dart';
+import 'package:flutter/material.dart';
 
 class NotificationWorker {
   static const String taskName = "dailyReminderTask";
+  static const bool testMode = true;
 
   @pragma('vm:entry-point')
   static Future<bool> execute(
@@ -32,16 +36,18 @@ class NotificationWorker {
       /// =========================
       /// COOLDOWN
       /// =========================
-      final cooldown = await NotificationCooldownManager.checkCooldown();
+      if (!testMode) {
+        final cooldown = await NotificationCooldownManager.checkCooldown();
 
-      if (!cooldown.canSend) {
-        print(
-          "⏳ COOLDOWN ativo - faltam: "
-          "${cooldown.remaining.inMinutes}m "
-          "${cooldown.remaining.inSeconds % 60}s",
-        );
+        if (!cooldown.canSend) {
+          print(
+            "⏳ COOLDOWN ativo - faltam: "
+            "${cooldown.remaining.inMinutes}m "
+            "${cooldown.remaining.inSeconds % 60}s",
+          );
 
-        return true;
+          return true;
+        }
       }
 
       /// =========================
@@ -77,10 +83,26 @@ class NotificationWorker {
       final context = NotificationContextBuilder.build(data);
 
       /// =========================
-      /// 3. ENGINE
+      /// 3. SETTINGS (TEMPORÁRIO)
       /// =========================
-      final NotificationResult notification =
-          NotificationEngine.evaluate(context);
+      final settings = NotificationSettingsModel(
+        enabled: true,
+        typesEnabled: {
+          NotificationType.reminder: true,
+          NotificationType.context: true,
+          NotificationType.incentive: true,
+        },
+        frequency: FrequenciaNotificacao.normal,
+        preferredTime: const TimeOfDay(hour: 9, minute: 0),
+      );
+
+      /// =========================
+      /// 4. ENGINE
+      /// =========================
+      final NotificationResult notification = NotificationEngine.evaluate(
+        context: context,
+        settings: settings,
+      );
 
       if (!notification.shouldNotify) {
         print("🔕 nenhuma notificação necessária");
@@ -88,31 +110,33 @@ class NotificationWorker {
       }
 
       /// =========================
-      /// 4. HASH
+      /// 5. HASH
       /// =========================
       final hash = NotificationHash.generate(
         "${notification.title}${notification.body}",
       );
 
-      final isDuplicate = await NotificationDedup.isDuplicate(hash);
+      if (!testMode) {
+        final isDuplicate = await NotificationDedup.isDuplicate(hash);
 
-      if (isDuplicate) {
-        print("⛔ DUPLICADO - ignorando");
-        return true;
+        if (isDuplicate) {
+          print("⛔ DUPLICADO - ignorando");
+          return true;
+        }
       }
 
       /// =========================
-      /// 5. INIT NOTIFICATION
+      /// 6. INIT NOTIFICATION
       /// =========================
       await NotificationBackgroundService.initialize();
 
       /// =========================
-      /// 6. SEND NOTIFICATION
+      /// 7. SEND NOTIFICATION
       /// =========================
       await NotificationService.sendNotificationResult(notification);
 
       /// =========================
-      /// 7. SAVE STATE
+      /// 8. SAVE STATE
       /// =========================
       await NotificationCooldownManager.saveSendData(notification);
       await NotificationDedup.save(hash);
