@@ -1,5 +1,5 @@
 import 'package:crud_flutter/view/auto_cadastro/user_screen.dart';
-import 'package:crud_flutter/view/settings_screen.dart';
+import 'package:crud_flutter/view/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -109,12 +109,51 @@ class AppHeaderWidget extends StatelessWidget {
                           );
                         }),
                         const SizedBox(width: 10),
-                        _buildCircleButton(Icons.settings, () {
-                          Navigator.push(
+                        _buildCircleButton(Icons.settings, () async {
+                          final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const SettingsScreen()),
+                              builder: (_) => const SettingsScreen(),
+                            ),
                           );
+
+                          /// Mensagem de configiração salva
+                          if (result == true && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.green,
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(
+                                  left: 16,
+                                  right: 16,
+                                  bottom:
+                                      MediaQuery.of(context).size.height * 0.90,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                duration: const Duration(seconds: 3),
+                                content: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle_rounded,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        'Preferências atualizadas com sucesso!',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
                         }),
                       ],
                     ),
@@ -162,7 +201,7 @@ class AppHeaderWidget extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: Icon(icon, color: Colors.red),
+        icon: Icon(icon, color: const Color(0xFFF44336)),
         onPressed: onTap,
       ),
     );

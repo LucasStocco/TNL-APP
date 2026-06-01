@@ -1,5 +1,6 @@
 import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
 import 'package:crud_flutter/shared/widgets/navigation/section_header.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/empty_minhas_listas_widget.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
   @override
   void initState() {
     super.initState();
+
     Future.microtask(
       () => context.read<ListaResumoViewModel>().carregarResumo(),
     );
@@ -43,7 +45,10 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
+              leading: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
               title: const Text("Excluir"),
               onTap: () {
                 Navigator.pop(context);
@@ -57,7 +62,9 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
   }
 
   void _editarLista(BuildContext context, ListaResumo lista) {
-    final controller = TextEditingController(text: lista.nome);
+    final controller = TextEditingController(
+      text: lista.nome,
+    );
 
     showDialog(
       context: context,
@@ -81,6 +88,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
                       lista.id,
                       controller.text,
                     );
+
                 Navigator.pop(context);
               },
               child: const Text("Salvar"),
@@ -97,7 +105,9 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
       builder: (_) {
         return AlertDialog(
           title: const Text("Excluir lista?"),
-          content: const Text("Essa ação não pode ser desfeita."),
+          content: const Text(
+            "Essa ação não pode ser desfeita.",
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -105,7 +115,10 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<ListaResumoViewModel>().deletarLista(lista.id);
+                context.read<ListaResumoViewModel>().deletarLista(
+                      lista.id,
+                    );
+
                 Navigator.pop(context);
               },
               child: const Text("Excluir"),
@@ -121,11 +134,16 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
     return Consumer<ListaResumoViewModel>(
       builder: (context, viewModel, _) {
         if (viewModel.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
 
+        // =========================
+        // EMPTY STATE
+        // =========================
         if (viewModel.listas.isEmpty) {
-          return const Center(child: Text('Nenhuma lista encontrada'));
+          return const EmptyMinhasListasWidget();
         }
 
         return SafeArea(
@@ -139,16 +157,28 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
                 isGrid: false,
               ),
 
-              // 🔥 LISTA
+              // =========================
+              // LISTA
+              // =========================
               Expanded(
                 child: ListView.builder(
                   key: const ValueKey('listas'),
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(
+                    16,
+                    8,
+                    16,
+                    16,
+                  ),
                   itemCount: viewModel.listas.length,
                   itemBuilder: (context, index) {
                     final lista = viewModel.listas[index];
 
+                    final corProgresso = _corProgresso(
+                      lista.progresso,
+                    );
+
                     return InkWell(
+                      borderRadius: BorderRadius.circular(16),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -163,24 +193,47 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
                         });
                       },
                       onLongPress: () => _abrirOpcoes(context, lista),
-                      child: Card(
+                      child: AnimatedContainer(
+                        duration: const Duration(
+                          milliseconds: 300,
+                        ),
+                        curve: Curves.easeOut,
                         margin: const EdgeInsets.symmetric(
                           vertical: 8,
                         ),
-                        shape: RoundedRectangleBorder(
+                        decoration: BoxDecoration(
+                          color: corProgresso.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: corProgresso.withOpacity(
+                              0.35,
+                            ),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(
+                                0.04,
+                              ),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        elevation: 2,
                         child: ListTile(
                           title: Text(lista.nome),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 6),
-                              LinearProgressIndicator(
-                                value: lista.progresso / 100,
-                                backgroundColor: Colors.grey.shade300,
-                                color: _corProgresso(lista.progresso),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(999),
+                                child: LinearProgressIndicator(
+                                  value: lista.progresso / 100,
+                                  minHeight: 8,
+                                  backgroundColor: Colors.grey.shade300,
+                                  color: corProgresso,
+                                ),
                               ),
                               const SizedBox(height: 4),
                               Text(
@@ -193,7 +246,9 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
                               ),
                             ],
                           ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                          ),
                         ),
                       ),
                     );

@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ItemRequestDTO;
 import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ListaRequestDTO;
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseResumoDTO;
 import com.tnl.listacompras.model.auto_cadastro.Usuario;
@@ -19,18 +21,22 @@ import exception.business.NotFoundException;
 @Service
 public class ListaService {
 
-    private final ListaRepository listaRepository;
-    private final ItemRepository itemRepository;
+	private final ListaRepository listaRepository;
+	private final ItemService itemService;
     
 
-    public ListaService(ListaRepository listaRepository, ItemRepository itemRepository) {
-        this.listaRepository = listaRepository;
-        this.itemRepository = itemRepository;
-    }
+	public ListaService(
+	        ListaRepository listaRepository,
+	        ItemService itemService
+	) {
+	    this.listaRepository = listaRepository;
+	    this.itemService = itemService;
+	}
     
     // =========================
     // SESSION
     // =========================
+	// Session encapsulada, centraliza o acesso ao usuário logado
     private Long usuarioAtual() {
         return Session.getUsuarioId();
     }
@@ -38,7 +44,9 @@ public class ListaService {
     // =========================
     // HELPER SEGURANÇA
     // =========================
+    // ownership, delete lógico, busca segura
     private Lista buscarOuFalhar(Long id) {
+
         Long userId = usuarioAtual();
 
         return listaRepository
@@ -51,6 +59,7 @@ public class ListaService {
     // LISTAR
     // =========================
     public List<ListaResponseDTO> listar() {
+
         Long userId = usuarioAtual();
 
         return listaRepository
@@ -84,7 +93,7 @@ public class ListaService {
         if (existe) {
             throw new BusinessException("Já existe uma lista com esse nome");
         }
-
+        
         Lista lista = new Lista();
         lista.setNome(dto.getNome());
 
@@ -94,6 +103,13 @@ public class ListaService {
         lista.setUsuario(usuario);
 
         return toDTO(listaRepository.save(lista));
+    }
+    
+    public ItemResponseDTO criarItem(Long listaId, ItemRequestDTO dto) {
+
+        Lista lista = buscarOuFalhar(listaId);
+
+        return itemService.criar(lista, dto);
     }
 
     // =========================
@@ -146,7 +162,7 @@ public class ListaService {
     public void deletar(Long id) {
 
         Lista lista = buscarOuFalhar(id);
-
+        // Delete lógico
         lista.setDeletado(true);
 
         listaRepository.save(lista);
@@ -176,9 +192,9 @@ public class ListaService {
                 .stream()
                 .map(lista -> {
 
-                    int totalItens = itemRepository.contarItensAtivos(lista.getId());
-                    int itensComprados = itemRepository.contarItensComprados(lista.getId());
-
+                	Long totalItens = itemService.contarItensAtivos(lista.getId());
+                	Long itensComprados = itemService.contarItensComprados(lista.getId());
+                	
                     return new ListaResponseResumoDTO(
                             lista.getId(),
                             lista.getNome(),

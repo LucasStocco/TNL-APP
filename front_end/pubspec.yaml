@@ -10,27 +10,54 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # =========================
+  # UI / UTILITIES
+  # =========================
+  smooth_page_indicator: ^1.1.0
   intl: ^0.18.1
   shared_preferences: ^2.2.2
-
   cupertino_icons: ^1.0.8
   provider: ^6.1.2
   http: ^1.2.1
   google_fonts: ^6.2.1
   google_sign_in: ^6.2.1
   dio: ^5.9.2
+  crypto: ^3.0.3
+
+  # =========================
+  # NOTIFICAÇÕES LOCAIS
+  # =========================
+  flutter_local_notifications: ^17.2.1
+
+  # =========================
+  # TIMEZONE (OBRIGATÓRIO PARA SCHEDULE)
+  # =========================
+  timezone: ^0.9.4
+  workmanager: ^0.7.0
+  permission_handler: ^11.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+
+  image_path: "assets/images/logo_esquilo_branco.png"
+
+  adaptive_icon_background: "#F44336"
+  adaptive_icon_foreground: "assets/images/logo_esquilo_branco.png"
 
 flutter:
   uses-material-design: true
 
   assets:
-  - assets/icons/categorias/
-  - assets/icons/header_home/
-  - assets/icons/subcategorias/
-  - assets/images/
-  
+    - assets/icons/categorias/
+    - assets/icons/header_home/
+    - assets/icons/subcategorias/
+    - assets/images/
