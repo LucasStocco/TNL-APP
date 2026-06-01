@@ -1,4 +1,5 @@
 import 'package:crud_flutter/view/categorias/categorias_screen.dart';
+import 'package:crud_flutter/view/relatorio_item/relatorio_item_screen.dart'; // 👈 trocado
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +9,6 @@ import 'gerenciar_lista/criar_nova_lista_screen.dart';
 import 'gerenciar_lista/minhas_listas_screen.dart';
 import 'auto_cadastro/user_screen.dart';
 import 'settings_screen.dart';
-import 'relatorio_financeiro/relatorio_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const CategoriasScreen(),
       const SizedBox(),
       const MinhasListasScreen(),
-      const RelatorioScreen(),
+      const RelatorioItemScreen(), // 👈 trocado
     ];
   }
 
@@ -65,14 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // 🔥 CORREÇÃO PRINCIPAL AQUI
   Widget _buildCategoryCard(String imagePath, String label, String codigo) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
           builder: (_) {
             final listaVm = context.read<ListaViewModel>();
-
             final listaId = listaVm.listaAtual?.id;
 
             if (listaId == null) {
@@ -82,13 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.red,
                 ),
               );
-
-              return const SizedBox(); // evita crash
+              return const SizedBox();
             }
 
             return CategoriasProdutosScreen(
               nomeCategoria: label,
-              idCategoria: int.parse(codigo), // ou categoria.id se já for int
+              idCategoria: int.parse(codigo),
             );
           },
         ));

@@ -1,6 +1,7 @@
 // Flutter & Packages
 import 'package:crud_flutter/view/categorias/home_widgets/category_section.dart';
 import 'package:crud_flutter/view/categorias/home_widgets/promo_banner.dart';
+import 'package:crud_flutter/view/relatorio_item/relatorio_item_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,6 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 // Views
 import 'package:crud_flutter/view/categorias/categoria_produtos_screen.dart';
 import 'package:crud_flutter/view/categorias/categorias_screen.dart';
-import 'package:crud_flutter/view/relatorio_financeiro/relatorio_screen.dart';
 import 'package:crud_flutter/view/gerenciar_lista/minhas_listas_screen.dart';
 import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model.dart';
 
@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       context.read<CategoriaViewModel>().listar();
     });
@@ -82,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const CategoriasScreen(),
       const SizedBox(),
       const MinhasListasScreen(),
-      const RelatorioScreen(),
+      const RelatorioItemScreen(),
     ];
 
     return Scaffold(

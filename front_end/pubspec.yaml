@@ -18,6 +18,7 @@ dependencies:
   http: ^1.2.1
   google_fonts: ^6.2.1
   dio: ^5.9.2
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:
