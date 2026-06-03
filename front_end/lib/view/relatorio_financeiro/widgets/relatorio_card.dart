@@ -1,60 +1,44 @@
 import 'package:flutter/material.dart';
 
 class RelatorioCard extends StatelessWidget {
-
   final String titulo;
   final String valor;
+  final Color backgroundColor;
+  final Color textColor;
 
   const RelatorioCard({
     super.key,
     required this.titulo,
     required this.valor,
+    this.backgroundColor = const Color(0xFFF1F1F1),
+    this.textColor = const Color(0xFF22202A),
   });
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
-
-      padding: const EdgeInsets.all(16),
-
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: Colors.white,
-
-        borderRadius:
-            BorderRadius.circular(16),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(24),
       ),
-
       child: Column(
-        mainAxisAlignment:
-            MainAxisAlignment.center,
-
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Text(
             titulo,
-
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: 17,
+              color: textColor.withOpacity(0.75),
             ),
           ),
-
-          const SizedBox(height: 8),
-
+          const SizedBox(height: 12),
           Text(
             valor,
-
-            style: const TextStyle(
-              fontSize: 22,
+            style: TextStyle(
+              fontSize: 30,
               fontWeight: FontWeight.bold,
+              color: textColor,
             ),
           ),
         ],

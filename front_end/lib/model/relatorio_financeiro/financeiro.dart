@@ -16,3 +16,12 @@ class GastoPorCategoriaModel {
 		required this.total,
 	});
 }
+class GastoPorListaModel {
+  final String lista;
+  final double total;
+
+  GastoPorListaModel({
+    required this.lista,
+    required this.total,
+  });
+}

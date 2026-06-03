@@ -1,141 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../view_model/relatorio_financeiro/financeiro_view_model.dart';
 import 'widgets/relatorio_card.dart';
+import 'widgets/relatorio_grafico.dart';
+import 'widgets/relatorio_header.dart';
 
 class RelatorioScreen extends StatefulWidget {
   const RelatorioScreen({super.key});
 
   @override
-  State<RelatorioScreen> createState() =>
-      _RelatorioScreenState();
+  State<RelatorioScreen> createState() => _RelatorioScreenState();
 }
-class _RelatorioScreenState
-    extends State<RelatorioScreen> {
 
+class _RelatorioScreenState extends State<RelatorioScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
 
-      Provider.of<FinanceiroViewModel>(
-        context,
-        listen: false,
-      ).carregarTotalGeral();
+    Future.microtask(() {
+      context.read<FinanceiroViewModel>().carregarRelatorio();
     });
+  }
+
+  String formatarMoeda(double valor) {
+    return 'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
   }
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFDF7FF),
+      body: SafeArea(
+        child: Consumer<FinanceiroViewModel>(
+          builder: (context, viewModel, child) {
+            if (viewModel.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-    return Consumer<FinanceiroViewModel>(
-
-      builder: (
-        context,
-        viewModel,
-        child,
-      ) {
-
-       
-        if (viewModel.loading) {
-
-          return const Scaffold(
-            body: Center(
-              child:
-                  CircularProgressIndicator(),
-            ),
-          );
-        }
-        return Scaffold(
-
-          backgroundColor:
-              Colors.grey[100],
-
-          body: SafeArea(
-
-            child: Padding(
-              padding:
-                  const EdgeInsets.all(16),
-
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 32, 24, 120),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const RelatorioHeader(),
 
-                 
-                  const Text(
-                    'Relatórios',
+                  const SizedBox(height: 32),
 
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight:
-                          FontWeight.bold,
-                    ),
+                  RelatorioCard(
+                    titulo: 'Total geral',
+                    valor: formatarMoeda(viewModel.total),
+                    backgroundColor: const Color(0xFFF1F1F1),
                   ),
 
-                  const SizedBox(
-                    height: 24,
-                  ),
+                  const SizedBox(height: 16),
 
-                 
-                  const Text(
-                    '📊 Financeiro',
-
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight:
-                          FontWeight.w600,
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 16,
-                  ),
-
-                  
                   Row(
                     children: [
-
-                  
                       Expanded(
-                        child:
-                            RelatorioCard(
-
-                          titulo:
-                              'Total Geral',
-
-                          valor:
-                              'R\$ ${viewModel.totalGeral?.total ?? 0}',
+                        child: RelatorioCard(
+                          titulo: 'Média',
+                          valor: formatarMoeda(viewModel.mediaGasto),
+                          backgroundColor: const Color(0xFFEAF5EC),
+                          textColor: const Color(0xFF45B654),
                         ),
                       ),
-
-                      const SizedBox(
-                        width: 12,
-                      ),
-
-              
+                      const SizedBox(width: 16),
                       Expanded(
-                        child:
-                            RelatorioCard(
-
-                          titulo: 'Média',
-
+                        child: RelatorioCard(
+                          titulo: 'Categorias',
                           valor:
-                              'R\$ 0',
+                              '${viewModel.gastosPorCategoria.length}',
+                          backgroundColor: const Color(0xFFFFF3DE),
+                          textColor: const Color(0xFFFF9800),
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(
-                    height: 16,
+                  const SizedBox(height: 24),
+
+                  RelatorioGraficoCategorias(
+                    dados: viewModel.gastosPorCategoria,
                   ),
-  
-                  RelatorioCard(
-                    titulo: 'Categorias',
-                    valor: '3', )],)),),);
-      },
+
+                  if (viewModel.erro != null) ...[
+                    const SizedBox(height: 20),
+                    Text(
+                      viewModel.erro!,
+                      style: const TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

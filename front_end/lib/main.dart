@@ -19,6 +19,8 @@ import 'package:crud_flutter/view_model/auto_cadastro/user_view_model.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/mock_auth_service.dart';
 import 'package:crud_flutter/view/home/home_screen.dart';
+import 'package:crud_flutter/service/relatorio_financeiro/financeiro_service.dart';
+import 'package:crud_flutter/view_model/relatorio_financeiro/financeiro_view_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -70,6 +72,9 @@ class MyApp extends StatelessWidget {
             context.read<ApiClient>(),
           ),
         ),
+        Provider<FinanceiroService>(
+          create: (_) => FinanceiroService(),
+        ),
 
         // =========================
         // VIEWMODELS
@@ -90,6 +95,11 @@ class MyApp extends StatelessWidget {
           create: (context) => ListaResumoViewModel(
             context.read<ListaResumoService>(),
           ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FinanceiroViewModel(
+            context.read<FinanceiroService>(),
+        ),
         ),
 
         ChangeNotifierProvider(
