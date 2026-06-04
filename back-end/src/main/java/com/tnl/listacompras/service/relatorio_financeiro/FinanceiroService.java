@@ -14,6 +14,7 @@ import com.tnl.listacompras.model.gerenciar_lista.Lista;
 import com.tnl.listacompras.repository.gerenciar_lista.ItemRepository;
 import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
 import com.tnl.listacompras.session.Session;
+import com.tnl.listacompras.dto.responseDTO.relatorio_financeiro.GastoPorListaDTO;
 
 @Service
 public class FinanceiroService {
@@ -109,4 +110,34 @@ public class FinanceiroService {
     	double media = totalGeral / listas.size();
     	return new GastoTotalDTO(media);
     }
+public List<GastoPorListaDTO> calcularTotalPorLista() {
+
+    Long userId = Session.getUsuarioId();
+
+    List<Lista> listas =
+            listaRepository.findByUsuarioIdAndDeletadoFalse(userId);
+
+    List<GastoPorListaDTO> resultado = new ArrayList<>();
+
+    for (Lista lista : listas) {
+
+        List<Item> itens =
+                itemRepository.findByListaIdAndDeletadoFalse(
+                        lista.getId()
+                );
+
+        double totalLista = itens.stream()
+                .mapToDouble(Item::getTotal)
+                .sum();
+
+        resultado.add(
+                new GastoPorListaDTO(
+                        lista.getNome(),
+                        totalLista
+                )
+        );
+    }
+
+    return resultado;
+}
 }
