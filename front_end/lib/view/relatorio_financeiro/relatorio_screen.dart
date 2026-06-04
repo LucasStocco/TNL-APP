@@ -86,8 +86,15 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                   const SizedBox(height: 24),
 
                   RelatorioGraficoCategorias(
-                    dados: viewModel.gastosPorCategoria,
-                  ),
+  dados: viewModel.gastosPorCategoria,
+),
+
+const SizedBox(height: 24),
+
+RelatorioGraficoListas(
+  dados: viewModel.gastosPorLista,
+  media: viewModel.mediaGasto,
+),
 
                   if (viewModel.erro != null) ...[
                     const SizedBox(height: 20),
