@@ -41,7 +41,7 @@ class RelatorioGraficoCategorias extends StatelessWidget {
           ),
           const SizedBox(height: 22),
           if (dados.isEmpty)
-            const Text('Nenhum gasto por categoria encontrado.')
+            const Text('Selecione uma lista para ver os gastos por categoria.')
           else
             ...dados.map((item) {
               final porcentagem =
