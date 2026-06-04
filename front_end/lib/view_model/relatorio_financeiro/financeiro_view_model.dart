@@ -12,19 +12,21 @@ class FinanceiroViewModel extends ChangeNotifier {
   String? erro;
 
   GastoTotalModel? totalGeral;
+
   List<GastoPorCategoriaModel> gastosPorCategoria = [];
+  List<GastoPorListaModel> gastosPorLista = [];
 
   double get total => totalGeral?.total ?? 0;
 
   double get mediaGasto {
-    if (gastosPorCategoria.isEmpty) return 0;
+    if (gastosPorLista.isEmpty) return 0;
 
-    final soma = gastosPorCategoria.fold<double>(
+    final soma = gastosPorLista.fold<double>(
       0,
       (total, item) => total + item.total,
     );
 
-    return soma / gastosPorCategoria.length;
+    return soma / gastosPorLista.length;
   }
 
   Future<void> carregarRelatorio() async {
@@ -35,30 +37,37 @@ class FinanceiroViewModel extends ChangeNotifier {
     try {
       totalGeral = await _service.buscarTotalGeral();
 
-      // Temporário até ligar com endpoint real
-      gastosPorCategoria = [
-        GastoPorCategoriaModel(categoria: 'Carnes', total: 80),
-        GastoPorCategoriaModel(categoria: 'Bebidas', total: 10),
-        GastoPorCategoriaModel(categoria: 'Padaria', total: 5),
-        GastoPorCategoriaModel(categoria: 'Mercearia', total: 26),
-        GastoPorCategoriaModel(categoria: 'Laticínios', total: 8),
-      ];
+      // Temporário até integrar os endpoints reais
+      gastosPorCategoria = _mockCategorias();
+      gastosPorLista = _mockListas();
     } catch (e) {
-      erro = e.toString();
-       totalGeral = GastoTotalModel(total: 129.00);
+      erro = null;
 
-      gastosPorCategoria = [
+      totalGeral = GastoTotalModel(total: 129.00);
+      gastosPorCategoria = _mockCategorias();
+      gastosPorLista = _mockListas();
+    }
+
+    loading = false;
+    notifyListeners();
+  }
+
+  List<GastoPorCategoriaModel> _mockCategorias() {
+    return [
       GastoPorCategoriaModel(categoria: 'Carnes', total: 80),
       GastoPorCategoriaModel(categoria: 'Mercearia', total: 26),
       GastoPorCategoriaModel(categoria: 'Bebidas', total: 10),
       GastoPorCategoriaModel(categoria: 'Laticínios', total: 8),
       GastoPorCategoriaModel(categoria: 'Padaria', total: 5),
-      ];
+    ];
+  }
 
-
-    }
-
-    loading = false;
-    notifyListeners();
+  List<GastoPorListaModel> _mockListas() {
+    return [
+      GastoPorListaModel(lista: 'Supermercado', total: 129),
+      GastoPorListaModel(lista: 'Churrasco', total: 86),
+      GastoPorListaModel(lista: 'Farmácia', total: 42),
+      GastoPorListaModel(lista: 'Casa', total: 63),
+    ];
   }
 }
