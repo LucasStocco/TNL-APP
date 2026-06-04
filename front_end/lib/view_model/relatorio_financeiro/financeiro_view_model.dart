@@ -29,44 +29,33 @@ class FinanceiroViewModel extends ChangeNotifier {
     return soma / gastosPorLista.length;
   }
 
-  Future<void> carregarRelatorio({int? listaId}) async {
-  loading = true;
-  erro = null;
-  notifyListeners();
+  Future<void> carregarRelatorio({
+    int? listaId,
+  }) async {
+    loading = true;
+    erro = null;
+    notifyListeners();
 
-  try {
-    totalGeral = await _service.buscarTotalGeral();
-    gastosPorLista = await _service.buscarTotalPorLista();
+    try {
+      totalGeral =
+          await _service.buscarTotalGeral();
 
-    if (listaId != null) {
-      gastosPorCategoria =
-          await _service.buscarCategoriasPorLista(listaId);
-    } else {
-      gastosPorCategoria = [];
+      gastosPorLista =
+          await _service.buscarTotalPorLista();
+
+      if (listaId != null) {
+        gastosPorCategoria =
+            await _service.buscarCategoriasPorLista(
+          listaId,
+        );
+      } else {
+        gastosPorCategoria = [];
+      }
+    } catch (e) {
+      erro = e.toString();
     }
-  } catch (e) {
-    erro = e.toString();
-  }
 
-  loading = false;
-  notifyListeners();
-}
-  List<GastoPorCategoriaModel> _mockCategorias() {
-    return [
-      GastoPorCategoriaModel(categoria: 'Carnes', total: 80),
-      GastoPorCategoriaModel(categoria: 'Mercearia', total: 26),
-      GastoPorCategoriaModel(categoria: 'Bebidas', total: 10),
-      GastoPorCategoriaModel(categoria: 'Laticínios', total: 8),
-      GastoPorCategoriaModel(categoria: 'Padaria', total: 5),
-    ];
-  }
-
-  List<GastoPorListaModel> _mockListas() {
-    return [
-      GastoPorListaModel(lista: 'Supermercado', total: 129),
-      GastoPorListaModel(lista: 'Churrasco', total: 86),
-      GastoPorListaModel(lista: 'Farmácia', total: 42),
-      GastoPorListaModel(lista: 'Casa', total: 63),
-    ];
+    loading = false;
+    notifyListeners();
   }
 }
