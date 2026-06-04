@@ -30,28 +30,28 @@ class FinanceiroViewModel extends ChangeNotifier {
   }
 
   Future<void> carregarRelatorio() async {
-    loading = true;
+  loading = true;
+  erro = null;
+  notifyListeners();
+
+  try {
+    totalGeral = await _service.buscarTotalGeral();
+
+    gastosPorLista = await _service.buscarTotalPorLista();
+
+    // Ainda mockado porque categorias é por lista específica
+    gastosPorCategoria = _mockCategorias();
+  } catch (e) {
     erro = null;
-    notifyListeners();
 
-    try {
-      totalGeral = await _service.buscarTotalGeral();
-
-      // Temporário até integrar os endpoints reais
-      gastosPorCategoria = _mockCategorias();
-      gastosPorLista = _mockListas();
-    } catch (e) {
-      erro = null;
-
-      totalGeral = GastoTotalModel(total: 129.00);
-      gastosPorCategoria = _mockCategorias();
-      gastosPorLista = _mockListas();
-    }
-
-    loading = false;
-    notifyListeners();
+    totalGeral = GastoTotalModel(total: 129.00);
+    gastosPorCategoria = _mockCategorias();
+    gastosPorLista = _mockListas();
   }
 
+  loading = false;
+  notifyListeners();
+}
   List<GastoPorCategoriaModel> _mockCategorias() {
     return [
       GastoPorCategoriaModel(categoria: 'Carnes', total: 80),
