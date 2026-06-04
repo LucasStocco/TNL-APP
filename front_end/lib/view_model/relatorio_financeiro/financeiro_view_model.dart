@@ -29,24 +29,23 @@ class FinanceiroViewModel extends ChangeNotifier {
     return soma / gastosPorLista.length;
   }
 
-  Future<void> carregarRelatorio() async {
+  Future<void> carregarRelatorio({int? listaId}) async {
   loading = true;
   erro = null;
   notifyListeners();
 
   try {
     totalGeral = await _service.buscarTotalGeral();
-
     gastosPorLista = await _service.buscarTotalPorLista();
 
-    // Ainda mockado porque categorias é por lista específica
-    gastosPorCategoria = _mockCategorias();
+    if (listaId != null) {
+      gastosPorCategoria =
+          await _service.buscarCategoriasPorLista(listaId);
+    } else {
+      gastosPorCategoria = [];
+    }
   } catch (e) {
-    erro = null;
-
-    totalGeral = GastoTotalModel(total: 129.00);
-    gastosPorCategoria = _mockCategorias();
-    gastosPorLista = _mockListas();
+    erro = e.toString();
   }
 
   loading = false;
