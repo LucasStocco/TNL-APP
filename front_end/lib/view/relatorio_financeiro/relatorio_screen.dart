@@ -1,3 +1,4 @@
+import '../../view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,9 +20,12 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
     super.initState();
 
     Future.microtask(() {
-      context.read<FinanceiroViewModel>().carregarRelatorio();
-    });
-  }
+  final listaAtual = context.read<ListaViewModel>().listaAtual;
+
+  context.read<FinanceiroViewModel>().carregarRelatorio(
+        listaId: listaAtual?.id,
+      );
+});
 
   String formatarMoeda(double valor) {
     return 'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
