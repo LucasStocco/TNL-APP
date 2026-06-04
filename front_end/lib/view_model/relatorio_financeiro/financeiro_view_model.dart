@@ -45,6 +45,17 @@ class FinanceiroViewModel extends ChangeNotifier {
       ];
     } catch (e) {
       erro = e.toString();
+       totalGeral = GastoTotalModel(total: 129.00);
+
+      gastosPorCategoria = [
+      GastoPorCategoriaModel(categoria: 'Carnes', total: 80),
+      GastoPorCategoriaModel(categoria: 'Mercearia', total: 26),
+      GastoPorCategoriaModel(categoria: 'Bebidas', total: 10),
+      GastoPorCategoriaModel(categoria: 'Laticínios', total: 8),
+      GastoPorCategoriaModel(categoria: 'Padaria', total: 5),
+      ];
+
+
     }
 
     loading = false;

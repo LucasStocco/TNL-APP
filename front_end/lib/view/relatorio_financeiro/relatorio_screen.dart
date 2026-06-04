@@ -49,10 +49,13 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
 
                   const SizedBox(height: 32),
 
-                  RelatorioCard(
+                SizedBox(
+                  width: double.infinity,
+                  child: RelatorioCard(
                     titulo: 'Total geral',
                     valor: formatarMoeda(viewModel.total),
                     backgroundColor: const Color(0xFFF1F1F1),
+                    ),
                   ),
 
                   const SizedBox(height: 16),

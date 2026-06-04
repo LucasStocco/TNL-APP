@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/relatorio_financeiro/financeiro.dart';
@@ -11,6 +10,10 @@ class RelatorioGraficoCategorias extends StatelessWidget {
     required this.dados,
   });
 
+  String _formatarMoeda(double valor) {
+    return 'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final maiorValor = dados.isEmpty
@@ -18,6 +21,7 @@ class RelatorioGraficoCategorias extends StatelessWidget {
         : dados.map((e) => e.total).reduce((a, b) => a > b ? a : b);
 
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFFF1F1F1),
@@ -31,61 +35,69 @@ class RelatorioGraficoCategorias extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
+              color: Color(0xFF22202A),
             ),
           ),
-          const SizedBox(height: 20),
-          SizedBox(
-            height: 220,
-            child: BarChart(
-              BarChartData(
-                maxY: maiorValor,
-                gridData: const FlGridData(show: false),
-                borderData: FlBorderData(show: false),
-                titlesData: FlTitlesData(
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 82,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        if (index < 0 || index >= dados.length) {
-                          return const SizedBox();
-                        }
 
-                        return Text(
-                          dados[index].categoria,
-                          style: const TextStyle(fontSize: 12),
-                        );
-                      },
-                    ),
-                  ),
-                  bottomTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                barGroups: List.generate(
-                  dados.length,
-                  (index) => BarChartGroupData(
-                    x: index,
-                    barRods: [
-                      BarChartRodData(
-                        toY: dados[index].total,
-                        width: 16,
-                        borderRadius: BorderRadius.circular(8),
-                        color: const Color(0xFF6C63FF),
-                      ),
-                    ],
-                  ),
-                ),
+          const SizedBox(height: 22),
+
+          if (dados.isEmpty)
+            const Text(
+              'Nenhum gasto por categoria encontrado.',
+              style: TextStyle(
+                color: Color(0xFF8E8E8E),
               ),
-            ),
-          ),
+            )
+          else
+            ...dados.map((item) {
+              final porcentagem =
+                  maiorValor == 0 ? 0.0 : item.total / maiorValor;
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item.categoria,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF22202A),
+                          ),
+                        ),
+                        Text(
+                          _formatarMoeda(item.total),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF777777),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: LinearProgressIndicator(
+                        minHeight: 12,
+                        value: porcentagem,
+                        backgroundColor: const Color(0xFFE1E1E1),
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(
+                          Color(0xFF6C63FF),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
         ],
       ),
     );
