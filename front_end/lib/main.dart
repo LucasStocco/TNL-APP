@@ -1,6 +1,8 @@
-import 'package:crud_flutter/background/workmanager_callback.dart';
-import 'package:crud_flutter/background/workers/notification_worker.dart';
+import 'package:crud_flutter/background/workers/workmanager_callback.dart';
 import 'package:crud_flutter/core/api/api_client.dart';
+
+import 'package:crud_flutter/core/utils/notification_click_handler.dart';
+import 'package:crud_flutter/core/utils/notification_navigation_handler.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/mock_auth_service.dart';
 import 'package:crud_flutter/service/cadastrar_categoria/categoria_service.dart';
@@ -10,6 +12,9 @@ import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_service.dart';
 
 import 'package:crud_flutter/service/notifications/notification_service.dart';
+import 'package:crud_flutter/view/gerenciar_lista/minhas_listas_screen.dart';
+import 'package:crud_flutter/view/home/home_screen.dart';
+import 'package:crud_flutter/view/settings/settings_screen.dart';
 
 import 'package:crud_flutter/view/splash/splash_screen.dart';
 
@@ -21,6 +26,15 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/google_auth_service.dart';
 import 'package:crud_flutter/view/home/home_screen.dart';
+
+  Future.delayed(
+    const Duration(seconds: 10),
+    () async {
+      print("🧪 TESTE MANUAL");
+
+      await NotificationService.showTestNotification();
+    },
+  );
 
   runApp(const MyApp());
 }
@@ -47,7 +61,7 @@ Future<void> _initCore() async {
     await Workmanager().registerPeriodicTask(
       notificationTaskId,
       notificationTaskName,
-      frequency: const Duration(minutes: 15), // teste rápido
+      frequency: const Duration(minutes: 15),
       initialDelay: const Duration(seconds: 5),
       existingWorkPolicy: ExistingWorkPolicy.replace,
       constraints: Constraints(
@@ -60,8 +74,8 @@ Future<void> _initCore() async {
     await Workmanager().registerPeriodicTask(
       notificationTaskId,
       notificationTaskName,
-      frequency: const Duration(hours: 24), // diário real
-      initialDelay: _calculateInitialDelay(), // manhã
+      frequency: const Duration(hours: 24),
+      initialDelay: _calculateInitialDelay(),
       existingWorkPolicy: ExistingWorkPolicy.replace,
       constraints: Constraints(
         networkType: NetworkType.connected,
@@ -72,7 +86,7 @@ Future<void> _initCore() async {
   print("✅ [MAIN] WORKMANAGER READY");
 }
 
-/// =========================
+/// =========='===============
 /// DEFINE HORÁRIO (09:00 AM)
 /// =========================
 Duration _calculateInitialDelay() {
@@ -82,7 +96,7 @@ Duration _calculateInitialDelay() {
     now.year,
     now.month,
     now.day,
-    9, // 9h da manhã
+    9,
   );
 
   if (now.isAfter(target)) {
@@ -138,9 +152,37 @@ class MyApp extends StatelessWidget {
           create: (_) => UserViewModel(GoogleAuthService()),
         ),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case '/home':
+              final filter = settings.arguments as String?;
+
+              return MaterialPageRoute(
+                builder: (_) => HomeScreen(
+                  initialFilter: filter,
+                ),
+              );
+
+            case '/settings':
+              return MaterialPageRoute(
+                builder: (_) => const SettingsScreen(),
+              );
+
+            case '/listas':
+              return MaterialPageRoute(
+                builder: (_) => const MinhasListasScreen(),
+              );
+
+            default:
+              return MaterialPageRoute(
+                builder: (_) => const HomeScreen(),
+              );
+          }
+        },
       ),
     );
   }

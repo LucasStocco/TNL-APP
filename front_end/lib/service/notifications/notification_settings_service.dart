@@ -103,9 +103,7 @@ class NotificationSettingsService {
     await updateSettings((current) {
       return current.copyWith(preferredTime: time);
     });
-
-    // reagendamento automático de todas notificações
-    await NotificationService.rescheduleAll();
+    await NotificationSettingsService.getSettings();
   }
 
   /// =========================
@@ -117,7 +115,11 @@ class NotificationSettingsService {
     });
 
     // atualiza lógica de envio imediatamente
-    await NotificationService.updateFrequency();
+    // não precisa chamar nada no NotificationService
+// porque a regra já é dinâmica via NotificationPreferencesService
+
+// OU se quiser manter consistência:
+    await NotificationSettingsService.updateSettings((current) => current);
   }
 
   /// =========================

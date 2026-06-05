@@ -1,7 +1,8 @@
 import 'package:crud_flutter/view/home/widgets/home_carousel.dart';
 import 'package:crud_flutter/view/home/widgets/home_header_widget.dart';
+import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import 'package:crud_flutter/shared/widgets/navigation/app_navigation_bar.dart';
 import 'package:crud_flutter/view/categorias/categorias_screen.dart';
 import 'package:crud_flutter/view/home/widgets/home_content_container.dart';
@@ -11,7 +12,12 @@ import '../gerenciar_lista/minhas_listas_screen.dart';
 import '../relatorio_financeiro/relatorio_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String? initialFilter;
+
+  const HomeScreen({
+    super.key,
+    this.initialFilter,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,22 +34,47 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
+    // TESTE: listas pendentes (< 100%)
+    /*
+  Future.microtask(() {
+    context.read<ListaResumoViewModel>()
+      .aplicarFiltro('pendentes');
+  });
+  */
+
+    // TESTE: listas urgentes (< 30%)
+    /*
+  Future.microtask(() {
+    context.read<ListaResumoViewModel>()
+      .aplicarFiltro('urgentes');
+  });
+  */
+
+    // TESTE: listas quase concluídas (<= 70% e < 100%)
+    /*
+  Future.microtask(() {
+    context.read<ListaResumoViewModel>()
+      .aplicarFiltro('quase_concluidas');
+  });
+  */
+
     _pages = [
-      // 🏠 HOME
       const HomeCarousel(),
-
-      // 📂 CATEGORIAS
       const CategoriasScreen(),
-
-      // ➕ (botão central - não usa página)
       const SizedBox(),
-
-      // 🛒 LISTAS
       const MinhasListasScreen(),
-
-      // 📊 RELATÓRIO
       const RelatorioScreen(),
     ];
+
+    if (widget.initialFilter != null) {
+      _selectedIndex = 3;
+
+      Future.microtask(() {
+        context
+            .read<ListaResumoViewModel>()
+            .aplicarFiltro(widget.initialFilter);
+      });
+    }
   }
 
   void _onItemTapped(int index) {
