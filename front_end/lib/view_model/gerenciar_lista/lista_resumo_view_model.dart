@@ -1,33 +1,25 @@
 import 'package:flutter/material.dart';
 
+import '../../dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import '../../model/gerenciar_lista/lista_resumo.dart';
 import '../../service/gerenciar_lista/lista_resumo_service.dart';
+
+import 'package:crud_flutter/service/notifications/scheduler/notification_scheduler.dart';
 
 class ListaResumoViewModel extends ChangeNotifier {
   final ListaResumoService service;
 
   ListaResumoViewModel(this.service);
 
-  // =========================
-  // STATE (RESUMO)
-  // =========================
   List<ListaResumo> listas = [];
 
-  // =========================
-  // STATE (CRUD)
-  // =========================
-  List<Lista> listasCrud = [];
   Lista? listaAtual;
 
   bool isLoading = false;
   bool isSaving = false;
 
   String? erro;
-
-  // =========================
-  // HELPERS
-  // =========================
 
   void _setLoading(bool value) {
     isLoading = value;
@@ -39,163 +31,164 @@ class ListaResumoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _parseErro(Object e) {
-    return e.toString().replaceAll('Exception: ', '');
-  }
-
-  Future<T?> _execute<T>({
-    required Future<T> Function() action,
-    bool useSaving = false,
-  }) async {
-    erro = null;
-
-    if (useSaving) {
-      _setSaving(true);
-    } else {
-      _setLoading(true);
-    }
-
-    try {
-      return await action();
-    } catch (e) {
-      erro = _parseErro(e);
-      return null;
-    } finally {
-      if (useSaving) {
-        _setSaving(false);
-      } else {
-        _setLoading(false);
-      }
-    }
+  void _setError(Object e) {
+    erro = e.toString();
+    notifyListeners();
   }
 
   // =========================
   // RESUMO
   // =========================
   Future<void> carregarResumo() async {
-    final result = await _execute<List<ListaResumo>>(
-      action: () => service.getResumo(),
-    );
+    _setLoading(true);
 
-    if (result != null) {
-      listas = result;
-    }
+    try {
+      final List<ListaResumoResponseDTO> resultado = await service.getResumo();
 
-    notifyListeners();
-  }
+      // ✅ DTO -> MODEL
+      listas = resultado
+          .map(
+            (dto) => ListaResumo(
+              id: dto.id,
+              nome: dto.nome,
+              totalItens: dto.totalItens,
+              itensComprados: dto.itensComprados,
+              progresso: dto.progresso,
+            ),
+          )
+          .toList();
 
-  // =========================
-  // CRUD
-  // =========================
+      NotificationScheduler.push(listas);
 
-  Future<void> listar() async {
-    final result = await _execute<List<Lista>>(
-      action: () => service.getAll(),
-    );
-
-    if (result != null) {
-      listasCrud = result;
-    }
-
-    notifyListeners();
-  }
-
-  Future<Lista?> criar(String nome) async {
-    final criada = await _execute<Lista>(
-      useSaving: true,
-      action: () => service.create(nome),
-    );
-
-    if (criada != null) {
-      listasCrud.add(criada);
-      listaAtual = criada;
-    }
-
-    notifyListeners();
-    return criada;
-  }
-
-  void selecionarLista(Lista lista) {
-    listaAtual = lista;
-    notifyListeners();
-  }
-
-  Future<Lista?> atualizar(Lista lista) async {
-    if (lista.id == null) {
-      erro = "ID obrigatório";
       notifyListeners();
+    } catch (e) {
+      _setError(e);
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // =========================
+  // CRIAR
+  // =========================
+  Future<Lista?> criar(String nome) async {
+    _setSaving(true);
+
+    try {
+      final criada = await service.create(nome);
+
+      await carregarResumo();
+
+      return criada;
+    } catch (e) {
+      _setError(e);
       return null;
+    } finally {
+      _setSaving(false);
     }
-
-    final atualizada = await _execute<Lista>(
-      useSaving: true,
-      action: () => service.update(lista),
-    );
-
-    if (atualizada != null) {
-      final index = listasCrud.indexWhere((l) => l.id == atualizada.id);
-
-      if (index != -1) {
-        listasCrud[index] = atualizada;
-      }
-
-      if (listaAtual?.id == atualizada.id) {
-        listaAtual = atualizada;
-      }
-    }
-
-    notifyListeners();
-    return atualizada;
-  }
-
-  Future<void> deletarLista(int id) async {
-    await _execute<void>(
-      useSaving: true,
-      action: () => service.delete(id),
-    );
-
-    // remove localmente SEM depender de result
-    listas.removeWhere((l) => l.id == id);
-
-    notifyListeners();
-  }
-
-  Future<void> finalizar(int id) async {
-    await _execute<void>(
-      useSaving: true,
-      action: () => service.finalizarLista(id),
-    );
-
-    if (erro != null) return;
-
-    final index = listasCrud.indexWhere((l) => l.id == id);
-
-    if (index != -1) {
-      listasCrud[index] = listasCrud[index].copyWith(
-        concluidoEm: DateTime.now(),
-      );
-    }
-
-    notifyListeners();
   }
 
   // =========================
-  // RENOMEAR (RESUMO)
+  // ATUALIZAR
   // =========================
-  Future<void> renomearLista(int id, String novoNome) async {
-    final result = await _execute<Lista>(
-      useSaving: true,
-      action: () => service.update(
+  Future<Lista?> atualizar(Lista lista) async {
+    _setSaving(true);
+
+    try {
+      final atualizada = await service.update(lista);
+
+      await carregarResumo();
+
+      return atualizada;
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setSaving(false);
+    }
+  }
+
+  // =========================
+  // RENOMEAR
+  // =========================
+  Future<Lista?> renomearLista(
+    int id,
+    String novoNome,
+  ) async {
+    _setSaving(true);
+
+    try {
+      final lista = await service.update(
         Lista(
           id: id,
           nome: novoNome,
         ),
-      ),
-    );
+      );
 
-    if (result != null) {
+      if (listaAtual?.id == id) {
+        listaAtual = lista;
+      }
+
       await carregarResumo();
+
+      return lista;
+    } catch (e) {
+      _setError(e);
+      return null;
+    } finally {
+      _setSaving(false);
     }
+  }
+
+  // =========================
+  // DELETAR
+  // =========================
+  Future<void> deletarLista(int id) async {
+    _setSaving(true);
+
+    try {
+      await service.delete(id);
+
+      listas.removeWhere((l) => l.id == id);
+
+      if (listaAtual?.id == id) {
+        listaAtual = null;
+      }
+
+      notifyListeners();
+
+      await carregarResumo();
+    } catch (e) {
+      _setError(e);
+    } finally {
+      _setSaving(false);
+    }
+  }
+
+  // =========================
+  // FINALIZAR
+  // =========================
+  Future<void> finalizarLista(int id) async {
+    _setSaving(true);
+
+    try {
+      await service.finalizarLista(id);
+
+      await carregarResumo();
+    } catch (e) {
+      _setError(e);
+    } finally {
+      _setSaving(false);
+    }
+  }
+
+  // =========================
+  // SELEÇÃO
+  // =========================
+  void selecionarLista(Lista lista) {
+    listaAtual = lista;
+
+    notifyListeners();
   }
 
   // =========================
@@ -203,11 +196,15 @@ class ListaResumoViewModel extends ChangeNotifier {
   // =========================
   void resetar() {
     listas = [];
-    listasCrud = [];
+
     listaAtual = null;
+
+    erro = null;
+
     isLoading = false;
     isSaving = false;
-    erro = null;
+
+    NotificationScheduler.reset();
 
     notifyListeners();
   }

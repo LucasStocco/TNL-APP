@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../model/cadastrar_produto/produto.dart';
 import '../../service/cadastrar_produto/produto_service.dart';
-import '../../dto/produto_create_dto.dart';
-import '../../dto/produto_update_dto.dart';
+import '../../dto/request/cadastrar_produto/produto_request_create_dto.dart';
+import '../../dto/request/cadastrar_produto/produto_request_update_dto.dart';
 
 class ProdutoViewModel extends ChangeNotifier {
   final ProdutoService _service;
@@ -75,7 +75,6 @@ class ProdutoViewModel extends ChangeNotifier {
   // =========================
   Future<Produto?> criar({
     required String nome,
-    required double preco,
     String? descricao,
     required int idCategoria,
   }) async {
@@ -86,7 +85,6 @@ class ProdutoViewModel extends ChangeNotifier {
       final novo = await _service.criar(
         ProdutoCreateDTO(
           nome: nome,
-          preco: preco,
           descricao: descricao,
           idCategoria: idCategoria,
         ),
@@ -106,13 +104,12 @@ class ProdutoViewModel extends ChangeNotifier {
   // =========================
   // ATUALIZAR PRODUTO
   // =========================
-  Future<Produto?> atualizar(Produto produto) async {
-    if (produto.id == null) {
-      erro = "ID obrigatório";
-      notifyListeners();
-      return null;
-    }
-
+  Future<Produto?> atualizar(
+    Produto produto,
+    String nome,
+    String? descricao,
+    int idCategoria,
+  ) async {
     _setSaving(true);
     erro = null;
 
@@ -120,10 +117,9 @@ class ProdutoViewModel extends ChangeNotifier {
       final atualizado = await _service.atualizar(
         produto.id!,
         ProdutoUpdateDTO(
-          nome: produto.nome,
-          preco: produto.preco,
-          descricao: produto.descricao,
-          idCategoria: produto.idCategoria,
+          nome: nome,
+          descricao: descricao,
+          idCategoria: idCategoria,
         ),
       );
 
@@ -154,10 +150,10 @@ class ProdutoViewModel extends ChangeNotifier {
       produtos.removeWhere((p) => p.id == id);
     } catch (e) {
       _setError(e);
+    } finally {
+      _setSaving(false);
+      notifyListeners();
     }
-
-    _setSaving(false);
-    notifyListeners();
   }
 
   // =========================

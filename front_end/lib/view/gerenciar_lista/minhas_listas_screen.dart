@@ -1,4 +1,6 @@
 import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
+import 'package:crud_flutter/shared/widgets/navigation/section_header.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/empty_minhas_listas_widget.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
   @override
   void initState() {
     super.initState();
+
     Future.microtask(
       () => context.read<ListaResumoViewModel>().carregarResumo(),
     );
@@ -42,7 +45,10 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
+              leading: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
               title: const Text("Excluir"),
               onTap: () {
                 Navigator.pop(context);
@@ -56,7 +62,9 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
   }
 
   void _editarLista(BuildContext context, ListaResumo lista) {
-    final controller = TextEditingController(text: lista.nome);
+    final controller = TextEditingController(
+      text: lista.nome,
+    );
 
     showDialog(
       context: context,
@@ -97,7 +105,9 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
       builder: (_) {
         return AlertDialog(
           title: const Text("Excluir lista?"),
-          content: const Text("Essa ação não pode ser desfeita."),
+          content: const Text(
+            "Essa ação não pode ser desfeita.",
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -105,7 +115,10 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<ListaResumoViewModel>().deletarLista(lista.id);
+                context.read<ListaResumoViewModel>().deletarLista(
+                      lista.id,
+                    );
+
                 Navigator.pop(context);
               },
               child: const Text("Excluir"),
@@ -118,73 +131,134 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Minhas Listas')),
-      body: Consumer<ListaResumoViewModel>(
-        builder: (context, viewModel, _) {
-          if (viewModel.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return Consumer<ListaResumoViewModel>(
+      builder: (context, viewModel, _) {
+        if (viewModel.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
 
-          if (viewModel.listas.isEmpty) {
-            return const Center(child: Text('Nenhuma lista encontrada'));
-          }
+        // =========================
+        // EMPTY STATE
+        // =========================
+        if (viewModel.listas.isEmpty) {
+          return const EmptyMinhasListasWidget();
+        }
 
-          return ListView.builder(
-            itemCount: viewModel.listas.length,
-            itemBuilder: (context, index) {
-              final lista = viewModel.listas[index];
+        return SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SectionHeader(
+                title: "Minhas Listas",
+                subtitle: "Gerencie suas compras",
+                isGrid: false,
+              ),
 
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ListaScreen(
-                        listaId: lista.id,
-                        listaNome: lista.nome,
-                      ),
-                    ),
-                  ).then((_) {
-                    context.read<ListaResumoViewModel>().carregarResumo();
-                  });
-                },
-                onLongPress: () => _abrirOpcoes(context, lista),
-                child: Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+              // =========================
+              // LISTA
+              // =========================
+              Expanded(
+                child: ListView.builder(
+                  key: const ValueKey('listas'),
+                  padding: const EdgeInsets.fromLTRB(
+                    16,
+                    8,
+                    16,
+                    16,
                   ),
-                  child: ListTile(
-                    title: Text(lista.nome),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 6),
-                        LinearProgressIndicator(
-                          value: lista.progresso / 100,
-                          backgroundColor: Colors.grey.shade300,
-                          color: _corProgresso(lista.progresso),
+                  itemCount: viewModel.listas.length,
+                  itemBuilder: (context, index) {
+                    final lista = viewModel.listas[index];
+
+                    final corProgresso = _corProgresso(
+                      lista.progresso,
+                    );
+
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ListaScreen(
+                              listaId: lista.id,
+                              listaNome: lista.nome,
+                            ),
+                          ),
+                        ).then((_) {
+                          context.read<ListaResumoViewModel>().carregarResumo();
+                        });
+                      },
+                      onLongPress: () => _abrirOpcoes(context, lista),
+                      child: AnimatedContainer(
+                        duration: const Duration(
+                          milliseconds: 300,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${lista.progresso.toStringAsFixed(0)}% concluída '
-                          '(${lista.itensComprados}/${lista.totalItens})',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
+                        curve: Curves.easeOut,
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: corProgresso.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: corProgresso.withOpacity(
+                              0.35,
+                            ),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(
+                                0.04,
+                              ),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          title: Text(lista.nome),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 6),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(999),
+                                child: LinearProgressIndicator(
+                                  value: lista.progresso / 100,
+                                  minHeight: 8,
+                                  backgroundColor: Colors.grey.shade300,
+                                  color: corProgresso,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${lista.progresso.toStringAsFixed(0)}% concluída '
+                                '(${lista.itensComprados}/${lista.totalItens})',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
                           ),
                         ),
-                      ],
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios),
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

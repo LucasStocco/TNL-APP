@@ -1,4 +1,6 @@
 // ================= PACKAGES =================
+import 'package:crud_flutter/view/gerenciar_lista/widgets/empty_lista_widget.dart';
+import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_item_tile_with_divider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -18,10 +20,8 @@ import 'package:crud_flutter/view_model/cadastrar_produto/produto_view_model.dar
 import 'package:crud_flutter/view/gerenciar_lista/widgets/categoria_bottom_sheet.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/item_actions_sheet.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_fab_menu.dart';
-import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_item_tile.dart';
 import 'package:crud_flutter/view/cadastrar_produto/criar_item_screen.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_resumo_header.dart';
-import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_status_card.dart';
 
 class ListaScreen extends StatefulWidget {
   final int listaId;
@@ -86,8 +86,9 @@ class _ListaScreenState extends State<ListaScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // Estado vazio da lista
           if (vm.itens.isEmpty) {
-            return const Center(child: Text("Nenhum item na lista"));
+            return const EmptyListaWidget();
           }
 
           return Column(
@@ -104,15 +105,23 @@ class _ListaScreenState extends State<ListaScreen> {
                   itemCount: vm.itens.length,
                   itemBuilder: (_, index) {
                     final item = vm.itens[index];
-
-                    return ListaItemTile(
+                    // Componente de divisão visual entre itens, com suporte a long press para ações
+                    return ListaItemTileWithDivider(
                       item: item,
+                      isLast: index == vm.itens.length - 1,
                       onLongPress: () {
                         ItemActionsSheet.show(
                           context,
                           item,
                           widget.listaId,
                         );
+                      },
+                      onDoubleTap: () {
+                        context.read<ItemViewModel>().marcarComprado(
+                              widget.listaId,
+                              item.id,
+                              !item.comprado,
+                            );
                       },
                     );
                   },

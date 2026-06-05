@@ -1,19 +1,16 @@
-import 'package:crud_flutter/core/helpers/service_utils.dart';
-
-import '../../model/cadastrar_categoria/categoria.dart';
-import '../../core/api/api_client.dart';
-import '../../core/api/api_endpoints.dart';
-import '../../dto/categoria_create_dto.dart';
-import '../../dto/categoria_update_dto.dart';
+import 'package:crud_flutter/core/api/api_client.dart';
+import 'package:crud_flutter/core/api/api_endpoints.dart';
+import 'package:crud_flutter/core/api/api_response.dart';
+import 'package:crud_flutter/dto/request/cadastrar_categoria/categoria_request_create_dto.dart';
+import 'package:crud_flutter/dto/request/cadastrar_categoria/categoria_request_update_dto.dart';
+import 'package:crud_flutter/model/cadastrar_categoria/cadastrar_categoria_completa_model.dart';
+import 'package:crud_flutter/model/cadastrar_categoria/categoria.dart';
 
 class CategoriaService {
   final ApiClient _client;
 
   CategoriaService(this._client);
 
-  // =====================================================
-  // 🧠 LOG HELPERS
-  // =====================================================
   void _log(String msg) => print("[CATEGORIA_SERVICE] $msg");
 
   void _logReq(String method, String url, [dynamic body]) {
@@ -25,29 +22,32 @@ class CategoriaService {
     _log("⬅️ RESPONSE: $res");
   }
 
-  // =====================================================
-  // 📥 LISTAR
-  // =====================================================
+  // =========================
+  // 📥 LISTAR CATEGORIAS
+  // =========================
   Future<List<Categoria>> buscarCategorias() async {
-    const url = ApiEndpoints.categorias;
+    final url = ApiEndpoints.categorias;
 
     _logReq("GET", url);
 
     final res = await _client.get<List<Categoria>>(
       url,
-      (data) => (data as List).map((e) => Categoria.fromJson(e)).toList(),
+      (data) {
+        final list = data as List<dynamic>;
+        return list.map((e) => Categoria.fromJson(e)).toList();
+      },
     );
 
     _logRes(res);
 
-    return ServiceUtils.extractList<Categoria>(res);
+    return res.data ?? [];
   }
 
-  // =====================================================
+  // =========================
   // ➕ CRIAR
-  // =====================================================
+  // =========================
   Future<Categoria> criarCategoria(CategoriaCreateDTO dto) async {
-    const url = ApiEndpoints.categorias;
+    final url = ApiEndpoints.categorias;
 
     _logReq("POST", url, dto.toJson());
 
@@ -59,17 +59,17 @@ class CategoriaService {
 
     _logRes(res);
 
-    return ServiceUtils.extract<Categoria>(res);
+    return res.data!;
   }
 
-  // =====================================================
+  // =========================
   // ✏️ ATUALIZAR
-  // =====================================================
+  // =========================
   Future<Categoria> atualizarCategoria(
     int id,
     CategoriaUpdateDTO dto,
   ) async {
-    final url = "${ApiEndpoints.categorias}/$id";
+    final url = ApiEndpoints.categoriaPorId(id);
 
     _logReq("PUT", url, dto.toJson());
 
@@ -81,25 +81,62 @@ class CategoriaService {
 
     _logRes(res);
 
-    return ServiceUtils.extract<Categoria>(res);
+    return res.data!;
   }
 
-  // =====================================================
+  // =========================
   // 🗑 DELETAR
-  // =====================================================
+  // =========================
   Future<void> deletarCategoria(int id) async {
-    final url = "${ApiEndpoints.categorias}/$id";
+    final url = ApiEndpoints.categoriaPorId(id);
 
-    _log("🔥 DELETE CHAMADO REAL: $url");
+    _logReq("DELETE", url);
 
-    final res = await _client.delete(
+    await _client.delete(url, null);
+
+    _log("✔ Categoria deletada");
+  }
+
+  // =========================
+  // 📦 SUBCATEGORIAS COM PRODUTOS (LISTA COMPLETA)
+  // =========================
+  Future<CategoriaCompletaModel> buscarCategoriaCompleta(int id) async {
+    final url = ApiEndpoints.categoriaCompleta(id);
+
+    _logReq("GET", url);
+
+    final res = await _client.get<CategoriaCompletaModel>(
       url,
-      null,
+      (data) {
+        if (data == null) {
+          throw Exception("Backend retornou data null");
+        }
+
+        return CategoriaCompletaModel.fromJson(data);
+      },
     );
 
-    _log("🔥 DELETE RESPONSE RAW: $res");
+    _logRes(res);
 
-    // ⚠️ COMENTA ISSO TEMPORARIAMENTE
-    // ServiceUtils.validate(res);
+    if (res.data == null) {
+      throw Exception("Categoria completa veio null");
+    }
+
+    return res.data!;
+  }
+
+  // =========================
+  // 📦 SUBCATEGORIAS (LISTA SIMPLES)
+  // =========================
+  Future<List<dynamic>> buscarCategoriasComSubcategorias() async {
+    final url = ApiEndpoints.categoriaCompleta(0); // ⚠️ opcional remover depois
+
+    _logReq("GET", url);
+
+    final res = await _client.get(url, (data) => data);
+
+    _logRes(res);
+
+    return res.data ?? [];
   }
 }

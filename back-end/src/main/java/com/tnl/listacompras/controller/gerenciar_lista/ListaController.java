@@ -24,7 +24,9 @@ import java.util.List;
 @RequestMapping("/listas")
 public class ListaController {
 
+	// operações de lista → ListaService
     private final ListaService listaService;
+    // operações de item → ItemService
     private final ItemService itemService;
 
     public ListaController(ListaService listaService, ItemService itemService) {
@@ -37,7 +39,10 @@ public class ListaController {
     // =========================
 
     @PostMapping
+    // ResponseEntity = Controle do HTTP
+    // ApiResponse = Padronizaçã
     public ResponseEntity<ApiResponse<ListaResponseDTO>> criar(
+    		// @Valid = faz validação
             @Valid @RequestBody ListaRequestDTO dto) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -117,10 +122,10 @@ public class ListaController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(
                         "Item criado",
-                        itemService.criar(idLista, dto)
+                        listaService.criarItem(idLista, dto)
                 ));
     }
-
+    
     @PutMapping("/{idLista}/itens/{idItem}")
     public ResponseEntity<ApiResponse<ItemResponseDTO>> atualizarItem(
             @PathVariable Long idLista,

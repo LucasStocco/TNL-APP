@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-
+	
     // =========================
     // 🔎 BUSCAS
     // =========================
@@ -30,14 +30,14 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     // 📊 RESUMO (ESSENCIAL)
     // =========================
 
-    // total de itens ativos da lista
+ // total de itens ativos da lista
     @Query("""
         SELECT COUNT(i)
         FROM Item i
         WHERE i.lista.id = :listaId
         AND i.deletado = false
     """)
-    int contarItensAtivos(@Param("listaId") Long listaId);
+    Long contarItensAtivos(@Param("listaId") Long listaId);
 
     // total de itens comprados
     @Query("""
@@ -47,5 +47,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         AND i.deletado = false
         AND i.comprado = true
     """)
-    int contarItensComprados(@Param("listaId") Long listaId);
+    Long contarItensComprados(@Param("listaId") Long listaId);
 }

@@ -31,13 +31,9 @@ class CategoriaDialogs {
 
                 final vm = context.read<CategoriaViewModel>();
 
-                await vm.atualizar(
-                  Categoria(
-                    id: categoria.id,
-                    nome: novoNome,
-                    codigo: categoria.codigo,
-                    deletado: categoria.deletado,
-                  ),
+                await vm.renomearCategoria(
+                  categoria.id,
+                  novoNome,
                 );
 
                 Navigator.pop(context);

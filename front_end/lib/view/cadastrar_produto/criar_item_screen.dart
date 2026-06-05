@@ -65,25 +65,26 @@ class _CriarItemScreenState extends State<CriarItemScreen> {
       return;
     }
 
+    // 1. cria produto (BACKEND decide subcategoria)
     final produto = await produtoVM.criar(
       nome: nome,
-      preco: preco,
-      idCategoria: idCategoria!,
       descricao: descricao,
+      idCategoria: idCategoria!,
     );
 
     if (produto == null || produto.id == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao criar produto")),
+        const SnackBar(content: Text("Erro ao criar produto")),
       );
       return;
     }
 
+    // 2. cria item
     await itemVM.criar(
       listaId: widget.listaId,
       idProduto: produto.id!,
       quantidade: quantidade,
-      preco: produto.preco!,
+      preco: preco,
     );
 
     Navigator.pop(context);

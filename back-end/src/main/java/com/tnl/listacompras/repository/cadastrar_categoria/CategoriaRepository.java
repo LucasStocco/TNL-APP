@@ -13,4 +13,6 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
     Optional<Categoria> findByIdAndDeletadoFalse(Long id);
 
     boolean existsByCodigoIgnoreCase(String codigo);
+    
+    boolean existsByNomeIgnoreCaseAndDeletadoFalse(String nome);
 }

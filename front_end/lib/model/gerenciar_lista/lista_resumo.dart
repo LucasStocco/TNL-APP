@@ -22,6 +22,25 @@ class ListaResumo {
       progresso: (json['progresso'] ?? 0).toDouble(),
     );
   }
+
+  // =========================
+  // COPY WITH (ÚTIL PRA UI / UPDATE LOCAL)
+  // =========================
+  ListaResumo copyWith({
+    int? id,
+    String? nome,
+    int? totalItens,
+    int? itensComprados,
+    double? progresso,
+  }) {
+    return ListaResumo(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      totalItens: totalItens ?? this.totalItens,
+      itensComprados: itensComprados ?? this.itensComprados,
+      progresso: progresso ?? this.progresso,
+    );
+  }
 }
 
 /*
@@ -30,4 +49,5 @@ Service 👉 já busca /listas/resumo
 Front 👉 ainda usa ListaViewModel.listar() (endpoint antigo) */
 
 /*
-Eu escolhi separar Lista e ListaResumo porque na tela “Minhas Listas” eu não preciso carregar todos os itens de cada lista, só as informações resumidas como total, itens comprados e progresso. Como esses dados já vêm prontos do backend, não faz sentido eu tentar recalcular isso no Flutter usando a entidade completa. Essa separação me ajuda a evitar inconsistência de dados, deixa o app mais leve e organiza melhor o código, já que cada modelo representa exatamente o que cada tela precisa. */
+Eu escolhi separar Lista e ListaResumo porque na tela “Minhas Listas” eu não preciso carregar todos os itens de cada lista, só as informações resumidas como total, itens comprados e progresso. Como esses dados já vêm prontos do backend, não faz sentido eu tentar recalcular isso no Flutter usando a entidade completa. Essa separação me ajuda a evitar inconsistência de dados, deixa o app mais leve e organiza melhor o código, já que cada modelo representa exatamente o que cada tela precisa.
+*/

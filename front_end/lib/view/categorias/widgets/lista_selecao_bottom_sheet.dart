@@ -1,8 +1,7 @@
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
+import 'package:crud_flutter/view_model/gerenciar_lista/item_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../service/gerenciar_lista/item_service.dart';
 
 class ListaSelecaoBottomSheet {
   static void show({
@@ -14,23 +13,25 @@ class ListaSelecaoBottomSheet {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) {
+      builder: (ctx) {
+        final listaVM = ctx.read<ListaViewModel>();
+
+        // 🔥 carrega uma única vez
+        if (listaVM.listas.isEmpty && !listaVM.isLoading) {
+          Future.microtask(() => listaVM.listar());
+        }
+
         return Consumer<ListaViewModel>(
           builder: (context, vm, child) {
             if (vm.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            // 🔥 força carregamento inicial
-            if (vm.listas.isEmpty) {
-              Future.microtask(() {
-                context.read<ListaViewModel>().listar();
-              });
-
-              return const Center(child: CircularProgressIndicator());
-            }
-
             final listas = vm.listas;
+
+            if (listas.isEmpty) {
+              return const Center(child: Text("Nenhuma lista encontrada"));
+            }
 
             return ListView(
               shrinkWrap: true,
@@ -47,64 +48,58 @@ class ListaSelecaoBottomSheet {
                 ),
                 ...listas.map((lista) {
                   return ListTile(
-                    leading: const Icon(Icons.list),
-                    title: Text(lista.nome),
-                    onTap: () async {
-                      final service = context.read<ItemService>();
+                      leading: const Icon(Icons.list),
+                      title: Text(lista.nome),
+                      onTap: () async {
+                        final itemVM = context.read<ItemViewModel>();
+                        final precoController = TextEditingController();
 
-                      await service.adicionarProdutoNaLista(
-                        listaId: lista.id!,
-                        produtoId: produtoId,
-                      );
+                        // 🔥 fecha bottom sheet
+                        Navigator.pop(context);
 
-                      Navigator.pop(context);
+                        // 🔥 garante flush da UI sem usar mounted
+                        await Future.delayed(const Duration(milliseconds: 100));
 
-                      // snackbar de confirmação
-                      OverlayEntry entry = OverlayEntry(
-                        builder: (context) => Positioned(
-                          bottom: 80,
-                          left: 20,
-                          right: 20,
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.check, color: Colors.white),
-                                  SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      "Produto adicionado com sucesso",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ],
+                        // 🔥 usa root context seguro
+                        if (!ctx.mounted) return;
+
+                        await showDialog(
+                          context: context,
+                          builder: (dialogContext) => AlertDialog(
+                            title: const Text("Definir preço"),
+                            content: TextField(
+                              controller: precoController,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                hintText: "Digite o preço",
                               ),
                             ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext),
+                                child: const Text("Cancelar"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final preco =
+                                      double.tryParse(precoController.text) ??
+                                          0;
+
+                                  await itemVM.criar(
+                                    listaId: lista.id!,
+                                    idProduto: produtoId,
+                                    quantidade: 1,
+                                    preco: preco,
+                                  );
+
+                                  Navigator.pop(dialogContext);
+                                },
+                                child: const Text("Adicionar"),
+                              ),
+                            ],
                           ),
-                        ),
-                      );
-
-                      Overlay.of(context).insert(entry);
-
-                      Future.delayed(const Duration(seconds: 2), () {
-                        entry.remove();
+                        );
                       });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Produto adicionado em ${lista.nome}",
-                          ),
-                        ),
-                      );
-                    },
-                  );
                 }),
               ],
             );

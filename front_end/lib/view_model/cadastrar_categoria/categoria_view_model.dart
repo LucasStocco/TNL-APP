@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../model/cadastrar_categoria/categoria.dart';
 import '../../service/cadastrar_categoria/categoria_service.dart';
-import '../../dto/categoria_create_dto.dart';
-import '../../dto/categoria_update_dto.dart';
+import '../../dto/request/cadastrar_categoria/categoria_request_create_dto.dart';
+import '../../dto/request/cadastrar_categoria/categoria_request_update_dto.dart';
 
 class CategoriaViewModel extends ChangeNotifier {
   final CategoriaService _service;
@@ -16,6 +16,10 @@ class CategoriaViewModel extends ChangeNotifier {
   bool isLoading = false;
   bool isSaving = false;
 
+  bool _isGrid = true;
+
+  bool get isGrid => _isGrid;
+
   String? erro;
 
   // =========================
@@ -23,6 +27,7 @@ class CategoriaViewModel extends ChangeNotifier {
   // =========================
   void _setLoading(bool value) {
     isLoading = value;
+    if (value) erro = null;
     notifyListeners();
   }
 
@@ -33,6 +38,7 @@ class CategoriaViewModel extends ChangeNotifier {
 
   void _setError(Object e) {
     erro = e.toString().replaceAll('Exception: ', '');
+    notifyListeners();
   }
 
   // =========================
@@ -79,39 +85,6 @@ class CategoriaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // ATUALIZAR
-  // =========================
-  Future<Categoria?> atualizar(Categoria categoria) async {
-    if (categoria.id == null) {
-      erro = "ID obrigatório";
-      notifyListeners();
-      return null;
-    }
-
-    _setSaving(true);
-    erro = null;
-
-    try {
-      final atualizada = await _service.atualizarCategoria(
-        categoria.id!,
-        CategoriaUpdateDTO(nome: categoria.nome),
-      );
-
-      categorias = categorias.map((c) {
-        return c.id == atualizada.id ? atualizada : c;
-      }).toList();
-
-      return atualizada;
-    } catch (e) {
-      _setError(e);
-      return null;
-    } finally {
-      _setSaving(false);
-      notifyListeners();
-    }
-  }
-
-  // =========================
   // RENOMEAR CATEGORIA
   // =========================
   Future<void> renomearCategoria(int id, String novoNome) async {
@@ -140,28 +113,19 @@ class CategoriaViewModel extends ChangeNotifier {
   // DELETAR
   // =========================
   Future<void> deletar(int id) async {
-    print("🔥 DELETE CHAMADO: $id"); // <<<<<< ADICIONA ISSO
-
     _setSaving(true);
+    erro = null;
 
     try {
       await _service.deletarCategoria(id);
-
-      print("🔥 DELETE OK NO SERVICE");
-
       categorias.removeWhere((c) => c.id == id);
-      notifyListeners();
     } catch (e) {
-      print("❌ ERRO DELETE: $e");
+      _setError(e);
     } finally {
       _setSaving(false);
+      notifyListeners();
     }
   }
-
-  // =========================
-  // FILTROS (SE NECESSÁRIO)
-  // =========================
-  List<Categoria> get categoriasAtivas => categorias;
 
   // =========================
   // RESET
@@ -171,6 +135,14 @@ class CategoriaViewModel extends ChangeNotifier {
     isLoading = false;
     isSaving = false;
     erro = null;
+    notifyListeners();
+  }
+
+  // =========================
+// UI STATE (LAYOUT)
+// =========================
+  void toggleLayout() {
+    _isGrid = !_isGrid;
     notifyListeners();
   }
 }
