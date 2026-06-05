@@ -1,15 +1,17 @@
 import 'package:crud_flutter/background/services/api_background_service.dart';
 import 'package:crud_flutter/background/services/notification_background_service.dart';
 import 'package:crud_flutter/background/services/notification_context_builder.dart';
+import 'package:crud_flutter/core/utils/anti_spam_engine.dart';
 import 'package:crud_flutter/core/utils/notification/messages/notification_frequency.dart';
 
 import 'package:crud_flutter/core/utils/notification/notification_cache_manager.dart';
-import 'package:crud_flutter/core/utils/notification/notification_cooldown_manager.dart';
-import 'package:crud_flutter/core/utils/notification/notification_dedup.dart';
-import 'package:crud_flutter/core/utils/notification/notification_hash.dart';
 import 'package:crud_flutter/core/utils/notification/rules/notification_engine.dart';
+import 'package:crud_flutter/core/utils/notification_historico_repository.dart';
+import 'package:crud_flutter/core/utils/notification_historico_storage.dart';
+
+import 'package:crud_flutter/core/utils/notification_spam_guard.dart';
+
 import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
-import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_settings_model.dart';
 import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_type.dart';
 
@@ -26,99 +28,64 @@ class NotificationWorker {
     Map<String, dynamic>? inputData,
   ) async {
     try {
-      // =========================
-      // 🚀 START
-      // =========================
-      print("\n==============================");
+      // =========================================================
+      // 🚀 1. ENTRADA DO WORKER
+      // =========================================================
       print("🚀 [WORKER] START");
-      print("🧾 task: $task");
-      print("==============================");
 
       if (task != taskName) {
-        print("⛔ [WORKER] TASK IGNORADA: $task");
+        print("⛔ TASK IGNORADA");
         return true;
       }
 
-      // =========================
+      // =========================================================
       // 📦 INPUT
-      // =========================
-      print("📦 [INPUT] $inputData");
-
+      // =========================================================
       final String? filter = inputData?["filter"];
-      print("🎯 [FILTER] $filter");
+      print("🎯 FILTER: $filter");
 
-      // =========================
-      // ⏳ COOLDOWN
-      // =========================
-      print("⏳ [COOLDOWN] checking...");
+      // =========================================================
+      // ⏳ COOLDOWN GLOBAL (mantido simples aqui se quiser)
+      // =========================================================
+      print("⏳ CHECK COOLDOWN");
 
-      if (!testMode) {
-        final cooldown = await NotificationCooldownManager.checkCooldown();
-
-        print("⏳ [COOLDOWN] canSend: ${cooldown.canSend}");
-
-        if (!cooldown.canSend) {
-          print("⛔ [COOLDOWN] ACTIVE");
-          print("⏱️ remaining: ${cooldown.remaining}");
-
-          return true;
-        }
-      } else {
-        print("🧪 [TEST MODE] cooldown bypassed");
-      }
-
-      // =========================
-      // 🌐 API
-      // =========================
-      print("🌐 [API] fetching data...");
+      // =========================================================
+      // 🌐 DADOS (API + CACHE)
+      // =========================================================
+      print("🌐 BUSCANDO DADOS");
 
       final apiService = ApiBackgroundService();
       List<ListaResumoResponseDTO> data = [];
 
       try {
         data = await apiService.fetchData();
-
-        print("📊 [API] items: ${data.length}");
-
         await NotificationCacheManager.saveCache(data);
-        print("💾 [CACHE] saved");
       } catch (e) {
-        print("⚠️ [API ERROR] $e");
+        print("⚠️ API ERROR");
 
         final cached = await NotificationCacheManager.getCache();
 
         if (cached == null || cached.isEmpty) {
-          print("📭 [CACHE] EMPTY → STOP");
+          print("📭 SEM DADOS → ENCERRANDO");
           return true;
         }
 
-        print("♻️ [CACHE] fallback activated");
         data = cached;
       }
 
-      // =========================
-      // 🧠 CONTEXT
-      // =========================
-      print("🧠 [CONTEXT] building...");
-      print("📦 input size: ${data.length}");
-      print("🎯 filter: $filter");
+      // =========================================================
+      // 🧠 CONTEXT BUILDER
+      // =========================================================
+      print("🧠 CONSTRUINDO CONTEXTO");
 
       final context = NotificationContextBuilder.build(
         data,
         filter: filter,
       );
 
-      print("🧠 [CONTEXT READY]");
-      print("   total: ${context.totalLists}");
-      print("   pending: ${context.pendingLists}");
-      print("   completed: ${context.completedLists}");
-      print("   urgency: ${context.urgencyLevel}");
-
-      // =========================
+      // =========================================================
       // ⚙️ SETTINGS
-      // =========================
-      print("⚙️ [SETTINGS] building...");
-
+      // =========================================================
       final settings = NotificationSettingsModel(
         enabled: true,
         typesEnabled: {
@@ -130,72 +97,109 @@ class NotificationWorker {
         preferredTime: const TimeOfDay(hour: 9, minute: 0),
       );
 
-      // =========================
+      // =========================================================
       // 🧠 ENGINE
-      // =========================
-      print("🧠 [ENGINE] evaluating...");
+      // =========================================================
+      print("🧠 EXECUTANDO ENGINE");
 
       final notification = NotificationEngine.evaluate(
         context: context,
         settings: settings,
       );
 
-      print("📨 [ENGINE RESULT]");
-      print("   shouldNotify: ${notification.shouldNotify}");
-      print("   title: ${notification.title}");
-      print("   body: ${notification.body}");
-
       if (!notification.shouldNotify) {
-        print("🔕 [ENGINE] NO NOTIFICATION");
+        print("🔕 ENGINE BLOQUEOU");
         return true;
       }
 
-      // =========================
+      // =========================================================
       // 🔐 HASH
-      // =========================
-      final hash = NotificationHash.generate(
-        "${notification.title}${notification.body}",
-      );
+      // =========================================================
+      print("🔐 GERANDO HASH");
 
-      print("🔐 [HASH] $hash");
+      final hash = "${notification.title}${notification.body}";
 
-      if (!testMode) {
-        final isDuplicate = await NotificationDedup.isDuplicate(hash);
+      // =========================================================
+      // 🛡 SPAMGUARD (NOVO FLUXO)
+    // =========================================================
+      print("🛡 SPAMGUARD VALIDANDO");
 
-        print("🔁 [DEDUP] $isDuplicate");
+      final storage = NotificationHistoricoStorage();
+      final repository = NotificationHistoricoRepository(storage);
+      final engine = AntiSpamEngine(repository);
 
-        if (isDuplicate) {
-          print("⛔ DUPLICATE BLOCKED");
-          return true;
-        }
+      final guard = NotificationSpamGuard(engine);
+
+      final podeEnviar = await guard.podeEnviar(notification, hash);
+
+      if (!podeEnviar) {
+        print("⛔ BLOQUEADO PELO SPAMGUARD");
+        return true;
       }
 
-      // =========================
-      // 🔔 NOTIFICATION
-      // =========================
-      print("🔔 [NOTIFICATION] initializing...");
+      // =========================================================
+      // 🔔 ENVIO DA NOTIFICAÇÃO
+      // =========================================================
+      print("🔔 ENVIANDO NOTIFICAÇÃO");
 
       await NotificationBackgroundService.initialize();
 
-      print("📤 [NOTIFICATION] sending...");
       await NotificationService.showNotification(
         notification.title ?? '',
         notification.body ?? '',
       );
 
-      // =========================
-      // 💾 STATE
-      // =========================
-      await NotificationCooldownManager.saveSendData(notification);
-      await NotificationDedup.save(hash);
+      // =========================================================
+      // 💾 REGISTRO CENTRALIZADO
+      // =========================================================
+      await guard.registrar(notification, hash);
 
-      print("✅ [WORKER] DONE SUCCESS");
+      print("✅ WORKER FINALIZADO");
 
       return true;
     } catch (e, stack) {
-      print("❌ [WORKER ERROR] $e");
-      print("📍 STACKTRACE:\n$stack");
+      print("❌ ERRO NO WORKER: $e");
+      print(stack);
       return false;
     }
   }
 }
+
+/// =========================================================
+/// FLUXO DO SISTEMA DE PROTEÇÃO ANTI-SPAM
+/// =========================================================
+///
+/// WORKER
+/// Responsável por orquestrar todo o processo de execução
+/// da notificação em background.
+///
+///   ↓
+///
+/// SPAMGUARD
+/// Primeira camada de proteção.
+/// Centraliza a decisão de bloqueio ou permissão da notificação,
+/// evitando que regras fiquem espalhadas no Worker.
+///
+///   ↓
+///
+/// ANTI-SPAM ENGINE
+/// Motor de regras do sistema.
+/// Avalia histórico, duplicidade, frequência e limites de envio.
+///
+///   ↓
+///
+/// REPOSITORY
+/// Camada intermediária que abstrai o acesso aos dados.
+/// Permite desacoplamento entre regras e armazenamento.
+///
+///   ↓
+///
+/// STORAGE
+/// Responsável pela persistência local dos dados de notificações.
+/// Faz a leitura e escrita do histórico.
+///
+///   ↓
+///
+/// SHARED PREFERENCES
+/// Camada de armazenamento físico no dispositivo.
+/// Responsável por persistência simples e leve.
