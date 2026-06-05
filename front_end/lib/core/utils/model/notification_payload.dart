@@ -3,6 +3,7 @@ class NotificationPayload {
   final String type;
   final int? listId;
   final int? itemId;
+  final String? filter;
   final Map<String, dynamic>? data;
 
   NotificationPayload({
@@ -10,6 +11,7 @@ class NotificationPayload {
     this.listId,
     this.itemId,
     this.data,
+    this.filter,
   });
 
   /// Converte JSON (vindo da notificação) para objeto Dart
@@ -19,6 +21,7 @@ class NotificationPayload {
       listId: json['listId'],
       itemId: json['itemId'],
       data: json['data'],
+      filter: json['filter'],
     );
   }
 
@@ -32,6 +35,7 @@ class NotificationPayload {
       'listId': listId,
       'itemId': itemId,
       'data': data,
+      'filter': filter,
     };
   }
 }

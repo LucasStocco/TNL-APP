@@ -26,65 +26,99 @@ class NotificationWorker {
     Map<String, dynamic>? inputData,
   ) async {
     try {
-      print("🚀 [WORKER] START task: $task");
+      // =========================
+      // 🚀 START
+      // =========================
+      print("\n==============================");
+      print("🚀 [WORKER] START");
+      print("🧾 task: $task");
+      print("==============================");
 
       if (task != taskName) {
-        print("⛔ [WORKER] task ignorada");
+        print("⛔ [WORKER] TASK IGNORADA: $task");
         return true;
       }
 
-      /// =========================
-      /// COOLDOWN
-      /// =========================
+      // =========================
+      // 📦 INPUT
+      // =========================
+      print("📦 [INPUT] $inputData");
+
+      final String? filter = inputData?["filter"];
+      print("🎯 [FILTER] $filter");
+
+      // =========================
+      // ⏳ COOLDOWN
+      // =========================
+      print("⏳ [COOLDOWN] checking...");
+
       if (!testMode) {
         final cooldown = await NotificationCooldownManager.checkCooldown();
 
+        print("⏳ [COOLDOWN] canSend: ${cooldown.canSend}");
+
         if (!cooldown.canSend) {
-          print(
-            "⏳ COOLDOWN ativo - faltam: "
-            "${cooldown.remaining.inMinutes}m "
-            "${cooldown.remaining.inSeconds % 60}s",
-          );
+          print("⛔ [COOLDOWN] ACTIVE");
+          print("⏱️ remaining: ${cooldown.remaining}");
 
           return true;
         }
+      } else {
+        print("🧪 [TEST MODE] cooldown bypassed");
       }
 
-      /// =========================
-      /// 1. FETCH API
-      /// =========================
-      final apiService = ApiBackgroundService();
+      // =========================
+      // 🌐 API
+      // =========================
+      print("🌐 [API] fetching data...");
 
+      final apiService = ApiBackgroundService();
       List<ListaResumoResponseDTO> data = [];
 
       try {
         data = await apiService.fetchData();
 
-        await NotificationCacheManager.saveCache(data);
+        print("📊 [API] items: ${data.length}");
 
-        print("🌐 [API] dados atualizados");
+        await NotificationCacheManager.saveCache(data);
+        print("💾 [CACHE] saved");
       } catch (e) {
-        print("⚠️ [API] falha ao buscar dados");
+        print("⚠️ [API ERROR] $e");
 
         final cached = await NotificationCacheManager.getCache();
 
         if (cached == null || cached.isEmpty) {
-          print("📭 [CACHE] nenhum cache disponível");
+          print("📭 [CACHE] EMPTY → STOP");
           return true;
         }
 
-        print("💾 [CACHE] usando dados offline");
+        print("♻️ [CACHE] fallback activated");
         data = cached;
       }
 
-      /// =========================
-      /// 2. BUILD CONTEXT
-      /// =========================
-      final context = NotificationContextBuilder.build(data);
+      // =========================
+      // 🧠 CONTEXT
+      // =========================
+      print("🧠 [CONTEXT] building...");
+      print("📦 input size: ${data.length}");
+      print("🎯 filter: $filter");
 
-      /// =========================
-      /// 3. SETTINGS (TEMPORÁRIO)
-      /// =========================
+      final context = NotificationContextBuilder.build(
+        data,
+        filter: filter,
+      );
+
+      print("🧠 [CONTEXT READY]");
+      print("   total: ${context.totalLists}");
+      print("   pending: ${context.pendingLists}");
+      print("   completed: ${context.completedLists}");
+      print("   urgency: ${context.urgencyLevel}");
+
+      // =========================
+      // ⚙️ SETTINGS
+      // =========================
+      print("⚙️ [SETTINGS] building...");
+
       final settings = NotificationSettingsModel(
         enabled: true,
         typesEnabled: {
@@ -96,56 +130,71 @@ class NotificationWorker {
         preferredTime: const TimeOfDay(hour: 9, minute: 0),
       );
 
-      /// =========================
-      /// 4. ENGINE
-      /// =========================
-      final NotificationResult notification = NotificationEngine.evaluate(
+      // =========================
+      // 🧠 ENGINE
+      // =========================
+      print("🧠 [ENGINE] evaluating...");
+
+      final notification = NotificationEngine.evaluate(
         context: context,
         settings: settings,
       );
 
+      print("📨 [ENGINE RESULT]");
+      print("   shouldNotify: ${notification.shouldNotify}");
+      print("   title: ${notification.title}");
+      print("   body: ${notification.body}");
+
       if (!notification.shouldNotify) {
-        print("🔕 nenhuma notificação necessária");
+        print("🔕 [ENGINE] NO NOTIFICATION");
         return true;
       }
 
-      /// =========================
-      /// 5. HASH
-      /// =========================
+      // =========================
+      // 🔐 HASH
+      // =========================
       final hash = NotificationHash.generate(
         "${notification.title}${notification.body}",
       );
 
+      print("🔐 [HASH] $hash");
+
       if (!testMode) {
         final isDuplicate = await NotificationDedup.isDuplicate(hash);
 
+        print("🔁 [DEDUP] $isDuplicate");
+
         if (isDuplicate) {
-          print("⛔ DUPLICADO - ignorando");
+          print("⛔ DUPLICATE BLOCKED");
           return true;
         }
       }
 
-      /// =========================
-      /// 6. INIT NOTIFICATION
-      /// =========================
+      // =========================
+      // 🔔 NOTIFICATION
+      // =========================
+      print("🔔 [NOTIFICATION] initializing...");
+
       await NotificationBackgroundService.initialize();
 
-      /// =========================
-      /// 7. SEND NOTIFICATION
-      /// =========================
-      await NotificationService.sendNotificationResult(notification);
+      print("📤 [NOTIFICATION] sending...");
+      await NotificationService.showNotification(
+        notification.title ?? '',
+        notification.body ?? '',
+      );
 
-      /// =========================
-      /// 8. SAVE STATE
-      /// =========================
+      // =========================
+      // 💾 STATE
+      // =========================
       await NotificationCooldownManager.saveSendData(notification);
       await NotificationDedup.save(hash);
 
-      print("✅ WORKER OK FINALIZADO");
+      print("✅ [WORKER] DONE SUCCESS");
 
       return true;
-    } catch (e) {
-      print("❌ WORKER ERROR: $e");
+    } catch (e, stack) {
+      print("❌ [WORKER ERROR] $e");
+      print("📍 STACKTRACE:\n$stack");
       return false;
     }
   }

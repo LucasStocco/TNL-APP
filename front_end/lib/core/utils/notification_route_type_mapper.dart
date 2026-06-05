@@ -19,6 +19,9 @@ extension NotificationRouteTypeMapper on String {
       case 'open_settings':
         return NotificationRouteType.openSettings;
 
+      case 'open_filtered_lists':
+        return NotificationRouteType.openFilteredLists;
+
       default:
         return NotificationRouteType.openHome;
     }

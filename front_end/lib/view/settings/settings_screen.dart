@@ -1,4 +1,3 @@
-import 'package:app_settings/app_settings.dart';
 import 'package:crud_flutter/background/workers/notification_worker.dart';
 import 'package:crud_flutter/core/utils/notification/messages/notification_frequency.dart';
 import 'package:crud_flutter/view/settings/widgets/privacy_policy_bottom_sheet.dart';
@@ -254,7 +253,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () async {
                 await NotificationWorker.execute(
                   NotificationWorker.taskName,
-                  {},
+                  {
+                    "filter": "pendentes",
+                  },
                 );
               },
               child: const Text('Testar Notificação'),

@@ -12,6 +12,17 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 /// =========================
+/// BACKGROUND CALLBACK (OBRIGATÓRIO SER TOP-LEVEL)
+/// =========================
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse response) {
+  print("📌 BACKGROUND CALLBACK DISPARADO");
+  print("📦 payload: ${response.payload}");
+
+  NotificationClickHandler.handle(response.payload);
+}
+
+/// =========================
 /// NOTIFICATION SERVICE
 /// =========================
 class NotificationService {
@@ -33,10 +44,9 @@ class NotificationService {
       return current.copyWith(enabled: value);
     });
 
-    // FASE 7 — efeito colateral do OFF
     if (!value) {
       print("🚨 notificações desativadas — cancelando agendadas");
-      await NotificationService.cancelAll();
+      await cancelAll();
     }
   }
 
@@ -54,13 +64,32 @@ class NotificationService {
       android: androidSettings,
     );
 
-    // dispara quando o usuário clica na notificação
     await _notifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
+        print("🔥 FOREGROUND CLICK DISPARADO");
+        print("📦 payload: ${response.payload}");
+
         NotificationClickHandler.handle(response.payload);
       },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
+
+    final details = await _notifications.getNotificationAppLaunchDetails();
+
+    print("🚀 APP ABERTO POR NOTIFICAÇÃO?");
+    print(details?.didNotificationLaunchApp);
+
+    if (details?.notificationResponse != null) {
+      print("📦 PAYLOAD INICIAL:");
+      print(details!.notificationResponse!.payload);
+
+      // 🔥 IMPORTANTE: trata cold start
+      NotificationClickHandler.handle(
+        details.notificationResponse!.payload,
+      );
+    }
+
     await _createChannel();
 
     if (!background) {
@@ -77,95 +106,40 @@ class NotificationService {
   }
 
   // =========================
-  // ATUALIZA FREQUÊNCIA DINÂMICA
-  // =========================
-  static Future<void> updateFrequency() async {
-    print("📊 atualizando frequência de notificações");
-
-    // aqui não precisa cancelar tudo
-    // apenas garantir que regra usa valor novo
-
-    final frequency = await NotificationPreferencesService.getFrequency();
-
-    print("📊 nova frequência aplicada: $frequency");
-  }
-
-  // =========================
-  // 🚨 FASE - CANCELAMENTO GLOBAL
-  // =========================
-  static Future<void> cancelAll() async {
-    print("🧹 cancelando todas notificações do sistema");
-
-    await _notifications.cancelAll();
-  }
-
-// =========================
-// REAGENDAMENTO GLOBAL
-// =========================
-  static Future<void> rescheduleAll() async {
-    print("🔄 REAGENDANDO TODAS AS NOTIFICAÇÕES");
-
-    // 1. cancela notificações antigas do sistema
-    await cancelAll();
-
-    // 2. busca settings atualizados (horário novo já está salvo)
-    final settings = await NotificationSettingsService.getSettings();
-
-    if (!settings.enabled) {
-      print("⛔ reschedule ignorado (notificações OFF)");
-      return;
-    }
-
-    // 3. aqui você pode disparar um rebuild do scheduler futuramente
-    // (ou acionar o engine novamente quando tiver dados)
-    print(
-        "✅ sistema pronto para novo agendamento em ${settings.preferredTime}");
-  }
-
-  // =========================
-  // GATE GLOBAL + TIME + FREQUENCY (UNIFICADO)
+  // GATE GLOBAL + TIME + FREQUENCY
   // =========================
   static Future<bool> _canSendNotification() async {
-    // 1. GLOBAL (FASE 7 - fonte única da verdade)
     final enabled = await NotificationSettingsService.isEnabled();
 
     if (!enabled) {
-      print("⛔ bloqueado: SETTINGS OFF (FASE 7)");
+      print("⛔ bloqueado: SETTINGS OFF");
       return false;
     }
 
-    // 2. HORÁRIO
-    /// Pega o horario preferido do usuário e compara com o horário atual.
     final preferred = await NotificationPreferencesService.getPreferredTime();
-
     final now = TimeOfDay.now();
 
     final preferredTimeEnabled =
         await NotificationPreferencesService.isPreferredTimeEnabled();
 
-    /// Converter ambos para minutos para facilitar comparação
     final nowMinutes = now.hour * 60 + now.minute;
     final preferredMinutes = preferred.hour * 60 + preferred.minute;
 
-    /// pode enviar entre -5 e +5 minutos do horário escolhido
     const tolerance = 5;
 
     final diff = (nowMinutes - preferredMinutes).abs();
 
     if (preferredTimeEnabled && diff > tolerance) {
-      print("⏰ bloqueado: fora do horário ($now vs $preferred)");
+      print("⏰ bloqueado: fora do horário");
       return false;
     }
 
-    /// 3. FREQUÊNCIA
-    /// Quantas notificações posso enviar hoje? (Low=1, Normal=3, High=ilimitado)
     final frequency = await NotificationPreferencesService.getFrequency();
 
-    /// Aplica a regra de frequência
     final allowed = NotificationFrequencyRule.canSend(frequency);
 
     if (!allowed) {
-      print("📊 bloqueado por frequência: $frequency");
+      print("📊 bloqueado por frequência");
       return false;
     }
 
@@ -175,10 +149,6 @@ class NotificationService {
   // =========================
   // PUBLIC SEND
   // =========================
-  // (gate global + horário + frequência)
-  /// Usuário desligou notificações?
-  /// Se sim, bloqueia tudo
-  /// Se não, continua fluxo
   static Future<void> showNotification(
     String title,
     String body,
@@ -197,17 +167,12 @@ class NotificationService {
     required int id,
     required String title,
     required String body,
-    int? listId,
   }) async {
     print("📤 preparando envio...");
 
     final canSend = await _canSendNotification();
     if (!canSend) return;
 
-    // registra frequência
-    final frequency = await NotificationPreferencesService.getFrequency();
-
-    // registra o envio para controle de frequência
     NotificationFrequencyRule.registerSend();
 
     const androidDetails = AndroidNotificationDetails(
@@ -220,10 +185,9 @@ class NotificationService {
 
     const details = NotificationDetails(android: androidDetails);
 
-    // payload da notificação (deep link)
     final payload = jsonEncode({
-      "type": "open_list",
-      "listId": 12,
+      "type": "open_filtered_lists",
+      "filter": "pendentes",
     });
 
     await _notifications.show(
@@ -235,20 +199,6 @@ class NotificationService {
     );
 
     print("🔔 notificação enviada com sucesso");
-  }
-
-  // =========================
-  // RESULT
-  // =========================
-  static Future<void> sendNotificationResult(
-    NotificationResult notification,
-  ) async {
-    if (!notification.shouldNotify) return;
-
-    await showNotification(
-      notification.title ?? '',
-      notification.body ?? '',
-    );
   }
 
   // =========================
@@ -281,22 +231,10 @@ class NotificationService {
     tz.setLocalLocation(tz.getLocation('America/Sao_Paulo'));
   }
 
-  static Future<void> sendDecision(
-    NotificationDecision decision,
-  ) async {
-    if (!decision.shouldNotify) return;
-
-    await showNotification(
-      decision.title,
-      decision.body,
-    );
+  // =========================
+  // CANCEL ALL
+  // =========================
+  static Future<void> cancelAll() async {
+    await _notifications.cancelAll();
   }
 }
-
-/// 
-/// 
-/// FLUXO:  
-/// 1. Verifica se pode enviar
-/// 2. Verifica horário
-/// 3. Verifica frequência
-/// 4. Se tudo ok, envia a notificação

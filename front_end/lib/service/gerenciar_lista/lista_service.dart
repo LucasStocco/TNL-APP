@@ -6,7 +6,7 @@ import '../../core/api/api_endpoints.dart';
 class ListaService {
   final ApiClient _client;
 
-  // injeção de dependência via construtor 
+  // injeção de dependência via construtor
   // ListaService faz chamadas no contrutor
   ListaService(this._client);
 
@@ -117,6 +117,29 @@ class ListaService {
       ServiceUtils.validate(res);
     } catch (e, s) {
       _logErr("DELETE", url, e, s);
+      rethrow;
+    }
+  }
+
+// =========================
+// BUSCAR LISTA POR ID
+// =========================
+  Future<Lista> buscarPorId(int id) async {
+    final url = ApiEndpoints.listaPorId(id);
+
+    _logReq("GET", url);
+
+    try {
+      final res = await _client.get<Lista>(
+        url,
+        (data) => Lista.fromJson(data),
+      );
+
+      _logRes(res);
+
+      return ServiceUtils.extract<Lista>(res);
+    } catch (e, s) {
+      _logErr("GET", url, e, s);
       rethrow;
     }
   }

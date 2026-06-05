@@ -1,19 +1,36 @@
 import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
 import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
 
-import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
-
 class NotificationContextBuilder {
   static NotificationContext build(
-    List<ListaResumoResponseDTO> listas,
-  ) {
+    List<ListaResumoResponseDTO> listas, {
+    String? filter,
+  }) {
     print("🧠 [BUILDER] iniciando transformação de dados");
+    print("🎯 [FILTER] recebido: $filter");
+
+    /// =========================
+    /// APLICAR FILTRO (CORREÇÃO PRINCIPAL)
+    /// =========================
+    List<ListaResumoResponseDTO> filtered = listas;
+
+    if (filter == "pendentes") {
+      filtered = listas.where((l) => l.progresso < 100).toList();
+    }
+
+    if (filter == "concluidas") {
+      filtered = listas.where((l) => l.progresso >= 100).toList();
+    }
+
+    if (filter == "urgentes") {
+      filtered = listas.where((l) => l.progresso < 50).toList();
+    }
 
     /// =========================
     /// EMPTY STATE
     /// =========================
-    if (listas.isEmpty) {
-      print("⚠️ [BUILDER] lista vazia");
+    if (filtered.isEmpty) {
+      print("⚠️ [BUILDER] lista vazia após filtro");
 
       return NotificationContext(
         totalLists: 0,
@@ -27,25 +44,23 @@ class NotificationContextBuilder {
       );
     }
 
-    print("📦 [BUILDER] input size: ${listas.length}");
+    print("📦 [BUILDER] input size filtrado: ${filtered.length}");
 
     /// =========================
     /// LISTAS PENDENTES
     /// =========================
-    final pendentes = listas.where((l) => l.progresso < 100).toList();
+    final pendentes = filtered.where((l) => l.progresso < 100).toList();
 
     /// =========================
     /// LISTAS CONCLUÍDAS
     /// =========================
-    final concluidas = listas.where((l) => l.progresso >= 100).toList();
+    final concluidas = filtered.where((l) => l.progresso >= 100).toList();
 
     /// =========================
     /// CONTADORES
     /// =========================
-    final totalLists = listas.length;
-
+    final totalLists = filtered.length;
     final pendingLists = pendentes.length;
-
     final completedLists = concluidas.length;
 
     /// =========================
@@ -79,15 +94,11 @@ class NotificationContextBuilder {
       remainingItems: faltantes,
       hasPendingItems: pendentes.isNotEmpty,
       hasAlmostCompletedList: faltantes > 0 && faltantes <= 3,
-
-      /// mock temporário
       lastActivity: DateTime.now(),
-
       urgencyLevel: urgencyLevel,
     );
 
     print("🧠 [BUILDER] contexto criado");
-
     print("   total: ${context.totalLists}");
     print("   pendentes: ${context.pendingLists}");
     print("   concluídas: ${context.completedLists}");
