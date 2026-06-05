@@ -7,7 +7,7 @@ import 'package:crud_flutter/view/settings/widgets/settings_switch_tile.dart';
 import 'package:crud_flutter/view/settings/widgets/settings_tile.dart';
 import 'package:crud_flutter/view_model/settings/settings_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:app_settings/app_settings.dart';
+import 'package:permission_handler/permission_handler.dart' as AppSettings;
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -253,7 +253,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () async {
                 await NotificationWorker.execute(
                   NotificationWorker.taskName,
-                  {},
+                  {
+                    "filter": "pendentes",
+                  },
                 );
               },
               child: const Text('Testar Notificação'),
@@ -285,15 +287,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const Divider(height: 1),
                 SettingsTile(
-                  icon: Icons.settings_outlined,
-                  title: 'Permissões',
-                  subtitle: 'Configurações do sistema',
-                  onTap: () {
-                    AppSettings.openAppSettings(
-                      type: AppSettingsType.notification,
-                    );
-                  },
-                ),
+                    icon: Icons.settings_outlined,
+                    title: 'Permissões',
+                    subtitle: 'Configurações do sistema',
+                    onTap: () {
+                      AppSettings.openAppSettings();
+                    }),
               ],
             ),
           ],

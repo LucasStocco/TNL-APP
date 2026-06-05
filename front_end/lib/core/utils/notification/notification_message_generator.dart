@@ -2,8 +2,8 @@ import 'package:crud_flutter/core/utils/notification/messages/almost_completed_m
 import 'package:crud_flutter/core/utils/notification/messages/message_randomizer.dart';
 import 'package:crud_flutter/core/utils/notification/messages/pending_messages.dart';
 import 'package:crud_flutter/core/utils/notification/messages/urgency_messages.dart';
+import 'package:crud_flutter/core/utils/rules/model/notification_context.dart';
 
-import 'package:crud_flutter/core/utils/model/notification_context.dart';
 import 'package:crud_flutter/model/sistema_notifica%C3%A7%C3%B5es/notification_result.dart';
 
 class NotificationMessageGenerator {

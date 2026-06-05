@@ -35,6 +35,7 @@ dependencies:
   timezone: ^0.9.4
   workmanager: ^0.7.0
   permission_handler: ^11.0.1
+  app_settings: ^7.0.0
 
 dev_dependencies:
   flutter_test:

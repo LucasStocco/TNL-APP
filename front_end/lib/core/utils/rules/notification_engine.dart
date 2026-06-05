@@ -22,7 +22,7 @@ class NotificationEngine {
     print("🧠 [ENGINE] avaliando contexto");
 
     /// =========================
-    /// 🔥 MODO TESTE (BLOQUEADO EM UM SÓ FLUXO)
+    /// 🔥 MODO TESTE
     /// =========================
     if (enableTestMode) {
       switch (testMode) {

@@ -19,6 +19,7 @@ class ListaResumoViewModel extends ChangeNotifier {
   bool isLoading = false;
   bool isSaving = false;
 
+  String? filtroAtual;
   String? erro;
 
   void _setLoading(bool value) {
@@ -34,6 +35,32 @@ class ListaResumoViewModel extends ChangeNotifier {
   void _setError(Object e) {
     erro = e.toString();
     notifyListeners();
+  }
+
+  void aplicarFiltro(String? filtro) {
+    filtroAtual = filtro;
+    notifyListeners();
+  }
+
+  // lista filtrada
+  List<ListaResumo> get listasFiltradas {
+    if (filtroAtual == null) return listas;
+
+    switch (filtroAtual) {
+      case 'pendentes':
+        return listas.where((l) => l.progresso < 100).toList();
+
+      case 'urgentes':
+        return listas.where((l) => l.progresso < 30).toList();
+
+      case 'quase_concluidas':
+        return listas
+            .where((l) => l.progresso >= 70 && l.progresso < 100)
+            .toList();
+
+      default:
+        return listas;
+    }
   }
 
   // =========================

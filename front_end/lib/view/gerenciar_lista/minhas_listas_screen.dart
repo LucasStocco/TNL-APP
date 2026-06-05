@@ -1,4 +1,5 @@
 import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
+import 'package:crud_flutter/service/notifications/notification_navigation_state.dart';
 import 'package:crud_flutter/shared/widgets/navigation/section_header.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/empty_minhas_listas_widget.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.dart';
@@ -22,6 +23,30 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
     Future.microtask(
       () => context.read<ListaResumoViewModel>().carregarResumo(),
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      if (NotificationNavigationState.openedFromNotification) {
+        NotificationNavigationState.openedFromNotification = false;
+
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..showSnackBar(
+            SnackBar(
+              backgroundColor: const Color(0xFF2E7D32),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              content: const Text(
+                'Você acessou suas listas através de uma notificação.',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+      }
+    });
   }
 
   Color _corProgresso(double p) {
@@ -45,10 +70,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(
-                Icons.delete,
-                color: Colors.red,
-              ),
+              leading: const Icon(Icons.delete, color: Colors.red),
               title: const Text("Excluir"),
               onTap: () {
                 Navigator.pop(context);
@@ -62,9 +84,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
   }
 
   void _editarLista(BuildContext context, ListaResumo lista) {
-    final controller = TextEditingController(
-      text: lista.nome,
-    );
+    final controller = TextEditingController(text: lista.nome);
 
     showDialog(
       context: context,
@@ -73,9 +93,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
           title: const Text("Renomear lista"),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(
-              labelText: "Nome da lista",
-            ),
+            decoration: const InputDecoration(labelText: "Nome da lista"),
           ),
           actions: [
             TextButton(
@@ -88,7 +106,6 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
                       lista.id,
                       controller.text,
                     );
-
                 Navigator.pop(context);
               },
               child: const Text("Salvar"),
@@ -105,9 +122,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
       builder: (_) {
         return AlertDialog(
           title: const Text("Excluir lista?"),
-          content: const Text(
-            "Essa ação não pode ser desfeita.",
-          ),
+          content: const Text("Essa ação não pode ser desfeita."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -115,10 +130,7 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<ListaResumoViewModel>().deletarLista(
-                      lista.id,
-                    );
-
+                context.read<ListaResumoViewModel>().deletarLista(lista.id);
                 Navigator.pop(context);
               },
               child: const Text("Excluir"),
@@ -131,134 +143,111 @@ class _MinhasListasScreenState extends State<MinhasListasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ListaResumoViewModel>(
-      builder: (context, viewModel, _) {
-        if (viewModel.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+    return Scaffold(
+      body: Consumer<ListaResumoViewModel>(
+        builder: (context, viewModel, _) {
+          if (viewModel.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        // =========================
-        // EMPTY STATE
-        // =========================
-        if (viewModel.listas.isEmpty) {
-          return const EmptyMinhasListasWidget();
-        }
+          if (viewModel.listasFiltradas.isEmpty) {
+            return const EmptyMinhasListasWidget();
+          }
 
-        return SafeArea(
-          top: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SectionHeader(
-                title: "Minhas Listas",
-                subtitle: "Gerencie suas compras",
-                isGrid: false,
-              ),
+          return SafeArea(
+            top: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SectionHeader(
+                  title: "Minhas Listas",
+                  subtitle: "Gerencie suas compras",
+                  isGrid: false,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    key: const ValueKey('listas'),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    itemCount: viewModel.listasFiltradas.length,
+                    itemBuilder: (context, index) {
+                      final lista = viewModel.listasFiltradas[index];
+                      final corProgresso = _corProgresso(lista.progresso);
 
-              // =========================
-              // LISTA
-              // =========================
-              Expanded(
-                child: ListView.builder(
-                  key: const ValueKey('listas'),
-                  padding: const EdgeInsets.fromLTRB(
-                    16,
-                    8,
-                    16,
-                    16,
-                  ),
-                  itemCount: viewModel.listas.length,
-                  itemBuilder: (context, index) {
-                    final lista = viewModel.listas[index];
-
-                    final corProgresso = _corProgresso(
-                      lista.progresso,
-                    );
-
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ListaScreen(
-                              listaId: lista.id,
-                              listaNome: lista.nome,
-                            ),
-                          ),
-                        ).then((_) {
-                          context.read<ListaResumoViewModel>().carregarResumo();
-                        });
-                      },
-                      onLongPress: () => _abrirOpcoes(context, lista),
-                      child: AnimatedContainer(
-                        duration: const Duration(
-                          milliseconds: 300,
-                        ),
-                        curve: Curves.easeOut,
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: corProgresso.withOpacity(0.05),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: corProgresso.withOpacity(
-                              0.35,
-                            ),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(
-                                0.04,
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ListaScreen(
+                                listaId: lista.id,
+                                listaNome: lista.nome,
                               ),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
                             ),
-                          ],
-                        ),
-                        child: ListTile(
-                          title: Text(lista.nome),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 6),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(999),
-                                child: LinearProgressIndicator(
-                                  value: lista.progresso / 100,
-                                  minHeight: 8,
-                                  backgroundColor: Colors.grey.shade300,
-                                  color: corProgresso,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${lista.progresso.toStringAsFixed(0)}% concluída '
-                                '(${lista.itensComprados}/${lista.totalItens})',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade700,
-                                ),
+                          ).then((_) {
+                            context
+                                .read<ListaResumoViewModel>()
+                                .carregarResumo();
+                          });
+                        },
+                        onLongPress: () => _abrirOpcoes(context, lista),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: corProgresso.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: corProgresso.withOpacity(0.35),
+                              width: 1.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios,
+                          child: ListTile(
+                            title: Text(lista.nome),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 6),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(999),
+                                  child: LinearProgressIndicator(
+                                    value: lista.progresso / 100,
+                                    minHeight: 8,
+                                    backgroundColor: Colors.grey.shade300,
+                                    color: corProgresso,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${lista.progresso.toStringAsFixed(0)}% concluída '
+                                  '(${lista.itensComprados}/${lista.totalItens})',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            trailing: const Icon(Icons.arrow_forward_ios),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
