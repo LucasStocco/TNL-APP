@@ -1,4 +1,4 @@
-import 'package:crud_flutter/background/workmanager_callback.dart';
+import 'package:crud_flutter/background/workers/workmanager_callback.dart';
 import 'package:crud_flutter/core/api/api_client.dart';
 
 import 'package:crud_flutter/core/utils/notification_click_handler.dart';
