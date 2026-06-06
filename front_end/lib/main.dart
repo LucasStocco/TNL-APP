@@ -4,7 +4,6 @@ import 'package:crud_flutter/core/api/api_client.dart';
 import 'package:crud_flutter/core/utils/notification_click_handler.dart';
 import 'package:crud_flutter/core/utils/notification_navigation_handler.dart';
 
-import 'package:crud_flutter/service/auto_cadastro/mock_auth_service.dart';
 import 'package:crud_flutter/service/cadastrar_categoria/categoria_service.dart';
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
@@ -26,12 +25,32 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/google_auth_service.dart';
 import 'package:crud_flutter/view/home/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:workmanager/workmanager.dart';
+
+// demais imports...
+//remover depois de testar
+final GlobalKey<NavigatorState> navigatorKey =
+    GlobalKey<NavigatorState>();
+
+const bool isTestMode = true;
+
+const String notificationTaskId = "notification_task";
+
+const String notificationTaskName = "notification_task";
+//termina aqui
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await _initCore();
 
   Future.delayed(
     const Duration(seconds: 10),
     () async {
       print("🧪 TESTE MANUAL");
-
+      
       await NotificationService.showTestNotification();
     },
   );
