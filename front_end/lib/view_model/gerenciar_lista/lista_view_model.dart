@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 
+import 'package:crud_flutter/core/notificacoes_gamificacao/armazenamento_conquistas.dart';
+
 import '../../model/gerenciar_lista/lista.dart';
 import '../../service/gerenciar_lista/lista_service.dart';
 
 class ListaViewModel extends ChangeNotifier {
   final ListaService _service;
+  final ArmazenamentoConquistas _armazenamento;
 
-  ListaViewModel(this._service) {
+  ListaViewModel(
+    this._service,
+    this._armazenamento,
+  ) {
     print('[LISTA_VM] INSTÂNCIA CRIADA -> ${identityHashCode(this)}');
   }
 
   // =========================
-  // ESTADO
+  // ESTADO DA TELA
   // =========================
+
   final List<Lista> _listas = [];
   int? _listaAtualId;
 
@@ -23,12 +30,10 @@ class ListaViewModel extends ChangeNotifier {
   // =========================
   // GETTERS
   // =========================
-  List<Lista> get listas => List.unmodifiable(_listas);
-  int? get listaAtualId => _listaAtualId;
 
-  bool get isLoading => _isLoading;
-  bool get isSaving => _isSaving;
-  String? get erro => _erro;
+  List<Lista> get listas => List.unmodifiable(_listas);
+
+  int? get listaAtualId => _listaAtualId;
 
   Lista? get listaAtual {
     try {
@@ -38,9 +43,14 @@ class ListaViewModel extends ChangeNotifier {
     }
   }
 
+  bool get isLoading => _isLoading;
+  bool get isSaving => _isSaving;
+  String? get erro => _erro;
+
   // =========================
   // HELPERS
   // =========================
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
@@ -53,6 +63,7 @@ class ListaViewModel extends ChangeNotifier {
 
   void _setError(Object e) {
     _erro = e.toString().replaceAll('Exception: ', '');
+    notifyListeners();
   }
 
   void _clearError() {
@@ -60,8 +71,9 @@ class ListaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // LISTAR
+  // LISTAR LISTAS
   // =========================
+
   Future<void> listar() async {
     _setLoading(true);
 
@@ -81,8 +93,9 @@ class ListaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // CRIAR
+  // CRIAR LISTA
   // =========================
+
   Future<Lista?> criar(String nome) async {
     _setSaving(true);
     _clearError();
@@ -98,9 +111,7 @@ class ListaViewModel extends ChangeNotifier {
 
       _listaAtualId = criada.id;
 
-      // ⚠️ não manda notificação aqui (não tem progresso ainda)
       notifyListeners();
-
       return criada;
     } catch (e) {
       _setError(e);
@@ -111,8 +122,9 @@ class ListaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // ATUALIZAR
+  // ATUALIZAR LISTA
   // =========================
+
   Future<Lista?> atualizar(Lista lista) async {
     _setSaving(true);
 
@@ -125,12 +137,7 @@ class ListaViewModel extends ChangeNotifier {
         _listas[index] = atualizada;
       }
 
-      // 🔥 IMPORTANTE:
-      // Aqui NÃO usamos NotificationEngine (porque Lista não tem progresso)
-      // Notificação deve vir do ViewModel de RESUMO
-
       notifyListeners();
-
       return atualizada;
     } catch (e) {
       _setError(e);
@@ -141,8 +148,9 @@ class ListaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // DELETAR
+  // DELETAR LISTA
   // =========================
+
   Future<void> deletar(int id) async {
     _setSaving(true);
 
@@ -155,6 +163,8 @@ class ListaViewModel extends ChangeNotifier {
         _listaAtualId = null;
       }
 
+    
+
       notifyListeners();
     } catch (e) {
       _setError(e);
@@ -164,16 +174,18 @@ class ListaViewModel extends ChangeNotifier {
   }
 
   // =========================
-  // SELECIONAR
+  // SELECIONAR LISTA
   // =========================
+
   void selecionarLista(Lista lista) {
     _listaAtualId = lista.id;
     notifyListeners();
   }
 
   // =========================
-  // RESET
+  // RESET TOTAL
   // =========================
+
   void resetar() {
     _listas.clear();
     _listaAtualId = null;
