@@ -21,6 +21,7 @@ dependencies:
   provider: ^6.1.2
   http: ^1.2.1
   google_fonts: ^6.2.1
+  google_sign_in: ^6.2.1
   dio: ^5.9.2
   crypto: ^3.0.3
   audioplayers: ^6.0.0

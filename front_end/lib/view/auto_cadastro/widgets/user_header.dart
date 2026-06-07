@@ -5,6 +5,14 @@ import 'package:provider/provider.dart';
 class UserHeader extends StatelessWidget {
   const UserHeader({super.key});
 
+ String abreviarNome(String nome, int limite) {
+    if (nome.length <= limite) {
+      return nome;
+    }
+
+    return '${nome.substring(0, limite)}...';
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<UserViewModel>();
@@ -12,8 +20,10 @@ class UserHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          vm.isLogged ? 'Olá, ${vm.user!.nome}' : 'Olá!',
+                Text(
+          vm.isLogged
+              ? 'Olá, ${abreviarNome(vm.user!.nome, 12)}'
+              : 'Olá!',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

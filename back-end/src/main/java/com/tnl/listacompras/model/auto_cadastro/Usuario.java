@@ -1,8 +1,18 @@
 package com.tnl.listacompras.model.auto_cadastro;
-import com.tnl.listacompras.model.gerenciar_lista.*;
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.tnl.listacompras.model.gerenciar_lista.Lista;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuarios")
@@ -18,8 +28,10 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "id_google", unique = true)
-    private String idGoogle;
+    @Column(name = "google_id", unique = true)
+    private String googleId;
+
+    private String fotoUrl;
 
     // 👇 1 usuário → várias listas
     @OneToMany(mappedBy = "usuario")
@@ -66,12 +78,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getIdGoogle() {
-        return idGoogle;
+    public String getGoogleId() {
+        return googleId;
     }
 
-    public void setIdGoogle(String idGoogle) {
-        this.idGoogle = idGoogle;
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 
     public LocalDateTime getCriadoEm() {
@@ -80,5 +92,13 @@ public class Usuario {
 
     public LocalDateTime getAtualizadoEm() {
         return atualizadoEm;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 }
