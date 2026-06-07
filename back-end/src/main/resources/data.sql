@@ -18,7 +18,7 @@ INSERT INTO categoria (codigo, nome, criado_em, atualizado_em, deletado) VALUES
 -- /////////////////////////////////////////////////////////
 
 -- BEBIDADAS 🍺
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
+INSERT INTO produtos (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
 ('Refrigerante Cola 2L', 'Sabor cola tradicional', 1, NOW(), NOW()),
 ('Refrigerante Cola Zero 2L', 'Sem açúcar', 1, NOW(), NOW()),
 ('Refrigerante Cola Lata 350ml', 'Porção individual', 1, NOW(), NOW()),

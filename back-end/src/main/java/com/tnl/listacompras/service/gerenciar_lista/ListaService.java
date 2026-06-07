@@ -1,5 +1,4 @@
 package com.tnl.listacompras.service.gerenciar_lista;
-import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseResumoDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,10 +8,13 @@ import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ItemRequestDTO;
 import com.tnl.listacompras.dto.requestDTO.gerenciar_lista.ListaRequestDTO;
 import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ItemResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseDTO;
+import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseResumoDTO;
 import com.tnl.listacompras.model.auto_cadastro.Usuario;
 import com.tnl.listacompras.model.gerenciar_lista.Lista;
+import com.tnl.listacompras.repository.gerenciar_lista.ItemRepository;
 import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
 import com.tnl.listacompras.session.Session;
+
 import exception.business.BusinessException;
 import exception.business.NotFoundException;
 
@@ -48,9 +50,9 @@ public class ListaService {
         Long userId = usuarioAtual();
 
         return listaRepository
-                .findByIdAndUsuarioIdAndDeletadoFalse(id, userId)
-                .orElseThrow(() ->
-                        new NotFoundException("Lista não encontrada"));
+        .findByIdAndUsuarioIdAndDeletadoFalse(id, userId)
+        .orElseThrow(() ->
+                new NotFoundException("Lista não encontrada"));
     }
 
     // =========================
@@ -61,10 +63,10 @@ public class ListaService {
         Long userId = usuarioAtual();
 
         return listaRepository
-                .findByUsuarioIdAndDeletadoFalse(userId)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        .findByUsuarioIdAndDeletadoFalse(userId)
+        .stream()
+        .map(this::toDTO)
+        .toList();
     }
 
     // =========================
@@ -81,10 +83,11 @@ public class ListaService {
 
         Long userId = usuarioAtual();
 
-        boolean existe = listaRepository
-                .existsByUsuarioIdAndNomeIgnoreCaseAndDeletadoFalse(
-                        userId,
-                        dto.getNome()
+        boolean existe =
+        listaRepository
+                .existsByNomeIgnoreCaseAndUsuarioIdAndDeletadoFalse(
+                        dto.getNome(),
+                        userId
                 );
 
         if (existe) {
