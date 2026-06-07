@@ -70,9 +70,12 @@ class ListaResumoViewModel extends ChangeNotifier {
     _setLoading(true);
 
     try {
+      print("📡 [RESUMO] INICIANDO carregamento de listas");
+
       final List<ListaResumoResponseDTO> resultado = await service.getResumo();
 
-      // ✅ DTO -> MODEL
+      print("📥 [RESUMO] DTO recebido: ${resultado.length} listas");
+
       listas = resultado
           .map(
             (dto) => ListaResumo(
@@ -85,13 +88,30 @@ class ListaResumoViewModel extends ChangeNotifier {
           )
           .toList();
 
+      print("🧠 [RESUMO] MODEL convertido:");
+      for (final l in listas) {
+        print(
+          "   - Lista ${l.id} | ${l.nome} | "
+          "progresso=${l.progresso} | "
+          "itens=${l.itensComprados}/${l.totalItens}",
+        );
+      }
+
+      print("🎯 [RESUMO] Chamando NotificationScheduler...");
+
       NotificationScheduler.push(listas);
 
+      print("✅ [RESUMO] Scheduler executado");
+
       notifyListeners();
-    } catch (e) {
+    } catch (e, stack) {
+      print("❌ [RESUMO] ERRO: $e");
+      print(stack);
+
       _setError(e);
     } finally {
       _setLoading(false);
+      print("📊 [RESUMO] loading=false finalizado");
     }
   }
 

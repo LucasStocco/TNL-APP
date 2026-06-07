@@ -10,6 +10,8 @@ class ApiEndpoints {
 
   static String produtosPorCategoria(int id) => '/categorias/$id/produtos';
 
+  static const String resumo = "/listas/resumo";
+
   static String subcategorias(int categoriaId) =>
       '/categorias/$categoriaId/subcategorias';
 

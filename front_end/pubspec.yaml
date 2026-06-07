@@ -23,6 +23,7 @@ dependencies:
   google_fonts: ^6.2.1
   dio: ^5.9.2
   crypto: ^3.0.3
+  audioplayers: ^6.0.0
 
   # =========================
   # NOTIFICAÇÕES LOCAIS
@@ -61,3 +62,4 @@ flutter:
     - assets/icons/header_home/
     - assets/icons/subcategorias/
     - assets/images/
+    - assets/sounds/

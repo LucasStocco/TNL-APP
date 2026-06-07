@@ -1,4 +1,5 @@
 import 'package:crud_flutter/core/helpers/service_utils.dart';
+import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
 import '../../model/gerenciar_lista/lista.dart';
 import '../../core/api/api_client.dart';
 import '../../core/api/api_endpoints.dart';
@@ -151,5 +152,31 @@ class ListaService {
     throw Exception(
       "Endpoint /listas/$listaId/finalizar NÃO existe no backend ainda",
     );
+  }
+
+  Future<int> buscarTotalListasConcluidas() async {
+    final url = ApiEndpoints.resumo;
+
+    _logReq("GET", url);
+
+    try {
+      final res = await _client.get<List<ListaResumoResponseDTO>>(
+        url,
+        (data) => (data as List)
+            .map((e) => ListaResumoResponseDTO.fromJson(e))
+            .toList(),
+      );
+
+      final listas = ServiceUtils.extractList(res);
+
+      final concluidas = listas.where((l) => l.progresso == 100).length;
+
+      _log("📊 listas concluídas = $concluidas");
+
+      return concluidas;
+    } catch (e, s) {
+      _logErr("GET", url, e, s);
+      rethrow;
+    }
   }
 }

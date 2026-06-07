@@ -1,5 +1,9 @@
 import 'package:crud_flutter/background/workers/workmanager_callback.dart';
 import 'package:crud_flutter/core/api/api_client.dart';
+import 'package:crud_flutter/core/notificacoes_gamificacao/armazenamento_conquistas.dart';
+import 'package:crud_flutter/core/notificacoes_gamificacao/armazenamento_conquistas_impl.dart';
+import 'package:crud_flutter/core/notificacoes_gamificacao/conquista_engine.dart';
+import 'package:crud_flutter/core/notificacoes_gamificacao/conquista_service.dart';
 
 import 'package:crud_flutter/core/utils/notification_click_handler.dart';
 import 'package:crud_flutter/core/utils/notification_navigation_handler.dart';
@@ -146,6 +150,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<ArmazenamentoConquistas>(
+          create: (_) => ArmazenamentoConquistasImpl(),
+        ),
+        Provider<ConquistaService>(
+          create: (_) => ConquistaService(),
+        ),
+        Provider<ConquistaEngine>(
+          create: (context) => ConquistaEngine(
+            context.read<ConquistaService>(),
+          ),
+        ),
         Provider<ApiClient>(
           create: (_) => ApiClient(http.Client()),
         ),
@@ -165,10 +180,17 @@ class MyApp extends StatelessWidget {
           create: (context) => CategoriaService(context.read<ApiClient>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => ItemViewModel(context.read<ItemService>()),
+          create: (context) => ItemViewModel(
+            context.read<ItemService>(),
+            context.read<ConquistaEngine>(),
+            context.read<ArmazenamentoConquistas>(),
+          ),
         ),
         ChangeNotifierProvider(
-          create: (context) => ListaViewModel(context.read<ListaService>()),
+          create: (context) => ListaViewModel(
+            context.read<ListaService>(),
+            context.read<ArmazenamentoConquistas>(),
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) =>

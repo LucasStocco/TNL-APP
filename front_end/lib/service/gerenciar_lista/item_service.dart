@@ -97,14 +97,30 @@ class ItemService {
   Future<void> marcarComprado(int listaId, int idItem) async {
     final url = '/listas/$listaId/itens/$idItem/comprado';
 
-    final result = await _client.patch<void>(
-      url,
-      {},
-      null,
-    );
+    print("📡 [ITEM SERVICE] marcarComprado INICIO");
+    print("📡 [ITEM SERVICE] listaId=$listaId itemId=$idItem");
+    print("🌐 [ITEM SERVICE] URL=$url");
 
-    if (!result.success) {
-      throw Exception(result.message);
+    try {
+      final result = await _client.patch<void>(
+        url,
+        {},
+        null,
+      );
+
+      print("📨 [ITEM SERVICE] resposta recebida");
+      print("📨 [ITEM SERVICE] success=${result.success}");
+      print("📨 [ITEM SERVICE] message=${result.message}");
+
+      if (!result.success) {
+        print("❌ [ITEM SERVICE] ERRO ao marcar como comprado");
+        throw Exception(result.message);
+      }
+
+      print("✅ [ITEM SERVICE] item marcado como comprado com sucesso");
+    } catch (e) {
+      print("💥 [ITEM SERVICE] EXCEPTION: $e");
+      rethrow;
     }
   }
 

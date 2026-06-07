@@ -1,22 +1,24 @@
-// ================= PACKAGES =================
+/// ================= PACKAGES =================
+import 'package:crud_flutter/core/notificacoes_gamificacao/conquistas_notifications_ui/conquista_notification_controller.dart';
+import 'package:crud_flutter/core/notificacoes_gamificacao/tipo_evento_conquista.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/empty_lista_widget.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_item_tile_with_divider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-// ================= CORE =================
+/// ================= CORE =================
 import 'package:crud_flutter/core/api/api_client.dart';
 
-// ================= SERVICES =================
+/// ================= SERVICES =================
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
 
-// ================= VIEW MODELS =================
+/// ================= VIEW MODELS =================
 import 'package:crud_flutter/view_model/gerenciar_lista/item_view_model.dart';
 import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model.dart';
 import 'package:crud_flutter/view_model/cadastrar_produto/produto_view_model.dart';
 
-// ================= VIEWS / WIDGETS =================
+/// ================= VIEWS / WIDGETS =================
 import 'package:crud_flutter/view/gerenciar_lista/widgets/categoria_bottom_sheet.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/item_actions_sheet.dart';
 import 'package:crud_flutter/view/gerenciar_lista/widgets/lista_fab_menu.dart';
@@ -48,6 +50,27 @@ class _ListaScreenState extends State<ListaScreen> {
     });
   }
 
+  /// =========================
+  /// DESCRIÇÃO CONQUISTAS
+  /// =========================
+  String _descricaoPorConquista(TipoEventoConquista conquista) {
+    switch (conquista) {
+      case TipoEventoConquista.primeiraListaConcluida:
+        return "Você finalizou sua primeira lista!";
+      case TipoEventoConquista.cincoListasConcluidas:
+        return "Você já concluiu 5 listas!";
+      case TipoEventoConquista.dezListasConcluidas:
+        return "Você está ficando avançado! 10 listas concluídas.";
+      case TipoEventoConquista.cinquentaListasConcluidas:
+        return "Incrível! 50 listas concluídas!";
+      default:
+        return "Conquista desbloqueada!";
+    }
+  }
+
+  /// =========================
+  /// CRIAR ITEM
+  /// =========================
   Future<void> _abrirCriarItem() async {
     await Navigator.push(
       context,
@@ -68,7 +91,6 @@ class _ListaScreenState extends State<ListaScreen> {
       ),
     );
 
-    // 🔥 SEMPRE SINCRONIZA COM BACKEND AO VOLTAR
     if (mounted) {
       await context.read<ItemViewModel>().carregar(widget.listaId);
     }
@@ -86,44 +108,101 @@ class _ListaScreenState extends State<ListaScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // Estado vazio da lista
           if (vm.itens.isEmpty) {
             return const EmptyListaWidget();
           }
 
           return Column(
             children: [
-              // HEADER (leve)
               ListaResumoHeader(itens: vm.itens),
               const SizedBox(height: 8),
 
+              // 🔧 BOTÃO DE DEBUG (RESET CONQUISTAS)
+              ElevatedButton(
+                onPressed: () {
+                  context.read<ItemViewModel>().resetarConquistas();
+                },
+                child: const Text("Reset conquistas"),
+              ),
+
               const SizedBox(height: 8),
 
-              // LISTA
               Expanded(
                 child: ListView.builder(
                   itemCount: vm.itens.length,
                   itemBuilder: (_, index) {
                     final item = vm.itens[index];
-                    // Componente de divisão visual entre itens, com suporte a long press para ações
+
                     return ListaItemTileWithDivider(
-                      item: item,
-                      isLast: index == vm.itens.length - 1,
-                      onLongPress: () {
-                        ItemActionsSheet.show(
-                          context,
-                          item,
-                          widget.listaId,
-                        );
-                      },
-                      onDoubleTap: () {
-                        context.read<ItemViewModel>().marcarComprado(
+                        item: item,
+                        isLast: index == vm.itens.length - 1,
+                        onLongPress: () {
+                          ItemActionsSheet.show(
+                            context,
+                            item,
+                            widget.listaId,
+                          );
+                        },
+
+                        /// =========================
+                        /// FLUXO REAL DE CONQUISTA
+                        /// =========================
+                        onDoubleTap: () async {
+                          print('\n━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                          print('👆 DOUBLE TAP INICIADO');
+                          print('━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                          print('📌 listaId: ${widget.listaId}');
+                          print('📌 itemId: ${item.id}');
+                          print('📌 comprado atual: ${item.comprado}');
+                          print('━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+                          final viewModel = context.read<ItemViewModel>();
+
+                          try {
+                            print('🔄 Chamando marcarComprado...');
+
+                            final novaConquista =
+                                await viewModel.marcarComprado(
                               widget.listaId,
                               item.id,
                               !item.comprado,
                             );
-                      },
-                    );
+
+                            print(
+                                '⬅ RETORNO VIEWMODEL: ${novaConquista?.name ?? "null"}');
+
+                            if (!mounted) {
+                              print(
+                                  '⚠️ WIDGET NÃO MONTADO MAIS - abortando UI');
+                              return;
+                            }
+
+                            if (novaConquista == null) {
+                              print('⚠️ NENHUMA CONQUISTA RECEBIDA');
+                              print('👉 Possíveis causas:');
+                              print('   - lista não completada');
+                              print('   - já foi contabilizada');
+                              print('   - engine retornou null');
+                              print('━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+                              return;
+                            }
+
+                            print('🏆 CONQUISTA DETECTADA!');
+
+                            ConquistaNotificationController.show(
+                              context,
+                              novaConquista,
+                            );
+
+                            print('✅ NOTIFICAÇÃO EXIBIDA COM SUCESSO');
+                            print('━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+                          } catch (e, stack) {
+                            print('❌ ERRO NO ONDOUBLE TAP');
+                            print('Erro: $e');
+                            print('Stack: $stack');
+                            print('━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+                          }
+                        });
                   },
                 ),
               ),
