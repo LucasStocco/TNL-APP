@@ -48,12 +48,6 @@ const String notificationTaskName = "notification_task";
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-<<<<<<< HEAD
-import 'package:crud_flutter/service/auto_cadastro/mock_auth_service.dart';
-import 'package:crud_flutter/view/home/home_screen.dart';
-import 'package:crud_flutter/service/relatorio_financeiro/financeiro_service.dart';
-import 'package:crud_flutter/view_model/relatorio_financeiro/financeiro_view_model.dart';
-=======
   await _initCore();
 
   Future.delayed(
@@ -64,7 +58,6 @@ import 'package:crud_flutter/view_model/relatorio_financeiro/financeiro_view_mod
       await NotificationService.showTestNotification();
     },
   );
->>>>>>> origin/develop
 
   runApp(const MyApp());
 }
@@ -175,16 +168,6 @@ class MyApp extends StatelessWidget {
         Provider<CategoriaService>(
           create: (context) => CategoriaService(context.read<ApiClient>()),
         ),
-<<<<<<< HEAD
-        Provider<FinanceiroService>(
-          create: (_) => FinanceiroService(),
-        ),
-
-        // =========================
-        // VIEWMODELS
-        // =========================
-=======
->>>>>>> origin/develop
         ChangeNotifierProvider(
           create: (context) => ItemViewModel(
             context.read<ItemService>(),
@@ -202,15 +185,6 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               ListaResumoViewModel(context.read<ListaResumoService>()),
         ),
-<<<<<<< HEAD
-        ChangeNotifierProvider(
-          create: (context) => FinanceiroViewModel(
-            context.read<FinanceiroService>(),
-        ),
-        ),
-
-=======
->>>>>>> origin/develop
         ChangeNotifierProvider(
           create: (context) =>
               CategoriaViewModel(context.read<CategoriaService>()),
