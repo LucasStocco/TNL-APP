@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../model/cadastrar_produto/produto.dart';
 import '../../service/cadastrar_produto/produto_service.dart';
-import '../../dto/produto_create_dto.dart';
-import '../../dto/produto_update_dto.dart';
+import '../../dto/request/cadastrar_produto/produto_request_create_dto.dart';
+import '../../dto/request/cadastrar_produto/produto_request_update_dto.dart';
 
 class ProdutoViewModel extends ChangeNotifier {
   final ProdutoService _service;

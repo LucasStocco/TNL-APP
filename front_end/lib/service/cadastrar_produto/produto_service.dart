@@ -4,8 +4,8 @@ import 'package:crud_flutter/model/cadastrar_categoria/cadastrar_categoria_compl
 import '../../core/api/api_client.dart';
 import '../../core/api/api_endpoints.dart';
 import '../../model/cadastrar_produto/produto.dart';
-import '../../dto/produto_create_dto.dart';
-import '../../dto/produto_update_dto.dart';
+import '../../dto/request/cadastrar_produto/produto_request_create_dto.dart';
+import '../../dto/request/cadastrar_produto/produto_request_update_dto.dart';
 
 class ProdutoService {
   final ApiClient _client;
