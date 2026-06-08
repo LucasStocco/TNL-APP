@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
       .aplicarFiltro('quase_concluidas');
   });
   */
-
+                         
     _pages = [
       const HomeCarousel(),
       const CategoriasScreen(),
@@ -142,11 +142,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isHome = _selectedIndex == 0;
+    
+       Text(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? "MODO ESCURO"
+                                : "MODO CLARO",
+                          );
 
     return Scaffold(
       backgroundColor: const Color(0xFFD32F2F),
       body: Stack(
         children: [
+           Center(
+      child: Text(
+        Theme.of(context).brightness == Brightness.dark
+            ? "MODO ESCURO"
+            : "MODO CLARO",
+       ),
+    ),
           // 🔴 HEADER DINÂMICO
           Positioned(
             top: 0,

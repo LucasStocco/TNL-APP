@@ -33,6 +33,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:workmanager/workmanager.dart';
+import 'package:crud_flutter/core/theme/theme_provider.dart';
 
 // demais imports...
 //remover depois de testar
@@ -189,42 +190,65 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               CategoriaViewModel(context.read<CategoriaService>()),
         ),
+              ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
         ChangeNotifierProvider(
           create: (_) => UserViewModel(GoogleAuthService()),
         ),
       ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/home':
-              final filter = settings.arguments as String?;
+      child: Consumer<ThemeProvider>(
+  builder: (context, themeProvider, child) {
+      print("THEME: ${themeProvider.themeMode}");
+      
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
 
-              return MaterialPageRoute(
-                builder: (_) => HomeScreen(
-                  initialFilter: filter,
-                ),
-              );
+      themeMode: themeProvider.themeMode,
 
-            case '/settings':
-              return MaterialPageRoute(
-                builder: (_) => const SettingsScreen(),
-              );
-
-            case '/listas':
-              return MaterialPageRoute(
-                builder: (_) => const MinhasListasScreen(),
-              );
-
-            default:
-              return MaterialPageRoute(
-                builder: (_) => const HomeScreen(),
-              );
-          }
-        },
+      theme: ThemeData(
+        brightness: Brightness.light,
+        useMaterial3: true,
       ),
+
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+      ),
+
+      home: SplashScreen(),
+
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/home':
+            final filter = settings.arguments as String?;
+
+            return MaterialPageRoute(
+              builder: (_) => HomeScreen(
+                initialFilter: filter,
+              ),
+            );
+
+          case '/settings':
+            return MaterialPageRoute(
+              builder: (_) => const SettingsScreen(),
+            );
+
+          case '/listas':
+            return MaterialPageRoute(
+              builder: (_) => const MinhasListasScreen(),
+            );
+
+                    default:
+            return MaterialPageRoute(
+              builder: (_) => const HomeScreen(),
+            );
+        }
+      },
+    );
+  },
+),
     );
   }
 }

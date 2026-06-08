@@ -8,6 +8,8 @@ import 'package:crud_flutter/view/settings/widgets/settings_tile.dart';
 import 'package:crud_flutter/view_model/settings/settings_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart' as AppSettings;
+import 'package:crud_flutter/core/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -93,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final notificationsEnabled = viewModel.notificacoesAtivadas;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -115,13 +117,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SettingsSectionTitle(title: 'Configurações Gerais'),
             const SizedBox(height: 12),
 
-            SettingsCard(
+              SettingsCard(
               children: [
-                SettingsTile(
-                  icon: Icons.palette_outlined,
-                  title: 'Aparência',
-                  subtitle: 'Deixe o app a sua cara!',
-                  onTap: () {},
+                SettingsSwitchTile(
+                  icon: Icons.dark_mode_outlined,
+                  title: 'Tema escuro',
+                  subtitle: 'Alternar entre tema claro e escuro',
+                  value: context.watch<ThemeProvider>().isDarkMode,
+                  onChanged: (value) {
+                    context.read<ThemeProvider>().toggleTheme();
+                  },
                 ),
               ],
             ),
