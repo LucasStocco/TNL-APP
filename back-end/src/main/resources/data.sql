@@ -17,546 +17,573 @@ INSERT INTO categoria (codigo, nome, criado_em, atualizado_em, deletado) VALUES
 -- INSERT DE PRODUTOS
 -- /////////////////////////////////////////////////////////
 
--- BEBIDADAS 🍺
-INSERT INTO produtos (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Refrigerante Cola 2L', 'Sabor cola tradicional', 1, NOW(), NOW()),
-('Refrigerante Cola Zero 2L', 'Sem açúcar', 1, NOW(), NOW()),
-('Refrigerante Cola Lata 350ml', 'Porção individual', 1, NOW(), NOW()),
-('Refrigerante Guaraná 2L', 'Sabor nacional clássico', 1, NOW(), NOW()),
-('Refrigerante Guaraná Zero', 'Sem açúcar', 1, NOW(), NOW()),
-('Refrigerante Laranja 2L', 'Sabor cítrico', 1, NOW(), NOW()),
-('Refrigerante Limão 2L', 'Refrescante', 1, NOW(), NOW()),
-('Refrigerante Uva 2L', 'Sabor doce', 1, NOW(), NOW()),
-('Refrigerante Tônica 1L', 'Amargo leve', 1, NOW(), NOW()),
-('Água Mineral 500ml', 'Sem gás', 1, NOW(), NOW()),
-('Água Mineral 1.5L', 'Sem gás', 1, NOW(), NOW()),
-('Água Mineral 5L', 'Galão', 1, NOW(), NOW()),
-('Água com Gás 500ml', 'Gaseificada', 1, NOW(), NOW()),
-('Água com Gás 1.5L', 'Gaseificada', 1, NOW(), NOW()),
-('Água de Coco 200ml', 'Natural hidratante', 1, NOW(), NOW()),
-('Água de Coco 1L', 'Natural', 1, NOW(), NOW()),
-('Suco de Laranja 1L', 'Natural integral', 1, NOW(), NOW()),
-('Suco de Laranja 300ml', 'Individual', 1, NOW(), NOW()),
-('Suco de Uva Integral 1L', '100% fruta', 1, NOW(), NOW()),
-('Suco de Maçã 1L', 'Doce leve', 1, NOW(), NOW()),
-('Suco de Abacaxi 1L', 'Tropical', 1, NOW(), NOW()),
-('Suco de Manga 1L', 'Doce natural', 1, NOW(), NOW()),
-('Suco de Pêssego 1L', 'Suave', 1, NOW(), NOW()),
-('Suco de Maracujá 1L', 'Relaxante', 1, NOW(), NOW()),
-('Suco de Caju 1L', 'Nordeste', 1, NOW(), NOW()),
-('Suco de Acerola 1L', 'Vitamina C', 1, NOW(), NOW()),
-('Suco Detox Verde 500ml', 'Saudável', 1, NOW(), NOW()),
-('Chá Gelado Limão 1L', 'Pronto consumo', 1, NOW(), NOW()),
-('Chá Gelado Pêssego 1L', 'Refrescante', 1, NOW(), NOW()),
-('Chá Verde 500ml', 'Saudável', 1, NOW(), NOW()),
-('Chá Mate Gelado 1L', 'Tradicional', 1, NOW(), NOW()),
-('Energético 250ml', 'Cafeína alta', 1, NOW(), NOW()),
-('Energético 473ml', 'Tamanho grande', 1, NOW(), NOW()),
-('Isotônico Azul 500ml', 'Reposição eletrólitos', 1, NOW(), NOW()),
-('Isotônico Laranja 500ml', 'Hidratação esportiva', 1, NOW(), NOW()),
-('Café Gelado 330ml', 'Pronto beber', 1, NOW(), NOW()),
-('Achocolatado Líquido 1L', 'Doce pronto', 1, NOW(), NOW()),
-('Leite com Chocolate 200ml', 'Individual', 1, NOW(), NOW()),
-('Cerveja Sem Álcool 350ml', 'Refrescante', 1, NOW(), NOW()),
-('Água Tônica 1L', 'Mixer', 1, NOW(), NOW()),
-('Refrigerante Citrus 2L', 'Cítrico especial', 1, NOW(), NOW()),
-('Refrigerante Cola Diet 2L', 'Zero açúcar', 1, NOW(), NOW()),
-('Suco de Morango 1L', 'Frutado doce', 1, NOW(), NOW()),
-('Suco de Frutas Vermelhas 1L', 'Mistura berries', 1, NOW(), NOW()),
-('Bebida Energética Tropical 250ml', 'Energia exótica', 1, NOW(), NOW()),
-('Bebida Energética Citrus 250ml', 'Refrescante energético', 1, NOW(), NOW()),
-('Milkshake Chocolate 300ml', 'Pronto consumo', 1, NOW(), NOW()),
-('Milkshake Morango 300ml', 'Doce cremoso', 1, NOW(), NOW());
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (757,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Refrigerante sabor cola','Coca-Cola',1);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (758,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Refrigerante de guaraná','Guaraná Antarctica',1);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (759,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Refrigerante sabor laranja','Fanta Laranja',1);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (760,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Refrigerante de limão','Sprite',1);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (761,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Suco feito de fruta natural','Suco de Laranja Natural',2);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (762,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Suco integral sem açúcar','Suco de Uva Integral',2);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (763,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida natural hidratante','Água de Coco',2);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (764,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Não pode faltar no churasco','Cerveja',3);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (765,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Vinho seco suave','Vinho Tinto Seco',3);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (766,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Destilado envelhecido','Whisky',3);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (767,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Café tradicional','Café Torrado',4);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (768,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Chá quente clássico','Chá Preto',4);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (769,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida quente cremosa','Chocolate Quente',4);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (770,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Te da assas','Red Bull',5);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (771,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida energética forte','Monster Energy',5);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (772,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida energética saborizada','Energético Tropical',5);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (773,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida láctea com chocolate','Achocolatado',6);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (774,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Iogurte para beber','Iogurte Líquido',6);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (775,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida probiótica','Leite Fermentado',6);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (776,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida funcional para pele','Água com Colágeno',7);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (777,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bebida funcional detox','Suco Detox',7);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (778,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Reposição de sais minerais','Isotônico',7);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (779,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Corte nobre bovino','Picanha',8);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (780,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne macia para grelha','Alcatra',8);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (781,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne suculenta para assados','Maminha',8);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (782,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne para cozidos','Acém',8);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (783,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne suína para assados','Pernil Suíno',9);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (784,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Corte suculento com gordura','Costela Suína',9);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (785,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne magra de porco','Lombo Suíno',9);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (786,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne suína defumada','Bacon',9);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (787,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne magra de frango','Peito de Frango',10);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (788,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Corte tradicional de frango','Coxa de Frango',10);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (789,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Corte para frituras e churrasco','Asa de Frango',10);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (790,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Ave completa para preparo','Frango Inteiro',10);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (791,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Peixe nobre de água fria','Salmão',11);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (792,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Peixe leve e versátil','Tilápia',11);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (793,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fruto do mar popular','Camarão',11);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (794,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Peixe pequeno e nutritivo','Sardinha',11);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (795,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne processada embutida','Salsicha',12);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (796,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne temperada embutida','Linguiça',12);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (797,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Carne suína fatiada','Presunto',12);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (798,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Embutido processado','Mortadela',12);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (799,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Proteína animal versátil','Ovos',13);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (800,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Proteína vegetal de soja','Tofu',13);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (801,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Substituto vegetal de carne','Proteína de Soja',13);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (802,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Pão francês tradicional','Pão Francês',14);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (803,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Pão de forma macio','Pão de Forma',14);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (804,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Pão integral saudável','Pão Integral',14);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (805,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Pão doce macio','Pão Doce',14);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (806,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bolo de chocolate caseiro','Bolo de Chocolate',15);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (807,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bolo de cenoura com cobertura','Bolo de Cenoura',15);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (808,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bolo simples de festa','Bolo Simples',15);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (809,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bolo de fubá tradicional','Bolo de Fubá',15);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (810,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Coxinha de frango','Coxinha',16);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (811,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Esfiha de carne','Esfiha',16);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (812,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Pastel frito recheado','Pastel',16);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (813,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Enroladinho de salsicha','Enroladinho',16);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (814,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Brigadeiro tradicional','Brigadeiro',17);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (815,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Beijinho de coco','Beijinho',17);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (816,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sonho recheado','Sonho',17);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (817,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Bomba de chocolate','Bomba',17);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (818,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Massa de lasanha fresca','Lasanha',18);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (819,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Massa de pizza artesanal','Massa de Pizza',18);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (820,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Macarrão fresco','Macarrão',18);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (821,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Pão integral saudável','Pão Integral',19);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (822,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Biscoito integral','Biscoito Integral',19);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (823,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Torrada integral','Torrada Integral',19);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (824,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fruta tropical rica em potássio','Banana',20);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (825,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fruta cítrica rica em vitamina C','Laranja',20);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (826,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fruta vermelha doce','Maçã',20);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (827,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fruta tropical suculenta','Manga',20);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (828,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Legume rico em betacaroteno','Cenoura',21);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (829,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Legume versátil para cozidos','Abobrinha',21);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (830,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Base da culinária','Batata',21);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (831,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Legume nutritivo','Beterraba',21);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (832,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Folha verde rica em ferro','Alface',22);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (833,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Folha escura nutritiva','Couve',22);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (834,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Verdura para saladas','Rúcula',22);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (835,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Folha leve e crocante','Agrião',22);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (836,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Erva aromática clássica','Salsinha',23);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (837,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Tempero verde aromático','Cebolinha',23);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (838,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Erva mediterrânea','Orégano',23);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (839,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Erva para carnes','Alecrim',23);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (840,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Grão base da alimentação','Arroz',24);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (841,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Grão rico em proteína vegetal','Feijão',24);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (842,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Cereal nutritivo','Aveia',24);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (843,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Grão energético','Milho',24);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (844,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Raiz rica em amido','Batata Inglesa',25);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (845,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Tubérculo doce','Batata Doce',25);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (846,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Raiz versátil','Mandioca',25);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (847,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Produto sem agrotóxicos','Tomate Orgânico',26);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (848,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Folha orgânica saudável','Alface Orgânica',26);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (849,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fruta orgânica natural','Banana Orgânica',26);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (850,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite integral tradicional','Leite Integral',27);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (851,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite desnatado leve','Leite Desnatado',27);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (852,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite sem lactose','Leite Sem Lactose',27);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (853,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite longa vida','Leite UHT',27);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (854,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Queijo amarelo fatiado','Queijo Mussarela',28);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (855,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Queijo curado tradicional','Queijo Prato',28);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (856,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Queijo curado mineiro','Queijo Minas',28);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (857,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Queijo ralado fino','Parmesão',28);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (858,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Iogurte natural saudável','Iogurte Natural',29);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (859,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Iogurte com frutas','Iogurte com Morango',29);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (860,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Iogurte grego cremoso','Iogurte Grego',29);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (861,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Iogurte líquido leve','Iogurte Bebível',29);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (862,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Manteiga tradicional','Manteiga',30);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (863,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Margarina vegetal','Margarina',30);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (864,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Manteiga com sal','Manteiga com Sal',30);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (865,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Margarina light','Margarina Light',30);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (866,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Creme de leite tradicional','Creme de Leite',31);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (867,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Creme culinário leve','Creme Culinário',31);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (868,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite condensado doce','Leite Condensado',31);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (869,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Requeijão cremoso','Requeijão',31);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (870,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Pudim de leite condensado','Pudim',32);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (871,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Danone tradicional','Danone',32);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (872,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Mousse de chocolate','Mousse',32);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (873,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sobremesa cremosa láctea','Arroz Doce',32);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (874,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite de soja vegetal','Leite de Soja',33);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (875,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite de amêndoas','Leite de Amêndoas',33);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (876,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite de aveia','Leite de Aveia',33);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (877,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Leite de coco vegetal','Leite de Coco',33);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (878,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Grão básico da alimentação','Arroz',34);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (879,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fonte de proteína vegetal','Feijão',34);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (880,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Cereal nutritivo','Aveia',34);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (881,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Grão energético','Milho',34);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (882,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Macarrão espaguete tradicional','Espaguete',35);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (883,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Massa curta tipo parafuso','Parafuso',35);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (884,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Massa para lasanha','Lasanha',35);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (885,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Macarrão instantâneo','Miojo',35);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (886,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Molho de tomate tradicional','Molho de Tomate',36);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (887,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Ketchup clássico','Ketchup',36);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (888,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Mostarda amarela','Mostarda',36);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (889,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Maionese cremosa','Maionese',36);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (890,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sardinha em lata','Sardinha Enlatada',37);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (891,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Milho em conserva','Milho Verde',37);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (892,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Ervilha enlatada','Ervilha',37);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (893,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Atum enlatado','Atum',37);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (894,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Óleo de soja tradicional','Óleo de Soja',38);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (895,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Azeite de oliva extra virgem','Azeite de Oliva',38);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (896,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Óleo de milho','Óleo de Milho',38);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (897,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Óleo vegetal misto','Óleo Vegetal',38);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (898,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Açúcar refinado branco','Açúcar',39);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (899,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Açúcar cristal','Açúcar Cristal',39);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (900,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Farinha de trigo','Farinha de Trigo',39);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (901,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Farinha de mandioca','Farinha de Mandioca',39);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (902,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Café torrado moído','Café',40);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (903,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Chá preto tradicional','Chá Preto',40);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (904,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Chá verde natural','Chá Verde',40);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (905,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Café solúvel instantâneo','Café Solúvel',40);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (906,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Biscoito recheado doce','Biscoito Recheado',41);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (907,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Biscoito salgado tipo água e sal','Biscoito Salgado',41);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (908,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Snack de batata','Batata Chips',41);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (909,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Snack de milho','Salgadinho de Milho',41);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (910,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sal de cozinha refinado','Sal',42);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (911,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Fermento químico','Fermento',42);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (912,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Vinagre de álcool','Vinagre',42);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (913,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Caldo de galinha em cubo','Caldo de Galinha',42);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (914,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Produto para higiene diária','Sabonete líquido',43);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (915,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Produto de limpeza corporal','Esponja de banho',43);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (916,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Higiene básica pessoal','Lenço umedecido',43);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (917,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Cuidados diários de higiene','Álcool em gel',43);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (918,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Escova dental macia','Escova de Dente',44);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (919,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Creme dental flúor','Creme Dental',44);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (920,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Higiene entre dentes','Fio Dental',44);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (921,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Enxaguante bucal','Enxaguante',44);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (922,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sabonete em barra','Sabonete',45);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (923,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Loção hidratante corporal','Hidratante',45);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (924,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Óleo corporal','Óleo Hidratante',45);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (925,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Esfoliante corporal','Esfoliante',45);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (926,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Desodorante aerosol','Desodorante Aerosol',46);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (927,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Desodorante roll-on','Desodorante Roll-on',46);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (928,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Desodorante stick','Desodorante Stick',46);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (929,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Desodorante masculino','Desodorante Masculino',46);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (930,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sabonete hidratante','Sabonete Hidratante',47);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (931,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sabonete antibacteriano','Sabonete Antibacteriano',47);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (932,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sabonete líquido','Sabonete Líquido',47);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (933,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Sabonete neutro','Sabonete Neutro',47);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (934,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Shampoo para cabelo normal','Shampoo',48);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (935,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Condicionador hidratante','Condicionador',48);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (936,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Shampoo anticaspa','Shampoo Anticaspa',48);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (937,'2026-05-10 00:21:02.000000','2026-05-10 00:21:02.000000','Kit cabelo completo','Kit Shampoo e Condicionador',48);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (938,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Higiene íntima feminina','Sabonete Íntimo',49);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (939,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lenços íntimos','Lenço Íntimo',49);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (940,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Gel íntimo','Gel Íntimo',49);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (941,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lâmina de barbear','Lâmina de Barbear',50);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (942,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Espuma de barbear','Espuma de Barbear',50);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (943,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Gel de barbear','Gel de Barbear',50);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (944,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Aparelho de barbear','Aparelho de Barbear',50);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (945,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Absorvente diário','Absorvente Diário',51);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (946,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Absorvente noturno','Absorvente Noturno',51);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (947,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Protetor diário','Protetor Diário',51);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (948,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Coletores menstruais','Copo Menstrual',51);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (949,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fraldas descartáveis','Fralda',52);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (950,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lenço umedecido infantil','Lenço Umedecido Infantil',52);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (951,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Shampoo infantil suave','Shampoo Infantil',52);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (952,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sabonete infantil','Sabonete Infantil',52);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (953,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Produto multiuso para limpeza geral','Limpa Tudo',53);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (954,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza de superfícies','Pano Multiuso',53);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (955,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Uso doméstico geral','Álcool 70%',53);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (956,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza básica do dia a dia','Desinfetante Multiuso',53);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (957,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Remove gordura de louças','Detergente',54);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (958,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza de fogão e bancada','Desengordurante',54);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (959,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Esponja de cozinha','Esponja',54);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (960,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pano de cozinha','Pano de Prato',54);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (961,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza de vaso sanitário','Desinfetante de Banheiro',55);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (962,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Removedor de manchas','Limpa Azulejo',55);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (963,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Higienização profunda','Limpador Sanitário',55);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (964,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Odorizador de ambiente','Desodorizador',55);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (965,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Detergente líquido neutro','Detergente Neutro',56);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (966,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sabão em pó para roupas','Sabão em Pó',56);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (967,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sabão líquido concentrado','Sabão Líquido',56);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (968,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sabão em barra tradicional','Sabão em Barra',56);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (969,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Desinfetante perfumado','Desinfetante Floral',57);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (970,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Desinfetante bactericida','Desinfetante Bactericida',57);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (971,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Desinfetante concentrado','Desinfetante Concentrado',57);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (972,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Uso geral doméstico','Desinfetante Multiuso',57);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (973,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Alvejante para roupas','Água Sanitária',58);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (974,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Removedor de manchas','Alvejante Sem Cloro',58);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (975,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza pesada','Cloro Ativo',58);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (976,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Branqueador doméstico','Alvejante Líquido',58);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (977,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Remove gordura pesada','Desengordurante Forte',59);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (978,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Uso em cozinha','Desengordurante de Cozinha',59);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (979,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza de fogões','Desengordurante Multiuso',59);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (980,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza rápida','Spray Desengordurante',59);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (981,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza de vidros e espelhos','Limpa Vidros',60);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (982,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Remove manchas','Limpa Vidros Spray',60);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (983,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Uso doméstico geral','Limpa Vidros Líquido',60);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (984,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Esponja de louça','Esponja de Cozinha',61);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (985,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pano multiuso','Pano de Limpeza',61);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (986,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Flanela para móveis','Flanela',61);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (987,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pano de microfibra','Microfibra',61);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (988,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Vassoura doméstica','Vassoura',62);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (989,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Rodo de piso','Rodo',62);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (990,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza de pisos','Mop',62);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (991,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Kit limpeza chão','Kit Vassoura e Rodo',62);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (992,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Perfume para ambiente','Aromatizador de Ambiente',63);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (993,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Odorizador spray','Spray Perfumado',63);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (994,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Essência para casa','Essência Aromática',63);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (995,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Elimina odores','Neutralizador de Odores',63);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (996,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração para cães adultos','Ração para Cães Adultos',64);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (997,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração para filhotes','Ração para Filhotes',64);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (998,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração premium cães','Ração Premium',64);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (999,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Alimento úmido para cães','Sachê para Cães',64);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1000,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração para gatos adultos','Ração para Gatos Adultos',65);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1001,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração para filhotes gatos','Ração para Filhotes de Gato',65);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1002,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração premium felina','Ração Premium Gatos',65);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1003,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sachê úmido para gatos','Sachê para Gatos',65);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1004,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração para cães idosos','Ração Sênior',66);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1005,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração hipoalergênica','Ração Hipoalergênica',66);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1006,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração veterinária','Ração Terapêutica',66);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1007,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Ração light','Ração Light',66);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1008,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Petisco para cães','Petisco Canino',67);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1009,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Biscoito para cães','Biscoito Canino',67);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1010,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Snack para gatos','Petisco Felino',67);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1011,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Osso mastigável','Osso Petisco',67);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1012,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Higiene geral para pets','Lenço Umedecido Pet',68);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1013,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Limpeza de patas','Toalha Pet',68);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1014,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Higiene diária','Spray Higienizador',68);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1015,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Desinfetante pet-safe','Desinfetante Pet',68);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1016,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Shampoo para cães','Shampoo Canino',69);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1017,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Shampoo para gatos','Shampoo Felino',69);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1018,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Condicionador pet','Condicionador Pet',69);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1019,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Banho seco para pets','Banho a Seco',69);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1020,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Coleira para cães','Coleira',70);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1021,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Guia para passeio','Guia',70);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1022,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Peitoral pet','Peitoral',70);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1023,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Comedouro e bebedouro','Comedouro Pet',70);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1024,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Brinquedo mordedor','Mordedor Pet',71);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1025,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bolinha para cães','Bolinha Pet',71);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1026,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Brinquedo interativo','Brinquedo Interativo',71);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1027,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Brinquedo felino','Brinquedo para Gatos',71);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1028,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Vermífugo para cães','Vermífugo',72);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1029,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Antipulgas','Antipulgas',72);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1030,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Vitaminas pet','Vitaminas para Pets',72);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1031,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Medicamento geral pet','Medicamento Veterinário',72);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1032,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cama para cães','Cama Pet',73);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1033,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Casinha pet','Casinha',73);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1034,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cobertor pet','Cobertor para Pets',73);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1035,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Colchonete pet','Colchonete',73);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1036,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Areia sanitária para gatos','Areia Sanitária',74);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1037,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Caixa de areia','Caixa de Areia',74);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1038,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Desodorizador de caixa','Desodorizador Pet',74);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1039,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Tapete higiênico','Tapete Higiênico',74);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1040,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chocolate ao leite','Chocolate ao Leite',75);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1041,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chocolate meio amargo','Chocolate Meio Amargo',75);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1042,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chocolate branco','Chocolate Branco',75);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1043,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chocolate em pó','Chocolate em Pó',75);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1044,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Barra tradicional ao leite','Barra de Chocolate Ao Leite',76);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1045,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Barra meio amarga','Barra Meio Amarga',76);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1046,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Barra recheada','Chocolate Recheado',76);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1047,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Barra premium','Chocolate Premium',76);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1048,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Balas sortidas','Balas',77);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1049,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chiclete tradicional','Chiclete',77);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1050,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Balas de goma','Bala de Goma',77);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1051,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chiclete com sabor','Chiclete Saborizado',77);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1052,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Biscoito recheado doce','Biscoito Recheado',78);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1053,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Biscoito amanteigado','Biscoito Amanteigado',78);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1054,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cookies tradicionais','Cookies',78);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1055,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Wafer doce','Wafer',78);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1056,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pudim pronto','Pudim',79);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1057,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Mousse pronta','Mousse',79);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1058,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Gelatina pronta','Gelatina',79);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1059,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sobremesa láctea pronta','Sobremesa Láctea',79);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1060,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Brigadeiro tradicional','Brigadeiro',80);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1061,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Beijinho de coco','Beijinho',80);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1062,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Doce de leite','Doce de Leite',80);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1063,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Paçoca','Paçoca',80);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1064,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Gelatina em pó','Gelatina',81);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1065,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pudim instantâneo','Pudim Instantâneo',81);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1066,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sobremesa gelatinosa','Sobremesa Gelatinosa',81);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1067,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Flan pronto','Flan',81);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1068,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pêssego em calda','Pêssego em Calda',82);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1069,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Abacaxi em calda','Abacaxi em Calda',82);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1070,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Figo em calda','Figo em Calda',82);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1071,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cereja em calda','Cereja em Calda',82);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1072,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bolo de chocolate','Bolo de Chocolate',83);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1073,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bolo de cenoura','Bolo de Cenoura',83);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1074,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bolo simples caseiro','Bolo Caseiro',83);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1075,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cupcake','Cupcake',83);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1076,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chocolate zero açúcar','Chocolate Diet',84);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1077,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bala diet','Bala Diet',84);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1078,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Biscoito zero açúcar','Biscoito Diet',84);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1079,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Doce sem açúcar','Doce Zero Açúcar',84);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1080,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Utensílio para cozinha','Colher de Pau',85);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1081,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Utensílio para servir alimentos','Concha',85);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1082,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Utensílio de cozinha','Espátula',85);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1083,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessório doméstico','Faca de Cozinha',85);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1084,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Caixa organizadora plástica','Caixa Organizadora',86);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1085,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Potes para alimentos','Pote Hermético',86);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1086,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Organização doméstica','Cesta Organizadora',86);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1087,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sacos organizadores','Organizador a Vácuo',86);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1088,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Prato descartável','Prato Descartável',87);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1089,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Copo descartável','Copo Plástico',87);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1090,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Talheres descartáveis','Talheres Plásticos',87);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1091,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Saco plástico','Sacola Plástica',87);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1092,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Proteção de alimentos','Papel Alumínio',88);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1093,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Filme para alimentos','Filme Plástico',88);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1094,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Embalagem doméstica','Plástico PVC',88);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1095,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Uso culinário','Papel Manteiga',88);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1096,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Panela de alumínio','Panela',89);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1097,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Frigideira antiaderente','Frigideira',89);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1098,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Panela de pressão','Panela de Pressão',89);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1099,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Utensílio de cozinha','Assadeira',89);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1100,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Kit básico de ferramentas','Kit Ferramentas',90);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1101,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chave de fenda','Chave de Fenda',90);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1102,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Martelo','Martelo',90);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1103,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Alicate','Alicate',90);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1104,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pilha AA','Pilha AA',91);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1105,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pilha AAA','Pilha AAA',91);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1106,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bateria 9V','Bateria 9V',91);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1107,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bateria recarregável','Bateria Recarregável',91);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1108,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lâmpada LED','Lâmpada LED',92);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1109,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lâmpada econômica','Lâmpada Fluorescente',92);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1110,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fita de LED','Fita LED',92);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1111,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lanterna portátil','Lanterna',92);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1112,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Controle remoto universal','Controle Remoto',93);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1113,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Relógio digital','Relógio Digital',93);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1114,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Carregador simples','Carregador',93);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1115,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Extensão elétrica','Extensão',93);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1116,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens diversos domésticos','Kit Utilidades',94);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1117,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Produto multiuso','Multiuso Doméstico',94);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1118,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessório geral','Organizador Geral',94);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1119,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Uso doméstico variado','Utilitário',94);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1120,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fralda descartável tamanho RN','Fralda RN',95);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1121,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fralda para bebês P','Fralda P',95);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1122,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fralda para bebês M','Fralda M',95);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1123,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fralda para bebês G','Fralda G',95);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1124,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fralda de pano reutilizável','Fralda de Pano',96);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1125,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Forro absorvente','Forro de Fralda',96);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1126,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Kit fralda reutilizável','Kit Fraldas de Pano',96);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1127,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessório de higiene','Protetor de Fralda',96);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1128,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lenço umedecido neutro','Lenço Umedecido',97);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1129,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lenço hipoalergênico','Lenço Sensível',97);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1130,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lenço com aloe vera','Lenço com Aloe Vera',97);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1131,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Lenço infantil','Lenço Infantil',97);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1132,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Comida para bebê','Alimento Infantil',98);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1133,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Papinha natural','Papinha',98);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1134,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cereais infantis','Cereal Infantil',98);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1135,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Alimento inicial','Primeira Papinha',98);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1136,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fórmula infantil 1','Fórmula 1',99);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1137,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fórmula infantil 2','Fórmula 2',99);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1138,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Papinha de frutas','Papinha de Frutas',99);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1139,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Papinha de legumes','Papinha de Legumes',99);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1140,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Mamadeira pequena','Mamadeira 120ml',100);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1141,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Mamadeira média','Mamadeira 240ml',100);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1142,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bico de silicone','Bico de Mamadeira',100);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1143,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Kit mamadeiras','Kit Mamadeiras',100);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1144,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Sabonete infantil','Sabonete Bebê',101);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1145,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Shampoo infantil','Shampoo Bebê',101);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1146,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Talco infantil','Talco Bebê',101);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1147,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Kit higiene bebê','Kit Higiene',101);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1148,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Creme hidratante bebê','Hidratante Bebê',102);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1149,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Pomada contra assaduras','Pomada Assaduras',102);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1150,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Óleo infantil','Óleo Bebê',102);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1151,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Protetor de pele','Protetor Bebê',102);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1152,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Body infantil','Body Bebê',103);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1153,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Macacão bebê','Macacão',103);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1154,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Conjunto infantil','Conjunto Bebê',103);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1155,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Meias bebê','Meias',103);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1156,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chupeta infantil','Chupeta',104);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1157,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Protetor de tomada','Protetor de Tomada',104);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1158,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cadeirinha bebê','Cadeirinha',104);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1159,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Trava de segurança','Trava de Segurança',104);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1160,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Brinquedo educativo','Brinquedo Educativo',105);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1161,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chocalho','Chocalho',105);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1162,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Brinquedo macio','Pelúcia Bebê',105);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1163,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Tapete de atividades','Tapete Bebê',105);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1164,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens natalinos decorativos','Enfeite de Natal',106);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1165,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Comidas típicas natalinas','Panetone',106);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1166,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Decoração de árvore','Árvore de Natal Mini',106);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1167,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Luzes decorativas','Pisca-Pisca',106);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1168,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens de festa ano novo','Fogos de Artifício',107);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1169,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Decoração de festa','Balões Brancos e Dourados',107);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1170,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessórios de celebração','Chapéu de Festa',107);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1171,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens comemorativos','Confetes',107);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1172,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Chocolate de páscoa','Ovo de Páscoa',108);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1173,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Decoração temática','Coelho de Páscoa',108);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1174,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Doces sazonais','Bombons de Páscoa',108);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1175,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Cestas comemorativas','Cesta de Páscoa',108);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1176,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fantasia de carnaval','Fantasia',109);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1177,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Decoração festa','Máscara de Carnaval',109);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1178,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessório festivo','Confete e Serpentina',109);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1179,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens de festa','Adereços Coloridos',109);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1180,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Decoração junina','Bandeirinhas',110);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1181,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Comida típica','Pipoca',110);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1182,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Doce tradicional','Pé de Moleque',110);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1183,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Festa caipira','Chapéu de Palha',110);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1184,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Presente feminino','Perfume',111);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1185,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Flores decorativas','Buquê de Flores',111);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1186,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Presente especial','Caixa de Chocolate',111);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1187,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens comemorativos','Cartão de Dia das Mães',111);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1188,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Presente masculino','Perfume Masculino',112);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1189,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessório masculino','Kit Barba',112);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1190,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Presente especial','Cerveja Artesanal',112);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1191,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens comemorativos','Cartão Dia dos Pais',112);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1192,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Brinquedos infantis','Brinquedo Educativo',113);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1193,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Doces infantis','Kit Doces',113);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1194,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Presentes criativos','Jogo Infantil',113);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1195,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens comemorativos','Pelúcia',113);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1196,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Fantasia assustadora','Fantasia Halloween',114);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1197,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Decoração temática','Abóbora Decorativa',114);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1198,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Doces temáticos','Doces Halloween',114);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1199,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessórios festa','Máscara Assustadora',114);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1200,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens praia','Protetor Solar',115);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1201,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessório verão','Óculos de Sol',115);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1202,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bebida refrescante','Água de Coco',115);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1203,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Itens piscina','Boia Inflável',115);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1204,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Roupas de frio','Casaco de Inverno',116);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1205,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Bebida quente','Chocolate Quente',116);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1206,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Acessório inverno','Cachecol',116);
+INSERT INTO produtos (`id`,`atualizado_em`,`criado_em`,`descricao`,`nome`,`subcategoria_id`) VALUES (1207,'2026-05-10 00:21:03.000000','2026-05-10 00:21:03.000000','Proteção térmica','Cobertor',116);
 
--- CARNES 🥩
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Picanha Premium', 'Corte nobre bovino ideal para churrasco', 2, NOW(), NOW()),
-('Picanha Angus', 'Carne macia de alta qualidade', 2, NOW(), NOW()),
-('Alcatra Bovina', 'Corte versátil e macio', 2, NOW(), NOW()),
-('Contra-filé', 'Sabor intenso para grelha', 2, NOW(), NOW()),
-('Maminha', 'Corte suave e suculento', 2, NOW(), NOW()),
-('Filé Mignon', 'Corte nobre extremamente macio', 2, NOW(), NOW()),
-('Fraldinha', 'Ideal para churrasco', 2, NOW(), NOW()),
-('Acém', 'Corte econômico para cozidos', 2, NOW(), NOW()),
-('Patinho', 'Carne magra moída ou em bifes', 2, NOW(), NOW()),
-('Carne Moída Acém', 'Versátil para receitas', 2, NOW(), NOW()),
-('Carne Moída Patinho', 'Mais magra', 2, NOW(), NOW()),
-('Cupim', 'Corte bovino gorduroso e macio', 2, NOW(), NOW()),
-('Ossobuco', 'Ideal para cozidos e molhos', 2, NOW(), NOW()),
-('Costela Bovina', 'Para churrasco e forno', 2, NOW(), NOW()),
-('Costela Suína', 'Sabor intenso e suculento', 2, NOW(), NOW()),
-('Pernil Suíno', 'Assados e churrascos', 2, NOW(), NOW()),
-('Lombo Suíno', 'Corte magro e leve', 2, NOW(), NOW()),
-('Bisteca Suína', 'Fácil preparo', 2, NOW(), NOW()),
-('Filé de Frango', 'Peito sem osso e sem pele', 2, NOW(), NOW()),
-('Peito de Frango', 'Versátil e magro', 2, NOW(), NOW()),
-('Coxa de Frango', 'Sabor mais intenso', 2, NOW(), NOW()),
-('Sobrecoxa de Frango', 'Ideal para forno', 2, NOW(), NOW()),
-('Asa de Frango', 'Petisco e churrasco', 2, NOW(), NOW()),
-('Drumet de Frango', 'Parte inferior da asa', 2, NOW(), NOW()),
-('Frango Inteiro', 'Ideal para assados', 2, NOW(), NOW()),
-('Linguiça Toscana', 'Temperada para churrasco', 2, NOW(), NOW()),
-('Linguiça Calabresa', 'Defumada e saborosa', 2, NOW(), NOW()),
-('Linguiça de Frango', 'Mais leve', 2, NOW(), NOW()),
-('Linguiça Artesanal', 'Produção caseira', 2, NOW(), NOW()),
-('Hambúrguer Bovino', 'Pronto para grelha', 2, NOW(), NOW()),
-('Hambúrguer de Frango', 'Mais leve', 2, NOW(), NOW()),
-('Hambúrguer Artesanal', 'Blend especial', 2, NOW(), NOW()),
-('Carne de Sol', 'Curada e salgada', 2, NOW(), NOW()),
-('Charque', 'Carne salgada tradicional', 2, NOW(), NOW()),
-('Coração de Frango', 'Muito usado em churrasco', 2, NOW(), NOW()),
-('Fígado Bovino', 'Rico em ferro', 2, NOW(), NOW()),
-('Rim Bovino', 'Uso culinário específico', 2, NOW(), NOW()),
-('Filé de Peixe Tilápia', 'Leve e saudável', 2, NOW(), NOW()),
-('Filé de Salmão', 'Corte nobre de peixe', 2, NOW(), NOW()),
-('Sardinha Fresca', 'Peixe popular', 2, NOW(), NOW()),
-('Atum Fresco', 'Corte de peixe nobre', 2, NOW(), NOW()),
-('Camarão Limpo', 'Frutos do mar', 2, NOW(), NOW()),
-('Carne Suína Moída', 'Versátil', 2, NOW(), NOW()),
-('Carne Bovina para Ensopado', 'Cortes variados', 2, NOW(), NOW());
+-- subcategorias
 
--- PADARIA 🥖
-
-
--- HORTIFRUTI 🍇
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Banana Prata', 'Fruta doce e popular', 4, NOW(), NOW()),
-('Banana Nanica', 'Mais macia e doce', 4, NOW(), NOW()),
-('Maçã Vermelha', 'Fruta crocante e doce', 4, NOW(), NOW()),
-('Maçã Verde', 'Sabor ácido leve', 4, NOW(), NOW()),
-('Laranja Pera', 'Cítrica e suculenta', 4, NOW(), NOW()),
-('Laranja Bahia', 'Mais doce e sem sementes', 4, NOW(), NOW()),
-('Limão Tahiti', 'Ácido e versátil', 4, NOW(), NOW()),
-('Limão Siciliano', 'Aromático', 4, NOW(), NOW()),
-('Abacaxi Pérola', 'Doce e suculento', 4, NOW(), NOW()),
-('Abacaxi Havaí', 'Mais ácido', 4, NOW(), NOW()),
-('Melancia', 'Refrescante e grande', 4, NOW(), NOW()),
-('Melão Amarelo', 'Doce e leve', 4, NOW(), NOW()),
-('Mamão Papaia', 'Digestivo natural', 4, NOW(), NOW()),
-('Mamão Formosa', 'Maior e firme', 4, NOW(), NOW()),
-('Uva Roxa', 'Doce sem caroço', 4, NOW(), NOW()),
-('Uva Verde', 'Levemente ácida', 4, NOW(), NOW()),
-('Morango Bandeja', 'Fruta delicada', 4, NOW(), NOW()),
-('Manga Palmer', 'Doce e grande', 4, NOW(), NOW()),
-('Manga Tommy', 'Firme e suculenta', 4, NOW(), NOW()),
-('Pera', 'Fruta suave', 4, NOW(), NOW()),
-('Kiwi', 'Ácido e nutritivo', 4, NOW(), NOW()),
-('Goiaba', 'Doce e aromática', 4, NOW(), NOW()),
-('Caju', 'Fruta tropical', 4, NOW(), NOW()),
-('Acerola', 'Rica em vitamina C', 4, NOW(), NOW()),
-('Maracujá', 'Azedo e calmante', 4, NOW(), NOW()),
-('Coco Verde', 'Água natural', 4, NOW(), NOW()),
-('Coco Seco', 'Uso culinário', 4, NOW(), NOW()),
-('Abóbora Moranga', 'Culinária salgada', 4, NOW(), NOW()),
-('Abóbora Cabotiá', 'Mais firme', 4, NOW(), NOW()),
-('Batata Inglesa', 'Base de muitas receitas', 4, NOW(), NOW()),
-('Batata Doce', 'Saudável e energética', 4, NOW(), NOW()),
-('Cenoura', 'Rica em vitaminas', 4, NOW(), NOW()),
-('Beterraba', 'Nutritiva e doce', 4, NOW(), NOW()),
-('Alface Crespa', 'Folha fresca', 4, NOW(), NOW()),
-('Alface Lisa', 'Folha leve', 4, NOW(), NOW()),
-('Rúcula', 'Sabor amargo leve', 4, NOW(), NOW()),
-('Espinafre', 'Nutritivo', 4, NOW(), NOW()),
-('Couve Manteiga', 'Usada em sucos', 4, NOW(), NOW()),
-('Brócolis', 'Vegetal nutritivo', 4, NOW(), NOW()),
-('Couve-Flor', 'Versátil na cozinha', 4, NOW(), NOW()),
-('Tomate Italiano', 'Base de molhos', 4, NOW(), NOW()),
-('Tomate Salada', 'Fresco e firme', 4, NOW(), NOW()),
-('Cebola Branca', 'Base culinária', 4, NOW(), NOW()),
-('Cebola Roxa', 'Mais suave', 4, NOW(), NOW()),
-('Alho', 'Tempero essencial', 4, NOW(), NOW()),
-('Pimentão Vermelho', 'Doce e colorido', 4, NOW(), NOW()),
-('Pimentão Verde', 'Sabor forte', 4, NOW(), NOW()),
-('Pimentão Amarelo', 'Suave e doce', 4, NOW(), NOW()),
-('Pepino', 'Refrescante', 4, NOW(), NOW()),
-('Chuchu', 'Leve e neutro', 4, NOW(), NOW()),
-('Vagem', 'Crocante e saudável', 4, NOW(), NOW());
-
--- LATICINIOS 🐮
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Leite Integral 1L', 'Leite tradicional', 5, NOW(), NOW()),
-('Leite Desnatado 1L', 'Menos gordura', 5, NOW(), NOW()),
-('Leite Semidesnatado 1L', 'Equilibrado', 5, NOW(), NOW()),
-('Leite Zero Lactose 1L', 'Para intolerantes', 5, NOW(), NOW()),
-('Leite em Pó Integral', 'Longa duração', 5, NOW(), NOW()),
-('Leite Condensado', 'Doce concentrado', 5, NOW(), NOW()),
-('Creme de Leite', 'Base para receitas', 5, NOW(), NOW()),
-('Iogurte Natural', 'Sem açúcar', 5, NOW(), NOW()),
-('Iogurte Morango', 'Sabor frutado', 5, NOW(), NOW()),
-('Iogurte Banana', 'Doce leve', 5, NOW(), NOW()),
-('Iogurte Grego', 'Mais cremoso', 5, NOW(), NOW()),
-('Iogurte Zero Açúcar', 'Fitness', 5, NOW(), NOW()),
-('Manteiga com Sal', 'Tradicional', 5, NOW(), NOW()),
-('Manteiga sem Sal', 'Uso culinário', 5, NOW(), NOW()),
-('Margarina Tradicional', 'Alternativa econômica', 5, NOW(), NOW()),
-('Requeijão Cremoso', 'Para pães', 5, NOW(), NOW()),
-('Requeijão Light', 'Menos gordura', 5, NOW(), NOW()),
-('Queijo Mussarela Fatiado', 'Sanduíches', 5, NOW(), NOW()),
-('Queijo Mussarela Peça', 'Versátil', 5, NOW(), NOW()),
-('Queijo Prato', 'Sabor suave', 5, NOW(), NOW()),
-('Queijo Minas Frescal', 'Leve e fresco', 5, NOW(), NOW()),
-('Queijo Minas Padrão', 'Mais firme', 5, NOW(), NOW()),
-('Queijo Parmesão Ralado', 'Para massas', 5, NOW(), NOW()),
-('Queijo Parmesão Peça', 'Curado', 5, NOW(), NOW()),
-('Queijo Cheddar', 'Sabor forte', 5, NOW(), NOW()),
-('Queijo Gorgonzola', 'Azul intenso', 5, NOW(), NOW()),
-('Queijo Brie', 'Macio e sofisticado', 5, NOW(), NOW()),
-('Queijo Camembert', 'Cremoso', 5, NOW(), NOW()),
-('Queijo Coalho', 'Churrasco', 5, NOW(), NOW()),
-('Queijo Provolone', 'Defumado', 5, NOW(), NOW()),
-('Ricota Fresca', 'Leve e saudável', 5, NOW(), NOW()),
-('Doce de Leite', 'Tradicional brasileiro', 5, NOW(), NOW()),
-('Bebida Láctea Chocolate', 'Pronto consumo', 5, NOW(), NOW()),
-('Bebida Láctea Morango', 'Sabor doce', 5, NOW(), NOW()),
-('Leite Fermentado', 'Probiótico', 5, NOW(), NOW()),
-('Nata Fresca', 'Cremosa', 5, NOW(), NOW()),
-('Creme de Ricota', 'Mais leve', 5, NOW(), NOW()),
-('Queijo Cottage', 'Fitness', 5, NOW(), NOW());
-
--- MERCEARIA 🍚
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Arroz Branco 5kg', 'Tipo agulhinha tradicional', 6, NOW(), NOW()),
-('Arroz Integral 1kg', 'Mais fibras e saudável', 6, NOW(), NOW()),
-('Arroz Parboilizado 5kg', 'Mais soltinho após cozimento', 6, NOW(), NOW()),
-('Feijão Carioca 1kg', 'Mais consumido no Brasil', 6, NOW(), NOW()),
-('Feijão Preto 1kg', 'Base da feijoada', 6, NOW(), NOW()),
-('Feijão Fradinho 1kg', 'Nordestino tradicional', 6, NOW(), NOW()),
-('Lentilha 500g', 'Rica em proteína vegetal', 6, NOW(), NOW()),
-('Grão de Bico 500g', 'Nutritivo e versátil', 6, NOW(), NOW()),
-('Macarrão Espaguete', 'Massa longa tradicional', 6, NOW(), NOW()),
-('Macarrão Penne', 'Ideal para molhos', 6, NOW(), NOW()),
-('Macarrão Parafuso', 'Versátil para saladas', 6, NOW(), NOW()),
-('Macarrão Instantâneo', 'Rápido preparo', 6, NOW(), NOW()),
-('Molho de Tomate Tradicional', 'Base para receitas', 6, NOW(), NOW()),
-('Molho de Tomate Temperado', 'Com ervas', 6, NOW(), NOW()),
-('Extrato de Tomate', 'Concentrado', 6, NOW(), NOW()),
-('Milho Verde Lata', 'Enlatado clássico', 6, NOW(), NOW()),
-('Ervilha Lata', 'Complemento de receitas', 6, NOW(), NOW()),
-('Sardinha em Lata', 'Proteína prática', 6, NOW(), NOW()),
-('Atum em Lata', 'Alta proteína', 6, NOW(), NOW()),
-('Azeite de Oliva 500ml', 'Extra virgem', 6, NOW(), NOW()),
-('Óleo de Soja 900ml', 'Uso diário', 6, NOW(), NOW()),
-('Óleo de Girassol 900ml', 'Mais leve', 6, NOW(), NOW()),
-('Vinagre Branco', 'Uso culinário', 6, NOW(), NOW()),
-('Vinagre de Maçã', 'Mais suave', 6, NOW(), NOW()),
-('Sal Refinado 1kg', 'Uso geral', 6, NOW(), NOW()),
-('Sal Grosso', 'Churrasco', 6, NOW(), NOW()),
-('Açúcar Refinado 1kg', 'Uso geral', 6, NOW(), NOW()),
-('Açúcar Cristal 1kg', 'Culinária', 6, NOW(), NOW()),
-('Açúcar Mascavo', 'Mais natural', 6, NOW(), NOW()),
-('Café Tradicional 500g', 'Torrado e moído', 6, NOW(), NOW()),
-('Café Forte 500g', 'Sabor intenso', 6, NOW(), NOW()),
-('Farinha de Trigo 1kg', 'Base para massas', 6, NOW(), NOW()),
-('Farinha de Mandioca', 'Farofas', 6, NOW(), NOW()),
-('Fubá de Milho', 'Culinária tradicional', 6, NOW(), NOW()),
-('Polvilho Doce', 'Receitas brasileiras', 6, NOW(), NOW()),
-('Polvilho Azedo', 'Pão de queijo', 6, NOW(), NOW()),
-('Fermento Biológico', 'Massas e pães', 6, NOW(), NOW()),
-('Fermento Químico', 'Bolos', 6, NOW(), NOW()),
-('Leite de Coco', 'Culinária tropical', 6, NOW(), NOW()),
-('Leite Condensado', 'Doces', 6, NOW(), NOW()),
-('Creme de Leite', 'Molhos e sobremesas', 6, NOW(), NOW()),
-('Chocolate em Pó 50%', 'Culinária', 6, NOW(), NOW()),
-('Achocolatado em Pó', 'Bebida doce', 6, NOW(), NOW()),
-('Gelatina Morango', 'Sobremesa rápida', 6, NOW(), NOW()),
-('Gelatina Uva', 'Sobremesa leve', 6, NOW(), NOW()),
-('Gelatina Limão', 'Refrescante', 6, NOW(), NOW()),
-('Mistura para Bolo Chocolate', 'Prático', 6, NOW(), NOW()),
-('Mistura para Bolo Baunilha', 'Fácil preparo', 6, NOW(), NOW()),
-('Caldo de Galinha Cubos', 'Tempero concentrado', 6, NOW(), NOW()),
-('Caldo de Carne Cubos', 'Base de sabor', 6, NOW(), NOW()),
-('Temperos Secos Sortidos', 'Ervas e especiarias', 6, NOW(), NOW());
-
--- HIGIENE 🧻
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Sabonete em Barra Tradicional', 'Uso diário para banho', 7, NOW(), NOW()),
-('Sabonete em Barra Hidratante', 'Com hidratação extra', 7, NOW(), NOW()),
-('Sabonete Líquido Refil', 'Mais econômico', 7, NOW(), NOW()),
-('Sabonete Íntimo Feminino', 'Uso específico', 7, NOW(), NOW()),
-('Shampoo Anticaspa', 'Controle de caspa', 7, NOW(), NOW()),
-('Shampoo Hidratante', 'Cabelos secos', 7, NOW(), NOW()),
-('Shampoo para Cabelos Oleosos', 'Controle de oleosidade', 7, NOW(), NOW()),
-('Condicionador Hidratante', 'Maciez e brilho', 7, NOW(), NOW()),
-('Condicionador Reparador', 'Reconstrução capilar', 7, NOW(), NOW()),
-('Creme Dental Tradicional', 'Proteção diária', 7, NOW(), NOW()),
-('Creme Dental Branqueador', 'Clareamento', 7, NOW(), NOW()),
-('Creme Dental Sensibilidade', 'Dentes sensíveis', 7, NOW(), NOW()),
-('Escova de Dente Macia', 'Uso diário', 7, NOW(), NOW()),
-('Escova de Dente Média', 'Limpeza eficiente', 7, NOW(), NOW()),
-('Fio Dental 50m', 'Higiene interdental', 7, NOW(), NOW()),
-('Enxaguante Bucal', 'Hálito fresco', 7, NOW(), NOW()),
-('Desodorante Aerosol', 'Proteção 48h', 7, NOW(), NOW()),
-('Desodorante Roll-on', 'Uso diário', 7, NOW(), NOW()),
-('Desodorante Stick', 'Secagem rápida', 7, NOW(), NOW()),
-('Papel Higiênico 4 rolos', 'Folha simples', 7, NOW(), NOW()),
-('Papel Higiênico 12 rolos', 'Família', 7, NOW(), NOW()),
-('Papel Higiênico Folha Dupla', 'Mais conforto', 7, NOW(), NOW()),
-('Absorvente Noturno', 'Fluxo intenso', 7, NOW(), NOW()),
-('Absorvente Diário', 'Uso leve', 7, NOW(), NOW()),
-('Lenço Umedecido', 'Higiene rápida', 7, NOW(), NOW()),
-('Algodão 50g', 'Uso dermatológico', 7, NOW(), NOW()),
-('Cotonete', 'Limpeza delicada', 7, NOW(), NOW()),
-('Álcool 70% 1L', 'Desinfecção', 7, NOW(), NOW()),
-('Álcool Gel 500ml', 'Higienização das mãos', 7, NOW(), NOW()),
-('Sabonete Antibacteriano', 'Proteção extra', 7, NOW(), NOW()),
-('Sabonete Infantil', 'Pele sensível', 7, NOW(), NOW()),
-('Shampoo Infantil', 'Uso delicado', 7, NOW(), NOW()),
-('Condicionador Infantil', 'Cabelos infantis', 7, NOW(), NOW()),
-('Pasta de Dente Infantil', 'Sabor suave', 7, NOW(), NOW()),
-('Fralda Descartável M', 'Uso infantil', 7, NOW(), NOW()),
-('Fralda Descartável G', 'Maior absorção', 7, NOW(), NOW()),
-('Fralda Descartável XG', 'Alta capacidade', 7, NOW(), NOW()),
-('Lenço de Papel', 'Uso diário', 7, NOW(), NOW()),
-('Papel Toalha', 'Limpeza doméstica', 7, NOW(), NOW()),
-('Sabonete Esfoliante', 'Cuidados com pele', 7, NOW(), NOW()),
-('Creme Hidratante Corporal', 'Hidratação da pele', 7, NOW(), NOW()),
-('Protetor Solar FPS 30', 'Proteção solar', 7, NOW(), NOW()),
-('Protetor Solar FPS 50', 'Alta proteção', 7, NOW(), NOW()),
-('Shampoo Antiqueda', 'Fortalecimento capilar', 7, NOW(), NOW());
-
--- LIMPEZA 🧼
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Detergente Neutro 500ml', 'Limpeza de louças', 8, NOW(), NOW()),
-('Detergente Limão 500ml', 'Com aroma cítrico', 8, NOW(), NOW()),
-('Detergente Maçã 500ml', 'Fragrância suave', 8, NOW(), NOW()),
-('Sabão em Pó 1kg', 'Lavagem de roupas', 8, NOW(), NOW()),
-('Sabão em Pó 2kg', 'Maior rendimento', 8, NOW(), NOW()),
-('Sabão Líquido Roupas 1L', 'Mais delicado com tecidos', 8, NOW(), NOW()),
-('Amaciante Concentrado 1L', 'Roupas macias', 8, NOW(), NOW()),
-('Amaciante Lavanda 2L', 'Fragrância duradoura', 8, NOW(), NOW()),
-('Água Sanitária 1L', 'Desinfecção pesada', 8, NOW(), NOW()),
-('Água Sanitária 2L', 'Uso doméstico', 8, NOW(), NOW()),
-('Desinfetante Floral 1L', 'Limpeza geral', 8, NOW(), NOW()),
-('Desinfetante Lavanda 1L', 'Aroma suave', 8, NOW(), NOW()),
-('Desinfetante Eucalipto 1L', 'Ação bactericida', 8, NOW(), NOW()),
-('Limpador Multiuso 500ml', 'Superfícies gerais', 8, NOW(), NOW()),
-('Limpador Vidros 500ml', 'Sem manchas', 8, NOW(), NOW()),
-('Limpador Pesado 1L', 'Limpeza profunda', 8, NOW(), NOW()),
-('Esponja de Cozinha', 'Dupla face', 8, NOW(), NOW()),
-('Esponja Multiuso', 'Uso geral', 8, NOW(), NOW()),
-('Esponja Aço 8 unidades', 'Remoção de sujeira pesada', 8, NOW(), NOW()),
-('Pano de Chão Algodão', 'Limpeza de pisos', 8, NOW(), NOW()),
-('Pano Microfibra', 'Alta absorção', 8, NOW(), NOW()),
-('Rodo 40cm', 'Limpeza de piso', 8, NOW(), NOW()),
-('Vassoura Cerdas Macias', 'Uso interno', 8, NOW(), NOW()),
-('Vassoura Cerdas Duras', 'Área externa', 8, NOW(), NOW()),
-('Pá de Lixo', 'Coleta de resíduos', 8, NOW(), NOW()),
-('Balde 10L', 'Uso doméstico', 8, NOW(), NOW()),
-('Balde 20L', 'Maior capacidade', 8, NOW(), NOW()),
-('Lustra Móveis 200ml', 'Brilho e proteção', 8, NOW(), NOW()),
-('Limpa Inox 300ml', 'Superfícies metálicas', 8, NOW(), NOW()),
-('Limpa Forno 400ml', 'Desengordurante forte', 8, NOW(), NOW()),
-('Desengordurante Cozinha 500ml', 'Gordura pesada', 8, NOW(), NOW()),
-('Pedra Sanitária', 'Higienização banheiro', 8, NOW(), NOW()),
-('Saboneteira de Limpeza', 'Organização banheiro', 8, NOW(), NOW()),
-('Saco de Lixo 30L', 'Uso doméstico', 8, NOW(), NOW()),
-('Saco de Lixo 50L', 'Mais resistente', 8, NOW(), NOW()),
-('Saco de Lixo 100L', 'Grande volume', 8, NOW(), NOW()),
-('Luvas de Limpeza', 'Proteção das mãos', 8, NOW(), NOW()),
-('Bucha Vegetal', 'Limpeza leve', 8, NOW(), NOW()),
-('Removedor Multiuso 1L', 'Limpeza pesada', 8, NOW(), NOW()),
-('Inseticida Aerosol', 'Controle de insetos', 8, NOW(), NOW()),
-('Desodorizador de Ambiente', 'Aroma agradável', 8, NOW(), NOW()),
-('Álcool Líquido 70% 1L', 'Desinfecção', 8, NOW(), NOW()),
-('Álcool Gel 500ml', 'Higienização rápida', 8, NOW(), NOW());
-
--- PETS 🐶
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Ração Cães Adultos 10kg', 'Alimento completo para cães', 9, NOW(), NOW()),
-('Ração Cães Filhotes 3kg', 'Nutrição para crescimento', 9, NOW(), NOW()),
-('Ração Cães Pequeno Porte 5kg', 'Cães de pequeno porte', 9, NOW(), NOW()),
-('Ração Cães Grande Porte 15kg', 'Alta energia', 9, NOW(), NOW()),
-('Ração Gatos Adultos 1kg', 'Nutrição felina', 9, NOW(), NOW()),
-('Ração Gatos Filhotes 1kg', 'Crescimento saudável', 9, NOW(), NOW()),
-('Ração Gatos Castrados', 'Controle de peso', 9, NOW(), NOW()),
-('Petisco Cães Biscoito', 'Recompensa canina', 9, NOW(), NOW()),
-('Petisco Cães Ossinho', 'Entretenimento e higiene dental', 9, NOW(), NOW()),
-('Petisco Gatos Snacks', 'Agrados felinos', 9, NOW(), NOW()),
-('Shampoo Pet Neutro', 'Banho de cães', 9, NOW(), NOW()),
-('Shampoo Antipulgas Pet', 'Controle de parasitas', 9, NOW(), NOW()),
-('Condicionador Pet', 'Pelagem macia', 9, NOW(), NOW()),
-('Coleira Ajustável', 'Passeio seguro', 9, NOW(), NOW()),
-('Guia para Cães', 'Controle no passeio', 9, NOW(), NOW()),
-('Peitoral para Cães', 'Mais conforto', 9, NOW(), NOW()),
-('Caminha Pet Pequena', 'Descanso confortável', 9, NOW(), NOW()),
-('Caminha Pet Grande', 'Cães maiores', 9, NOW(), NOW()),
-('Casinha para Cães', 'Abrigo externo', 9, NOW(), NOW()),
-('Arranhador para Gatos', 'Entretenimento felino', 9, NOW(), NOW()),
-('Areia Sanitária Gatos', 'Higiene felina', 9, NOW(), NOW()),
-('Caixa de Areia', 'Uso de gatos', 9, NOW(), NOW()),
-('Comedouro Plástico', 'Alimentação pet', 9, NOW(), NOW()),
-('Comedouro Inox', 'Mais durável', 9, NOW(), NOW()),
-('Bebedouro Automático Pet', 'Água sempre disponível', 9, NOW(), NOW()),
-('Brinquedo Mordedor', 'Cães filhotes', 9, NOW(), NOW()),
-('Brinquedo Bolinha', 'Diversão geral', 9, NOW(), NOW()),
-('Brinquedo Interativo Gato', 'Estimulação felina', 9, NOW(), NOW()),
-('Antipulgas Pipeta Cães', 'Proteção externa', 9, NOW(), NOW()),
-('Antipulgas Pipeta Gatos', 'Proteção felina', 9, NOW(), NOW()),
-('Vermífugo Cães', 'Controle interno', 9, NOW(), NOW()),
-('Vermífugo Gatos', 'Saúde felina', 9, NOW(), NOW()),
-('Tapete Higiênico Cães', 'Treinamento sanitário', 9, NOW(), NOW()),
-('Escova para Pelos Pet', 'Higiene da pelagem', 9, NOW(), NOW()),
-('Luvas de Escovação Pet', 'Remoção de pelos', 9, NOW(), NOW()),
-('Spray Desodorante Pet', 'Cheiro agradável', 9, NOW(), NOW()),
-('Cinto de Segurança Pet', 'Transporte seguro', 9, NOW(), NOW());
-
--- DOCES 🍬
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Chocolate ao Leite Barra 100g', 'Chocolate tradicional', 10, NOW(), NOW()),
-('Chocolate Meio Amargo 100g', 'Menos açúcar', 10, NOW(), NOW()),
-('Chocolate Branco 90g', 'Sabor suave', 10, NOW(), NOW()),
-('Chocolate Recheado Avelã', 'Recheio cremoso', 10, NOW(), NOW()),
-('Bombom Sortido 250g', 'Caixa variada', 10, NOW(), NOW()),
-('Caixa de Bombons Premium', 'Seleção especial', 10, NOW(), NOW()),
-('Bala de Morango 100g', 'Balas doces', 10, NOW(), NOW()),
-('Bala de Hortelã 100g', 'Refrescante', 10, NOW(), NOW()),
-('Bala de Caramelo', 'Clássica doce', 10, NOW(), NOW()),
-('Pirulito Colorido', 'Doce infantil', 10, NOW(), NOW()),
-('Pirulito Recheado', 'Com goma interna', 10, NOW(), NOW()),
-('Chiclete Hortelã', 'Refrescante', 10, NOW(), NOW()),
-('Chiclete Tutti-Frutti', 'Sabor frutado', 10, NOW(), NOW()),
-('Chiclete com Recheio', 'Explosão de sabor', 10, NOW(), NOW()),
-('Biscoito Recheado Chocolate', 'Crocante e doce', 10, NOW(), NOW()),
-('Biscoito Recheado Morango', 'Sabor frutado', 10, NOW(), NOW()),
-('Biscoito Wafer Chocolate', 'Camadas crocantes', 10, NOW(), NOW()),
-('Biscoito Wafer Morango', 'Leve e doce', 10, NOW(), NOW()),
-('Biscoito Coberto Chocolate', 'Extra doce', 10, NOW(), NOW()),
-('Pudim Pronto Chocolate', 'Sobremesa gelada', 10, NOW(), NOW()),
-('Pudim Pronto Baunilha', 'Sobremesa cremosa', 10, NOW(), NOW()),
-('Mousse Chocolate Pronto', 'Sobremesa leve', 10, NOW(), NOW()),
-('Gelatina Morango', 'Sobremesa simples', 10, NOW(), NOW()),
-('Gelatina Uva', 'Sabor frutado', 10, NOW(), NOW()),
-('Doce de Leite Pote', 'Tradicional brasileiro', 10, NOW(), NOW()),
-('Paçoca Rolha', 'Amendoim doce', 10, NOW(), NOW()),
-('Pé de Moleque', 'Doce de festa junina', 10, NOW(), NOW()),
-('Brigadeiro Pronto', 'Doce de festa', 10, NOW(), NOW()),
-('Beijinho de Coco', 'Doce tradicional', 10, NOW(), NOW()),
-('Marshmallow 150g', 'Doce macio', 10, NOW(), NOW()),
-('Chocolate Granulado', 'Uso culinário', 10, NOW(), NOW()),
-('Chocolate em Pó Doce', 'Preparos caseiros', 10, NOW(), NOW()),
-('Tablete de Chocolate Avelã', 'Recheado premium', 10, NOW(), NOW()),
-('Chocolate Crocante Amendoim', 'Textura crocante', 10, NOW(), NOW());
-
--- UTILIDADES 🪛
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Fósforos Caixa', 'Uso doméstico', 11, NOW(), NOW()),
-('Isqueiro Recarregável', 'Acendimento de fogão e velas', 11, NOW(), NOW()),
-('Velas Brancas 8 unidades', 'Uso em falta de energia', 11, NOW(), NOW()),
-('Velas Aromáticas', 'Ambiente perfumado', 11, NOW(), NOW()),
-('Pilha AA 4 unidades', 'Uso geral', 11, NOW(), NOW()),
-('Pilha AAA 4 unidades', 'Pequenos aparelhos', 11, NOW(), NOW()),
-('Extensão Elétrica 3m', 'Aumento de tomadas', 11, NOW(), NOW()),
-('Filtro de Linha 5 Tomadas', 'Proteção elétrica', 11, NOW(), NOW()),
-('Lâmpada LED 9W', 'Economia de energia', 11, NOW(), NOW()),
-('Lâmpada LED 12W', 'Alta luminosidade', 11, NOW(), NOW()),
-('Fita Adesiva Transparente', 'Uso geral', 11, NOW(), NOW()),
-('Fita Isolante', 'Instalações elétricas', 11, NOW(), NOW()),
-('Super Cola Instantânea', 'Fixação rápida', 11, NOW(), NOW()),
-('Cola Branca Escolar', 'Uso doméstico e escolar', 11, NOW(), NOW()),
-('Tesoura Multiuso', 'Corte geral', 11, NOW(), NOW()),
-('Estilete com Lâmina', 'Corte preciso', 11, NOW(), NOW()),
-('Caneta Permanente Preta', 'Uso geral', 11, NOW(), NOW()),
-('Caneta Esferográfica Azul', 'Escrita diária', 11, NOW(), NOW()),
-('Caneta Esferográfica Preta', 'Escrita formal', 11, NOW(), NOW()),
-('Lápis Preto Nº2', 'Uso escolar', 11, NOW(), NOW()),
-('Apontador com Depósito', 'Uso escolar', 11, NOW(), NOW()),
-('Borracha Branca', 'Apagar escrita', 11, NOW(), NOW()),
-('Caderno 1 Matéria', 'Uso escolar', 11, NOW(), NOW()),
-('Caderno 10 Matérias', 'Uso escolar', 11, NOW(), NOW()),
-('Agenda Diária', 'Organização pessoal', 11, NOW(), NOW()),
-('Sacola Reutilizável', 'Transporte de compras', 11, NOW(), NOW()),
-('Organizador Plástico Pequeno', 'Armazenamento', 11, NOW(), NOW()),
-('Organizador Plástico Grande', 'Organização doméstica', 11, NOW(), NOW()),
-('Caixa Organizadora com Tampa', 'Armazenamento seguro', 11, NOW(), NOW()),
-('Garrafa Plástica 1L', 'Uso diário', 11, NOW(), NOW()),
-('Garrafa Térmica Simples', 'Conservação de líquidos', 11, NOW(), NOW()),
-('Pano Multiuso Reutilizável', 'Limpeza leve', 11, NOW(), NOW()),
-('Toalha de Mesa Plástica', 'Proteção de mesa', 11, NOW(), NOW()),
-('Cortina de Banheiro Plástica', 'Proteção banheiro', 11, NOW(), NOW()),
-('Trava de Segurança Infantil', 'Proteção doméstica', 11, NOW(), NOW()),
-('Relógio de Parede Simples', 'Uso doméstico', 11, NOW(), NOW()),
-('Ventilador Portátil USB', 'Resfriamento pessoal', 11, NOW(), NOW()),
-('Adaptador de Tomada Universal', 'Compatibilidade elétrica', 11, NOW(), NOW()),
-('Suporte para Celular', 'Uso em mesa ou carro', 11, NOW(), NOW()),
-('Cabos USB Tipo C', 'Carregamento e dados', 11, NOW(), NOW()),
-('Carregador de Celular', 'Energia para dispositivos', 11, NOW(), NOW());
-
--- BEBES 🍼
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Fralda Descartável RN', 'Recém-nascido', 12, NOW(), NOW()),
-('Fralda Descartável P', 'Bebês pequenos', 12, NOW(), NOW()),
-('Fralda Descartável M', 'Uso diário', 12, NOW(), NOW()),
-('Fralda Descartável G', 'Maior absorção', 12, NOW(), NOW()),
-('Fralda Descartável XG', 'Bebês maiores', 12, NOW(), NOW()),
-('Lenço Umedecido 48 unidades', 'Higiene do bebê', 12, NOW(), NOW()),
-('Lenço Umedecido 100 unidades', 'Uso prolongado', 12, NOW(), NOW()),
-('Pomada para Assaduras', 'Proteção da pele', 12, NOW(), NOW()),
-('Sabonete Infantil Líquido', 'Banho delicado', 12, NOW(), NOW()),
-('Shampoo Infantil Suave', 'Sem irritar olhos', 12, NOW(), NOW()),
-('Condicionador Infantil', 'Cabelos macios', 12, NOW(), NOW()),
-('Colônia Infantil Suave', 'Cheiro leve', 12, NOW(), NOW()),
-('Talco Infantil', 'Higiene e conforto', 12, NOW(), NOW()),
-('Toalha Umedecida Refil', 'Reposição econômica', 12, NOW(), NOW()),
-('Algodão Hidrófilo', 'Limpeza delicada', 12, NOW(), NOW()),
-('Cotonete Infantil', 'Higiene segura', 12, NOW(), NOW()),
-('Mamadeira 120ml', 'Alimentação inicial', 12, NOW(), NOW()),
-('Mamadeira 240ml', 'Uso diário', 12, NOW(), NOW()),
-('Mamadeira Anticólica', 'Reduz cólicas', 12, NOW(), NOW()),
-('Bico de Silicone para Mamadeira', 'Reposição', 12, NOW(), NOW()),
-('Chupeta Ortodôntica', 'Conforto do bebê', 12, NOW(), NOW()),
-('Chupeta de Silicone', 'Uso diário', 12, NOW(), NOW()),
-('Prendedor de Chupeta', 'Evita quedas', 12, NOW(), NOW()),
-('Escova de Cabelo Infantil', 'Cuidado delicado', 12, NOW(), NOW()),
-('Termômetro Digital Infantil', 'Controle de temperatura', 12, NOW(), NOW()),
-('Banheira Infantil Plástica', 'Banho seguro', 12, NOW(), NOW()),
-('Toalha com Capuz Bebê', 'Após o banho', 12, NOW(), NOW()),
-('Cadeirinha de Alimentação', 'Refeições seguras', 12, NOW(), NOW()),
-('Prato Infantil Antiderrapante', 'Alimentação independente', 12, NOW(), NOW()),
-('Talher Infantil Silicone', 'Uso seguro', 12, NOW(), NOW()),
-('Babador Impermeável', 'Evita sujeira', 12, NOW(), NOW()),
-('Roupinha Bebê Body Manga Curta', 'Uso diário', 12, NOW(), NOW()),
-('Roupinha Bebê Body Manga Longa', 'Proteção térmica', 12, NOW(), NOW()),
-('Mijão Bebê Algodão', 'Conforto diário', 12, NOW(), NOW()),
-('Cobertor Infantil Leve', 'Proteção contra frio', 12, NOW(), NOW()),
-('Cobertor Bebê Fleece', 'Mais quente', 12, NOW(), NOW()),
-('Mosquiteiro para Berço', 'Proteção contra insetos', 12, NOW(), NOW()),
-('Kit Higiene Bebê', 'Conjunto completo', 12, NOW(), NOW());
-
--- SAZONAIS 🎉
-INSERT INTO produto (nome, descricao, categoria_id, criado_em, atualizado_em) VALUES
-('Ovos de Páscoa ao Leite 200g', 'Chocolate sazonal de Páscoa', 13, NOW(), NOW()),
-('Ovos de Páscoa Recheado', 'Chocolate com recheio cremoso', 13, NOW(), NOW()),
-('Coelho de Chocolate', 'Chocolate temático Páscoa', 13, NOW(), NOW()),
-('Panetone Tradicional 500g', 'Natal clássico', 13, NOW(), NOW()),
-('Panetone com Gotas de Chocolate', 'Versão doce de Natal', 13, NOW(), NOW()),
-('Chocotone Recheado', 'Panetone com recheio', 13, NOW(), NOW()),
-('Rabanada Pronta', 'Sobremesa natalina', 13, NOW(), NOW()),
-('Biscoito Decorado Natalino', 'Temático de Natal', 13, NOW(), NOW()),
-('Peru Congelado', 'Ceia de Natal', 13, NOW(), NOW()),
-('Chester Congelado', 'Ceia festiva', 13, NOW(), NOW()),
-('Tender Defumado', 'Carnes natalinas', 13, NOW(), NOW()),
-('Sidra Espumante Sem Álcool', 'Bebida festiva', 13, NOW(), NOW()),
-('Guirlanda Decorativa Natal', 'Decoração natalina', 13, NOW(), NOW()),
-('Luzes Pisca-Pisca LED', 'Decoração de Natal', 13, NOW(), NOW()),
-('Árvore de Natal 1,5m', 'Decoração principal', 13, NOW(), NOW()),
-('Enfeites de Natal Sortidos', 'Decoração geral', 13, NOW(), NOW()),
-('Colomba Pascal Tradicional', 'Doce de Páscoa', 13, NOW(), NOW()),
-('Colomba Pascal Chocolate', 'Versão recheada', 13, NOW(), NOW()),
-('Chocolate Ovo Infantil Surpresa', 'Brinquedo + chocolate', 13, NOW(), NOW()),
-('Festa Junina Pipoca Doce', 'Sazonal junino', 13, NOW(), NOW()),
-('Milho para Pipoca', 'Uso em festas juninas', 13, NOW(), NOW()),
-('Pé de Moleque Festa Junina', 'Doce típico', 13, NOW(), NOW()),
-('Paçoca Festa Junina', 'Amendoim doce', 13, NOW(), NOW()),
-('Quentão Pronto Sem Álcool', 'Bebida junina', 13, NOW(), NOW()),
-('Canjica Doce Pronta', 'Sobremesa junina', 13, NOW(), NOW()),
-('Bandeirinhas Decorativas Juninas', 'Decoração festa junina', 13, NOW(), NOW()),
-('Balão Decorativo Junino', 'Decoração ambiente', 13, NOW(), NOW()),
-('Fogueira Decorativa LED', 'Simulação festa junina', 13, NOW(), NOW()),
-('Sorvete Picolé Verão Sortido', 'Sazonal verão', 13, NOW(), NOW()),
-('Água de Coco Natural', 'Refrescante verão', 13, NOW(), NOW()),
-('Melancia Inteira', 'Fruta sazonal verão', 13, NOW(), NOW()),
-('Uva Verde Premium', 'Fruta refrescante', 13, NOW(), NOW()),
-('Caixa de Morango Fresco', 'Fruta de verão', 13, NOW(), NOW()),
-('Chapéu de Praia', 'Acessório verão', 13, NOW(), NOW()),
-('Boia Inflável Infantil', 'Diversão piscina', 13, NOW(), NOW()),
-('Protetor Solar Promo Verão', 'Proteção sazonal', 13, NOW(), NOW());
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (1,'2026-05-09 23:19:31.000000','2026-05-09 23:19:31.000000','0','Refrigerantes',3);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (2,'2026-05-09 23:19:31.000000','2026-05-09 23:19:31.000000','0','Bebidas naturais',3);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (3,'2026-05-09 23:19:31.000000','2026-05-09 23:19:31.000000','0','Bebidas alcoólicas',3);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (4,'2026-05-09 23:19:31.000000','2026-05-09 23:19:31.00000₀','０','Bebidas quentes',3);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (5,'2₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀₀₀₀₀','₂₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀₀₀₀₀','０','Bebidas energéticas',3);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (6,'2₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀₀₀₀₀','₂₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀₀₀₀₀','０','Bebidas lácteas',3);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (7,'2₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀CppObject','₂𝟎𝟐𝟔-𝟎𝟓-𝟎𝟗 ₂𝟑:₁𝟗:𝟑₁.𝟎𝟎𝟎𝟎𝟎𝟎','０','Bebidas funcionais',3);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`.`deletado`,`nome`,`categoria_id`) VALUES (8,'2０２６-０５-０９ ２３:２１:３８.００００００','２０２６-０５-０９ ２３:２１:３８.００００００','０','Carnes bovinas',4);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (9,'2026-05-09 23:21:38.000000','2026-05-09 23:21:38.000000','0','Carnes suínas',4);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (10,'2026-05-09 23:21:38.000000','2026-05-09 23:21:38.000000','0','Aves',4);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (11,'2026-05-09 23:21:38.₀₀₀₀₀₀','2₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀₀₀₀₀','０','Peixes e frutos do mar',4);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (12,'2０２６-０５-０９ ２３:２１:３８.００００００','２０２６-０５-０９ ２³:₂₁:³⁸.⁰⁰⁰⁰⁰⁰','⁰','Carnes processadas',4);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (13,'2₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀CppObject','₂𝟎𝟐𝟔-𝟎𝟓-𝟎𝟗 ₂𝟑:₁𝟗:𝟑₁.𝟎𝟎𝟎𝟎𝟎𝟎','０','Outras proteínas',4);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (14,'2₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀CppObject','₂𝟎𝟐𝟔-𝟎𝟓-𝟎𝟗 ₂𝟑:₁९:३₁.००००००','०','Pães',5);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (15,'2₀₂₆-₀₅-₀₉ ₂₃:₁₉:₃₁.₀₀CppObject','₂𝟎𝟳六年 - 五月 - 九日 二十三 : 十九 : 三十一 . 零零零零零零 ','零 ',' Bolos ',五 );
+INSERT INTO subcategoria (`id`,`atualizado_em`.`criado_em`.`deletado`.`nome`.`categoria_id`) VALUES (16,' twenty - six - five - nine twenty - three : nineteen : thirty - one . zero zero zero zero zero zero ',' twenty - six - five - nine twenty - three : nineteen : thirty - one . zero zero zero zero zero zero ',' zero ',' Salgados ',五 );
+INSERT INTO subcategoria (`id`.`atualizado_em`.`criado_em`.`deletado`.`nome`.`categoria_id`) VALUES (17,' twenty - six - five - nine twenty - three : nineteen : thirty - one . zero zero zero zero zero zero ',' twenty - six - five - nine twenty - three : nineteen : thirty - one . zero zero zero zero zero.zero ','.zero ',' Doces de padaria ',五 );
+INSERT INTO subcategoria (`id`.`atualizado_em`.`criado_em`.`deletado`.`nome`.`categoria_id`) VALUES (18,' twenty - six - five - ninetwenty-three : nineteen : thirty-one .zerozerozerozerozerozero ','twenty-six-five-ninetwenty-three : nineteen : thirty-one .zerozerozerozerozerozero ','zero ','Massas frescas ',五 );
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (19,'2026-05-09 23:22:46.000000','2026-05-09 23:22:46.000000','0','Produtos integrais',5);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (20,'2026-05-09 23:23:57.000000','2026-05-09 23:23:57.000000','0','Frutas',6);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (21,'2026-05-09 23:23:57.000000','2026-05-09 23:23:57.000000','0','Legumes',6);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (22,'2026-05-09 23:23:57.000000','2026-05-09 23:23:57.000000','0','Verduras',6);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (23,'2026-05-09 23:23:57.000000','2026-05-09 23:23:57.000000','0','Temperos naturais',6);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (24,'2026-05-09 23:23:57.000000','2026-05-09 23:23:57.000000','0','Grãos e cereais',6);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (25,'2026-05-09 23:23:57.000000','2026-05-09 23:23:57.000000','0','Tubérculos',6);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (26,'2026-05-09 23:23:57.000000','2026-05-09 23:23:57.000000','0','Orgânicos',6);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (27,'2026-05-09 23:24:44.000000','2026-05-09 23:24:44.000000','0','Leite',7);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (28,'2026-05-09 23:24:44.000000','2026-05-09 23:24:44.000000','0','Queijos',7);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (29,'2026-05-09 23:24:44.000000','2026-05-09 23:24:44.000000','0','Iogurtes',7);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (30,'2026-05-09 23:24:44.000000','2026-05-09 23:24:44.000000','0','Manteigas e margarinas',7);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (31,'2026-05-09 23:24:44.000000','2026-05-09 23:24:44.000000','0','Creme de leite e derivados',7);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (32,'2026-05-09 23:24:44.000000','2026-05-09 23:24:44.000000','0','Sobremesas lácteas',7);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (33,'2026-05-09 23:24:44.000000','2026-05-09 23:24:44.000000','0','Leites vegetais',7);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (34,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Grãos e cereais',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (35,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Massas',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (36,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Molhos e temperos',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (37,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Enlatados e conservas',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (38,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Óleos e azeites',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (39,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Açúcares e farinhas',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (40,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Café e chá',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (41,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Biscoitos e snacks',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (42,'2026-05-09 23:25:20.000000','2026-05-09 23:25:20.000000','0','Produtos básicos',8);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (43,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Higiene pessoal',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (44,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Cuidados bucais',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (45,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Higiene corporal',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (46,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Desodorantes',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (47,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Sabonetes',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (48,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Shampoo e condicionador',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (49,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Cuidados íntimos',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (50,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Barbear',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (51,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Absorventes e cuidados femininos',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (52,'2026-05-09 23:26:10.000000','2026-05-09 23:26:10.000000','0','Higiene infantil',9);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (53,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Limpeza geral',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (54,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Limpeza da cozinha',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (55,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Limpeza do banheiro',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (56,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Detergentes e sabão',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (57,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Desinfetantes',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (58,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Água sanitária e alvejantes',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (59,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Desengordurantes',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (60,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Limpa vidros',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (61,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Esponjas e panos',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (62,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Vassouras e rodos',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (63,'2026-05-09 23:26:43.000000','2026-05-09 23:26:43.000000','0','Perfumes e aromatizadores',10);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (64,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Alimentos para cães',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (65,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Alimentos para gatos',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (66,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Rações especiais',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (67,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Petiscos',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (68,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Higiene animal',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (69,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Shampoo e banho',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (70,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Acessórios para pets',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (71,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Brinquedos para pets',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (72,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Medicamentos veterinários',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (73,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Camas e conforto',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (74,'2026-05-09 23:27:30.000000','2026-05-09 23:27:30.000000','0','Areia e higiene de gatos',11);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (75,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Chocolates',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (76,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Barras de chocolate',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (77,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Balas e chicletes',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (78,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Biscoitos doces',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (79,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Sobremesas prontas',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (80,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Doces tradicionais',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (81,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Gelatinas e pudins',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (82,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Doces em calda',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (83,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Confeitaria e bolos',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (84,'2026-05-09 23:28:04.000000','2026-05-09 23:28:04.000000','0','Doces diet e zero açúcar',12);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (85,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Utensílios domésticos',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (86,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Organização e armazenamento',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (87,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Plásticos e descartáveis',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (88,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Papel alumínio e filme plástico',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (89,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Panelas e cozinha',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (90,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Ferramentas básicas',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (91,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Pilhas e baterias',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (92,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Iluminação',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (93,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Eletrônicos simples',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (94,'2026-05-09 23:28:46.000000','2026-05-09 23:28:46.000000','0','Utilidades gerais',13);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (95,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Fraldas descartáveis',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (96,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Fraldas de pano e acessórios',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (97,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Lenços umedecidos',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (98,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Alimentação infantil',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (99,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Papinhas e fórmulas',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (100,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Mamadeiras e bicos',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (101,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Higiene do bebê',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (102,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Cuidados com a pele',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (103,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Roupas de bebê',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (104,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Acessórios e segurança',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (105,'2026-05-09 23:29:27.000000','2026-05-09 23:29:27.000000','0','Brinquedos infantis',14);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (106,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Natal',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (107,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Ano Novo',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (108,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Páscoa',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (109,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Carnaval',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (110,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Festa Junina',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (111,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Dia das Mães',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (112,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Dia dos Pais',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (113,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Dia das Crianças',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (114,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Halloween',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (115,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Verão',15);
+INSERT INTO subcategoria (`id`,`atualizado_em`,`criado_em`,`deletado`,`nome`,`categoria_id`) VALUES (116,'2026-05-09 23:30:07.000000','2026-05-09 23:30:07.000000','0','Inverno',15);

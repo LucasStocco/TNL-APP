@@ -75,14 +75,14 @@ class AppHeaderWidget extends StatelessWidget {
                           style: GoogleFonts.nunito(
                             fontSize: 13,
                             color: Colors.white,
+                            
                           ),
                         ),
                       const SizedBox(height: 3),
                       Text(
                         title,
                         style: GoogleFonts.delius(
-                          fontSize:
-                              40, // 👈 ajustei pra funcionar em todas telas
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           height: 1.0,
@@ -101,15 +101,19 @@ class AppHeaderWidget extends StatelessWidget {
                   if (showActions)
                     Row(
                       children: [
-                        _buildCircleButton(Icons.person, () {
+                        _buildCircleButton( context, Icons.person,() {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (_) => const UserScreen()),
-                          );
-                        }),
+    );
+  },
+),
                         const SizedBox(width: 10),
-                        _buildCircleButton(Icons.settings, () async {
+                        _buildCircleButton(
+                            context,
+                            Icons.settings,
+                            () async {
                           final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -137,14 +141,14 @@ class AppHeaderWidget extends StatelessWidget {
                                   children: [
                                     Icon(
                                       Icons.check_circle_rounded,
-                                      color: Colors.white,
+                                      
                                     ),
                                     SizedBox(width: 12),
                                     Expanded(
                                       child: Text(
                                         'Preferências atualizadas com sucesso!',
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -154,7 +158,8 @@ class AppHeaderWidget extends StatelessWidget {
                               ),
                             );
                           }
-                        }),
+                        },
+                        ),
                       ],
                     ),
                 ],
@@ -187,23 +192,41 @@ class AppHeaderWidget extends StatelessWidget {
         child: Image.asset(
           asset,
           width: size,
-          color: Colors.white.withValues(alpha: alpha),
+          
           filterQuality: FilterQuality.high,
         ),
       ),
     );
   }
 
-  Widget _buildCircleButton(IconData icon, VoidCallback onTap) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
+  Widget _buildCircleButton(
+  BuildContext context,
+  IconData icon,
+  VoidCallback onTap,
+) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.grey.shade800
+          : Colors.white,
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.15),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: IconButton(
+      icon: Icon(
+        icon,
+         color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white
+        : const Color(0xFFD32F2F),
       ),
-      child: IconButton(
-        icon: Icon(icon, color: const Color(0xFFF44336)),
-        onPressed: onTap,
-      ),
-    );
-  }
+      onPressed: onTap,
+    ),
+  );
+}
 }

@@ -70,7 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        color: isSelected ? Colors.black.withOpacity(0.05) : Colors.transparent,
+        
         child: Row(
           children: [
             Icon(
@@ -95,11 +95,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final notificationsEnabled = viewModel.notificacoesAtivadas;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        
         elevation: 0,
-        foregroundColor: Colors.black,
+        
         title: const Text(
           'Configurações',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
@@ -278,7 +278,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
+                      
                       builder: (_) => const PrivacyPolicyBottomSheet(),
                     );
                   },
