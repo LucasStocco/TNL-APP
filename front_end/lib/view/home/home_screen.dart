@@ -190,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : Container(
-                    color: Colors.white,
                     child: SafeArea(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 400),
