@@ -144,9 +144,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isHome = _selectedIndex == 0;
+    
 
     return Scaffold(
-      backgroundColor: const Color(0xFFD32F2F),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : const Color(0xFFD32F2F),
       body: Stack(
         children: [
           // 🔴 HEADER DINÂMICO
@@ -193,12 +196,15 @@ class _HomeScreenState extends State<HomeScreen> {
           Positioned(
             bottom: 20,
             left: 20,
-            right: 20,
+            right: 20, 
+            child: SafeArea(
+              top: false,
             child: AppNavigationBar(
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
             ),
           ),
+          )
         ],
       ),
     );

@@ -18,26 +18,31 @@ class AppHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 220,
-      width: double.infinity,
-      child: Stack(
-        children: [
-          // 🔴 Fundo
-          Container(
-            color: const Color(0xFFD32F2F),
-          ),
-
+  height: 220,
+  width: double.infinity,
+  child: Stack(
+    children: [
+      // 🔴 Fundo
+      Container(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : const Color(0xFFD32F2F),
+      ),
+  
           // 🎨 ÍCONES (decorativos fixos)
           buildIcon(
+             context: context,
             top: 10,
             left: -10,
             angle: -0.2,
             size: 85,
             alpha: 0.32,
             asset: 'assets/icons/header_home/icons8-bread-48.png',
+            
           ),
 
           buildIcon(
+             context: context,
             bottom: 10,
             right: -7,
             angle: 0.4,
@@ -47,6 +52,7 @@ class AppHeaderWidget extends StatelessWidget {
           ),
 
           buildIcon(
+             context: context,
             top: 20,
             right: 10,
             angle: 0.3,
@@ -105,7 +111,8 @@ class AppHeaderWidget extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const UserScreen()),
+                                builder: (_) => const UserScreen(),
+                            ),
     );
   },
 ),
@@ -181,6 +188,7 @@ class AppHeaderWidget extends StatelessWidget {
     double size = 60,
     double alpha = 0.25,
     required String asset,
+    required BuildContext context,
   }) {
     return Positioned(
       top: top,
@@ -192,7 +200,9 @@ class AppHeaderWidget extends StatelessWidget {
         child: Image.asset(
           asset,
           width: size,
-          
+          color: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFFD32F2F) // vermelho no escuro
+              : Colors.white,            // branco no claro
           filterQuality: FilterQuality.high,
         ),
       ),
