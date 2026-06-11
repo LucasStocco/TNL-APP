@@ -7,7 +7,7 @@ import 'package:crud_flutter/view_model/relatorio_item/relatorio_item_view_model
 
 enum RelatorioAba { maisComprados, porCategoria, maisCaros, maisBaratos }
 
-enum TipoGrafico { pizza, barra, linha }
+enum TipoGrafico { pizza, barra }
 
 class RelatorioItemScreen extends StatefulWidget {
   const RelatorioItemScreen({super.key});
