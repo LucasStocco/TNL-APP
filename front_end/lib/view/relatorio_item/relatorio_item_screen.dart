@@ -185,7 +185,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     final tipos = [
       (TipoGrafico.pizza, Icons.pie_chart, 'Pizza'),
       (TipoGrafico.barra, Icons.bar_chart, 'Barra'),
-      (TipoGrafico.linha, Icons.show_chart, 'Linha'),
     ];
 
     return Row(
@@ -339,62 +338,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
             ],
           );
         }).toList(),
-      ),
-    );
-  }
-
-  Widget _graficoLinha(List<MapEntry<String, double>> dados) {
-    return LineChart(
-      LineChartData(
-        minY: 0,
-        maxY: dados.map((e) => e.value).reduce((a, b) => a > b ? a : b) * 1.2,
-        lineTouchData: const LineTouchData(enabled: true),
-        titlesData: FlTitlesData(
-          leftTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, _) {
-                final i = value.toInt();
-                if (i < 0 || i >= dados.length) return const SizedBox();
-                return Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text('${i + 1}',
-                      style: const TextStyle(fontSize: 11, color: Colors.grey)),
-                );
-              },
-            ),
-          ),
-        ),
-        gridData: const FlGridData(show: false),
-        borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: dados
-                .asMap()
-                .entries
-                .map((e) => FlSpot(e.key.toDouble(), e.value.value))
-                .toList(),
-            isCurved: true,
-            color: Colors.red,
-            barWidth: 3,
-            dotData: FlDotData(
-              getDotPainter: (spot, _, __, i) => FlDotCirclePainter(
-                radius: 5,
-                color: _cor(i),
-                strokeWidth: 2,
-                strokeColor: Colors.white,
-              ),
-            ),
-            belowBarData:
-                BarAreaData(show: true, color: Colors.red.withOpacity(0.08)),
-          ),
-        ],
       ),
     );
   }
