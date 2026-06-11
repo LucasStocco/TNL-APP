@@ -5,20 +5,20 @@ import 'package:crud_flutter/core/notificacoes_gamificacao/armazenamento_conquis
 import 'package:crud_flutter/core/notificacoes_gamificacao/conquista_engine.dart';
 import 'package:crud_flutter/core/notificacoes_gamificacao/conquista_service.dart';
 
-import 'package:crud_flutter/core/utils/notification_click_handler.dart';
-import 'package:crud_flutter/core/utils/notification_navigation_handler.dart';
 
 import 'package:crud_flutter/service/cadastrar_categoria/categoria_service.dart';
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_service.dart';
+
 import 'package:crud_flutter/service/notifications/notification_service.dart';
 import 'package:crud_flutter/view/gerenciar_lista/minhas_listas_screen.dart';
 import 'package:crud_flutter/view/home/home_screen.dart';
 import 'package:crud_flutter/view/settings/settings_screen.dart';
 
 import 'package:crud_flutter/view/splash/splash_screen.dart';
+
 import 'package:crud_flutter/view_model/auto_cadastro/user_view_model.dart';
 import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/item_view_model.dart';
@@ -26,12 +26,13 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/google_auth_service.dart';
-import 'package:crud_flutter/view/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:workmanager/workmanager.dart';
 import 'package:crud_flutter/core/theme/theme_provider.dart';
+import 'package:crud_flutter/service/relatorio_item/relatorio_item_service.dart';
+import 'package:crud_flutter/view_model/relatorio_item/relatorio_item_view_model.dart';
 
 // demais imports...
 //remover depois de testar

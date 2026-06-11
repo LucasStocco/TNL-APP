@@ -17,7 +17,7 @@ class AppHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
   height: 220,
   width: double.infinity,
   child: Stack(

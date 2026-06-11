@@ -32,7 +32,7 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
   void _onListaSelecionada(Lista? lista) {
     if (lista == null) return;
     setState(() => _listaSelecionada = lista);
-    context.read<RelatorioItemViewModel>().carregar(lista.id!);
+    context.read<RelatorioItemViewModel>().carregar(lista.id);
   }
 
   static const _cores = [
@@ -77,7 +77,7 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           color: Colors.red,
           onRefresh: () async {
             if (_listaSelecionada != null) {
-              await relatorioVm.carregar(_listaSelecionada!.id!);
+              await relatorioVm.carregar(_listaSelecionada!.id);
             }
           },
           child: SingleChildScrollView(
@@ -582,7 +582,7 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
             Text(vm.erro!, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => vm.carregar(_listaSelecionada!.id!),
+              onPressed: () => vm.carregar(_listaSelecionada!.id),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text('Tentar novamente',
                   style: TextStyle(color: Colors.white)),

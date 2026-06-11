@@ -25,7 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  bool _showSettingsFeedback = false;
+  final bool _showSettingsFeedback = false;
   late final List<Widget> _pages;
 
   @override
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const CategoriasScreen(),
       const SizedBox(),
       const MinhasListasScreen(),
-      const RelatorioScreen(),
+      const RelatorioItemScreen(),
     ];
 
     if (widget.initialFilter != null) {

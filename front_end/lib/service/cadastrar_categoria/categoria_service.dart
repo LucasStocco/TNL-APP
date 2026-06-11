@@ -1,6 +1,5 @@
 import 'package:crud_flutter/core/api/api_client.dart';
 import 'package:crud_flutter/core/api/api_endpoints.dart';
-import 'package:crud_flutter/core/api/api_response.dart';
 import 'package:crud_flutter/dto/request/cadastrar_categoria/categoria_request_create_dto.dart';
 import 'package:crud_flutter/dto/request/cadastrar_categoria/categoria_request_update_dto.dart';
 import 'package:crud_flutter/model/cadastrar_categoria/cadastrar_categoria_completa_model.dart';
@@ -59,7 +58,7 @@ class CategoriaService {
 
     _logRes(res);
 
-    return res.data!;
+    return res.data;
   }
 
   // =========================
@@ -81,7 +80,7 @@ class CategoriaService {
 
     _logRes(res);
 
-    return res.data!;
+    return res.data;
   }
 
   // =========================
@@ -118,11 +117,7 @@ class CategoriaService {
 
     _logRes(res);
 
-    if (res.data == null) {
-      throw Exception("Categoria completa veio null");
-    }
-
-    return res.data!;
+    return res.data;
   }
 
   // =========================

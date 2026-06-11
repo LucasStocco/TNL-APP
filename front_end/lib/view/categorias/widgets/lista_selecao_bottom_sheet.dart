@@ -91,7 +91,7 @@ class ListaSelecaoBottomSheet {
                                           0;
 
                                   await itemVM.criar(
-                                    listaId: lista.id!,
+                                    listaId: lista.id,
                                     idProduto: produtoId,
                                     quantidade: 1,
                                     preco: preco,

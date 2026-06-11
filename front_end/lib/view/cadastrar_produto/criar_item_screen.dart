@@ -72,7 +72,7 @@ class _CriarItemScreenState extends State<CriarItemScreen> {
       idCategoria: idCategoria!,
     );
 
-    if (produto == null || produto.id == null) {
+    if (produto == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Erro ao criar produto")),
       );
@@ -82,7 +82,7 @@ class _CriarItemScreenState extends State<CriarItemScreen> {
     // 2. cria item
     await itemVM.criar(
       listaId: widget.listaId,
-      idProduto: produto.id!,
+      idProduto: produto.id,
       quantidade: quantidade,
       preco: preco,
     );
@@ -133,7 +133,7 @@ class _CriarItemScreenState extends State<CriarItemScreen> {
 
               // ================= CATEGORIA =================
               DropdownButtonFormField<int>(
-                value: idCategoria,
+                initialValue: idCategoria,
                 items: categoriaVM.categorias.map((c) {
                   return DropdownMenuItem(
                     value: c.id,
