@@ -6,6 +6,7 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 import 'package:crud_flutter/view_model/relatorio_item/relatorio_item_view_model.dart';
 
 enum RelatorioAba { maisComprados, porCategoria, maisCaros, maisBaratos }
+
 enum TipoGrafico { pizza, barra, linha }
 
 class RelatorioItemScreen extends StatefulWidget {
@@ -34,9 +35,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     context.read<RelatorioItemViewModel>().carregar(lista.id!);
   }
 
-  // =========================
-  // CORES
-  // =========================
   static const _cores = [
     Color(0xFFE53935),
     Color(0xFF1E88E5),
@@ -50,9 +48,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
 
   Color _cor(int i) => _cores[i % _cores.length];
 
-  // =========================
-  // DADOS GENÉRICOS POR ABA
-  // =========================
   List<MapEntry<String, double>> _dadosAtivos(RelatorioItemViewModel vm) {
     switch (_abaSelecionada) {
       case RelatorioAba.maisComprados:
@@ -74,9 +69,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     }
   }
 
-  // =========================
-  // BUILD PRINCIPAL
-  // =========================
   @override
   Widget build(BuildContext context) {
     return Consumer2<ListaViewModel, RelatorioItemViewModel>(
@@ -91,41 +83,38 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDropdown(listaVm),
-                const SizedBox(height: 24),
-
-                if (_listaSelecionada == null)
-                  _buildPlaceholder()
-                else if (relatorioVm.isLoading)
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 60),
-                      child: CircularProgressIndicator(color: Colors.red),
-                    ),
-                  )
-                else if (relatorioVm.erro != null)
-                  _buildErro(relatorioVm)
-                else ...[
-                  // BOTÕES DE ABA
-                  _buildBotoesAba(),
-                  const SizedBox(height: 16),
-
-                  // BOTÕES DE TIPO DE GRÁFICO
-                  _buildBotoesGrafico(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDropdown(listaVm),
                   const SizedBox(height: 24),
-
-                  // GRÁFICO
-                  _buildGrafico(relatorioVm),
-                  const SizedBox(height: 24),
-
-                  // LISTA
-                  _buildListaAtual(relatorioVm),
-                  const SizedBox(height: 40),
+                  if (_listaSelecionada == null)
+                    _buildPlaceholder()
+                  else if (relatorioVm.isLoading)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 60),
+                        child: CircularProgressIndicator(color: Colors.red),
+                      ),
+                    )
+                  else if (relatorioVm.erro != null)
+                    _buildErro(relatorioVm)
+                  else ...[
+                    _buildBotoesAba(),
+                    const SizedBox(height: 16),
+                    _buildBotoesGrafico(),
+                    const SizedBox(height: 24),
+                    _buildGrafico(relatorioVm),
+                    const SizedBox(height: 24),
+                    _buildListaAtual(relatorioVm),
+                    const SizedBox(height: 40),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         );
@@ -133,15 +122,22 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // BOTÕES DE ABA
-  // =========================
   Widget _buildBotoesAba() {
     final abas = [
-      (RelatorioAba.maisComprados, Icons.trending_up,    Colors.orange, 'Comprados'),
-      (RelatorioAba.porCategoria,  Icons.category,       Colors.blue,   'Categorias'),
-      (RelatorioAba.maisCaros,     Icons.arrow_upward,   Colors.red,    'Mais caros'),
-      (RelatorioAba.maisBaratos,   Icons.arrow_downward, Colors.green,  'Mais baratos'),
+      (
+        RelatorioAba.maisComprados,
+        Icons.trending_up,
+        Colors.orange,
+        'Comprados'
+      ),
+      (RelatorioAba.porCategoria, Icons.category, Colors.blue, 'Categorias'),
+      (RelatorioAba.maisCaros, Icons.arrow_upward, Colors.red, 'Mais caros'),
+      (
+        RelatorioAba.maisBaratos,
+        Icons.arrow_downward,
+        Colors.green,
+        'Mais baratos'
+      ),
     ];
 
     return Wrap(
@@ -159,7 +155,12 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
               borderRadius: BorderRadius.circular(30),
               border: Border.all(color: a.$3, width: 1.5),
               boxShadow: selecionado
-                  ? [BoxShadow(color: a.$3.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 3))]
+                  ? [
+                      BoxShadow(
+                          color: a.$3.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3))
+                    ]
                   : [],
             ),
             child: Row(
@@ -167,7 +168,11 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
               children: [
                 Icon(a.$2, size: 16, color: selecionado ? Colors.white : a.$3),
                 const SizedBox(width: 6),
-                Text(a.$4, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: selecionado ? Colors.white : a.$3)),
+                Text(a.$4,
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: selecionado ? Colors.white : a.$3)),
               ],
             ),
           ),
@@ -176,14 +181,11 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // BOTÕES DE TIPO DE GRÁFICO
-  // =========================
   Widget _buildBotoesGrafico() {
     final tipos = [
-      (TipoGrafico.pizza, Icons.pie_chart,    'Pizza'),
-      (TipoGrafico.barra, Icons.bar_chart,    'Barra'),
-      (TipoGrafico.linha, Icons.show_chart,   'Linha'),
+      (TipoGrafico.pizza, Icons.pie_chart, 'Pizza'),
+      (TipoGrafico.barra, Icons.bar_chart, 'Barra'),
+      (TipoGrafico.linha, Icons.show_chart, 'Linha'),
     ];
 
     return Row(
@@ -201,15 +203,25 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.red, width: 1.5),
                 boxShadow: selecionado
-                    ? [BoxShadow(color: Colors.red.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 3))]
+                    ? [
+                        BoxShadow(
+                            color: Colors.red.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3))
+                      ]
                     : [],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(t.$2, size: 20, color: selecionado ? Colors.white : Colors.red),
+                  Icon(t.$2,
+                      size: 20, color: selecionado ? Colors.white : Colors.red),
                   const SizedBox(height: 4),
-                  Text(t.$3, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: selecionado ? Colors.white : Colors.red)),
+                  Text(t.$3,
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: selecionado ? Colors.white : Colors.red)),
                 ],
               ),
             ),
@@ -219,9 +231,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // GRÁFICO (switch por tipo)
-  // =========================
   Widget _buildGrafico(RelatorioItemViewModel vm) {
     final dados = _dadosAtivos(vm);
 
@@ -229,7 +238,8 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 32),
-          child: Text('Nenhum dado para exibir', style: TextStyle(color: Colors.grey[400])),
+          child: Text('Nenhum dado para exibir',
+              style: TextStyle(color: Colors.grey[400])),
         ),
       );
     }
@@ -239,7 +249,12 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 3))],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 3))
+        ],
       ),
       child: Column(
         children: [
@@ -260,9 +275,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // PIZZA
-  // =========================
   Widget _graficoPizza(List<MapEntry<String, double>> dados) {
     final total = dados.fold<double>(0, (s, e) => s + e.value);
     return PieChart(
@@ -274,7 +286,8 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
             title: '${pct.toStringAsFixed(1)}%',
             color: _cor(e.key),
             radius: 80,
-            titleStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
+            titleStyle: const TextStyle(
+                fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
           );
         }).toList(),
         centerSpaceRadius: 40,
@@ -283,9 +296,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // BARRA
-  // =========================
   Widget _graficoBarra(List<MapEntry<String, double>> dados) {
     return BarChart(
       BarChartData(
@@ -293,9 +303,12 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
         maxY: dados.map((e) => e.value).reduce((a, b) => a > b ? a : b) * 1.2,
         barTouchData: BarTouchData(enabled: true),
         titlesData: FlTitlesData(
-          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -304,7 +317,8 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
                 if (i < 0 || i >= dados.length) return const SizedBox();
                 return Padding(
                   padding: const EdgeInsets.only(top: 6),
-                  child: Text('${i + 1}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                  child: Text('${i + 1}',
+                      style: const TextStyle(fontSize: 11, color: Colors.grey)),
                 );
               },
             ),
@@ -329,9 +343,6 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // LINHA
-  // =========================
   Widget _graficoLinha(List<MapEntry<String, double>> dados) {
     return LineChart(
       LineChartData(
@@ -339,9 +350,12 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
         maxY: dados.map((e) => e.value).reduce((a, b) => a > b ? a : b) * 1.2,
         lineTouchData: const LineTouchData(enabled: true),
         titlesData: FlTitlesData(
-          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -350,7 +364,8 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
                 if (i < 0 || i >= dados.length) return const SizedBox();
                 return Padding(
                   padding: const EdgeInsets.only(top: 6),
-                  child: Text('${i + 1}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                  child: Text('${i + 1}',
+                      style: const TextStyle(fontSize: 11, color: Colors.grey)),
                 );
               },
             ),
@@ -360,7 +375,9 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
         borderData: FlBorderData(show: false),
         lineBarsData: [
           LineChartBarData(
-            spots: dados.asMap().entries
+            spots: dados
+                .asMap()
+                .entries
                 .map((e) => FlSpot(e.key.toDouble(), e.value.value))
                 .toList(),
             isCurved: true,
@@ -374,37 +391,41 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
                 strokeColor: Colors.white,
               ),
             ),
-            belowBarData: BarAreaData(
-              show: true,
-              color: Colors.red.withOpacity(0.08),
-            ),
+            belowBarData:
+                BarAreaData(show: true, color: Colors.red.withOpacity(0.08)),
           ),
         ],
       ),
     );
   }
 
-  // =========================
-  // LEGENDA
-  // =========================
   List<Widget> _legenda(List<MapEntry<String, double>> dados) {
-    return dados.asMap().entries.map((e) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        children: [
-          Container(width: 12, height: 12, decoration: BoxDecoration(color: _cor(e.key), shape: BoxShape.circle)),
-          const SizedBox(width: 8),
-          Text('${e.key + 1}.', style: TextStyle(fontSize: 12, color: Colors.grey[500])),
-          const SizedBox(width: 4),
-          Expanded(child: Text(e.value.key, style: const TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis)),
-        ],
-      ),
-    )).toList();
+    return dados
+        .asMap()
+        .entries
+        .map((e) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: Row(
+                children: [
+                  Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                          color: _cor(e.key), shape: BoxShape.circle)),
+                  const SizedBox(width: 8),
+                  Text('${e.key + 1}.',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                  const SizedBox(width: 4),
+                  Expanded(
+                      child: Text(e.value.key,
+                          style: const TextStyle(fontSize: 13),
+                          overflow: TextOverflow.ellipsis)),
+                ],
+              ),
+            ))
+        .toList();
   }
 
-  // =========================
-  // LISTA ATUAL
-  // =========================
   Widget _buildListaAtual(RelatorioItemViewModel vm) {
     switch (_abaSelecionada) {
       case RelatorioAba.maisComprados:
@@ -414,13 +435,18 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           cor: Colors.orange,
           itens: vm.maisComprados.isEmpty
               ? [_vazio()]
-              : vm.maisComprados.asMap().entries.map((e) => _buildCard(
-                  posicao: e.key + 1,
-                  linha1: e.value.nomeProduto,
-                  linha2: '${e.value.totalQuantidade}x em ${e.value.frequencia} lista(s)',
-                  valor: null,
-                  cor: Colors.orange,
-                )).toList(),
+              : vm.maisComprados
+                  .asMap()
+                  .entries
+                  .map((e) => _buildCard(
+                        posicao: e.key + 1,
+                        linha1: e.value.nomeProduto,
+                        linha2:
+                            '${e.value.totalQuantidade}x em ${e.value.frequencia} lista(s)',
+                        valor: null,
+                        cor: Colors.orange,
+                      ))
+                  .toList(),
         );
       case RelatorioAba.porCategoria:
         return _buildSecao(
@@ -429,13 +455,16 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           cor: Colors.blue,
           itens: vm.porCategoria.isEmpty
               ? [_vazio()]
-              : vm.porCategoria.map((item) => _buildCard(
-                  posicao: null,
-                  linha1: item.nomeCategoria,
-                  linha2: '${item.totalItens} produto(s) · ${item.totalQuantidade} unid.',
-                  valor: 'R\$ ${item.totalGasto.toStringAsFixed(2)}',
-                  cor: Colors.blue,
-                )).toList(),
+              : vm.porCategoria
+                  .map((item) => _buildCard(
+                        posicao: null,
+                        linha1: item.nomeCategoria,
+                        linha2:
+                            '${item.totalItens} produto(s) · ${item.totalQuantidade} unid.',
+                        valor: 'R\$ ${item.totalGasto.toStringAsFixed(2)}',
+                        cor: Colors.blue,
+                      ))
+                  .toList(),
         );
       case RelatorioAba.maisCaros:
         return _buildSecao(
@@ -444,13 +473,17 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           cor: Colors.red,
           itens: vm.maisCaros.isEmpty
               ? [_vazio()]
-              : vm.maisCaros.asMap().entries.map((e) => _buildCard(
-                  posicao: e.key + 1,
-                  linha1: e.value.nomeProduto,
-                  linha2: e.value.nomeCategoria,
-                  valor: 'R\$ ${e.value.preco.toStringAsFixed(2)}',
-                  cor: Colors.red,
-                )).toList(),
+              : vm.maisCaros
+                  .asMap()
+                  .entries
+                  .map((e) => _buildCard(
+                        posicao: e.key + 1,
+                        linha1: e.value.nomeProduto,
+                        linha2: e.value.nomeCategoria,
+                        valor: 'R\$ ${e.value.preco.toStringAsFixed(2)}',
+                        cor: Colors.red,
+                      ))
+                  .toList(),
         );
       case RelatorioAba.maisBaratos:
         return _buildSecao(
@@ -459,27 +492,33 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           cor: Colors.green,
           itens: vm.maisBaratos.isEmpty
               ? [_vazio()]
-              : vm.maisBaratos.asMap().entries.map((e) => _buildCard(
-                  posicao: e.key + 1,
-                  linha1: e.value.nomeProduto,
-                  linha2: e.value.nomeCategoria,
-                  valor: 'R\$ ${e.value.preco.toStringAsFixed(2)}',
-                  cor: Colors.green,
-                )).toList(),
+              : vm.maisBaratos
+                  .asMap()
+                  .entries
+                  .map((e) => _buildCard(
+                        posicao: e.key + 1,
+                        linha1: e.value.nomeProduto,
+                        linha2: e.value.nomeCategoria,
+                        valor: 'R\$ ${e.value.preco.toStringAsFixed(2)}',
+                        cor: Colors.green,
+                      ))
+                  .toList(),
         );
     }
   }
 
-  // =========================
-  // DROPDOWN
-  // =========================
   Widget _buildDropdown(ListaViewModel listaVm) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 6,
+              offset: const Offset(0, 2))
+        ],
       ),
       child: DropdownButtonHideUnderline(
         child: listaVm.isLoading
@@ -487,7 +526,11 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
                 padding: EdgeInsets.symmetric(vertical: 14),
                 child: Row(
                   children: [
-                    SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.red)),
+                    SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.red)),
                     SizedBox(width: 10),
                     Text('Carregando listas...'),
                   ],
@@ -497,38 +540,36 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
                 isExpanded: true,
                 hint: const Text('Selecione uma lista'),
                 value: _listaSelecionada,
-                items: listaVm.listas.map((lista) => DropdownMenuItem<Lista>(
-                  value: lista,
-                  child: Text(lista.nome, overflow: TextOverflow.ellipsis),
-                )).toList(),
+                items: listaVm.listas
+                    .map((lista) => DropdownMenuItem<Lista>(
+                          value: lista,
+                          child:
+                              Text(lista.nome, overflow: TextOverflow.ellipsis),
+                        ))
+                    .toList(),
                 onChanged: _onListaSelecionada,
               ),
       ),
     );
   }
 
-  // =========================
-  // PLACEHOLDER
-  // =========================
+  // ✅ CORRIGIDO — removido padding top: 60
   Widget _buildPlaceholder() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 60),
-      child: Center(
-        child: Column(
-          children: [
-            Icon(Icons.pie_chart_outline, size: 64, color: Colors.grey[300]),
-            const SizedBox(height: 16),
-            Text('Selecione uma lista para ver o relatório',
-                style: TextStyle(color: Colors.grey[400], fontSize: 15), textAlign: TextAlign.center),
-          ],
-        ),
+    return Center(
+      child: Column(
+        children: [
+          Icon(Icons.pie_chart_outline, size: 64, color: Colors.grey[300]),
+          const SizedBox(height: 16),
+          Text(
+            'Selecione uma lista para ver o relatório',
+            style: TextStyle(color: Colors.grey[400], fontSize: 15),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 
-  // =========================
-  // ERRO
-  // =========================
   Widget _buildErro(RelatorioItemViewModel vm) {
     return Padding(
       padding: const EdgeInsets.only(top: 40),
@@ -543,7 +584,8 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
             ElevatedButton(
               onPressed: () => vm.carregar(_listaSelecionada!.id!),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Tentar novamente', style: TextStyle(color: Colors.white)),
+              child: const Text('Tentar novamente',
+                  style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -551,10 +593,11 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // SEÇÃO
-  // =========================
-  Widget _buildSecao({required String titulo, required IconData icone, required Color cor, required List<Widget> itens}) {
+  Widget _buildSecao(
+      {required String titulo,
+      required IconData icone,
+      required Color cor,
+      required List<Widget> itens}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -562,11 +605,17 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: cor.withOpacity(0.12), borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                  color: cor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10)),
               child: Icon(icone, color: cor, size: 20),
             ),
             const SizedBox(width: 10),
-            Text(titulo, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[800])),
+            Text(titulo,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800])),
           ],
         ),
         const SizedBox(height: 12),
@@ -575,26 +624,37 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  // =========================
-  // CARD
-  // =========================
-  Widget _buildCard({required int? posicao, required String linha1, required String linha2, required String? valor, required Color cor}) {
+  Widget _buildCard(
+      {required int? posicao,
+      required String linha1,
+      required String linha2,
+      required String? valor,
+      required Color cor}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 2))
+        ],
       ),
       child: Row(
         children: [
           if (posicao != null) ...[
             Container(
-              width: 28, height: 28,
+              width: 28,
+              height: 28,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: cor.withOpacity(0.12), shape: BoxShape.circle),
-              child: Text('$posicao', style: TextStyle(fontWeight: FontWeight.bold, color: cor, fontSize: 12)),
+              decoration: BoxDecoration(
+                  color: cor.withOpacity(0.12), shape: BoxShape.circle),
+              child: Text('$posicao',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: cor, fontSize: 12)),
             ),
             const SizedBox(width: 10),
           ],
@@ -602,25 +662,30 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(linha1, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14), overflow: TextOverflow.ellipsis),
-                Text(linha2, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                Text(linha1,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 14),
+                    overflow: TextOverflow.ellipsis),
+                Text(linha2,
+                    style: TextStyle(fontSize: 12, color: Colors.grey[500])),
               ],
             ),
           ),
           if (valor != null)
-            Text(valor, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: cor)),
+            Text(valor,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 14, color: cor)),
         ],
       ),
     );
   }
 
-  // =========================
-  // VAZIO
-  // =========================
   Widget _vazio() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Center(child: Text('Nenhum dado encontrado', style: TextStyle(color: Colors.grey[400], fontSize: 14))),
+      child: Center(
+          child: Text('Nenhum dado encontrado',
+              style: TextStyle(color: Colors.grey[400], fontSize: 14))),
     );
   }
 }

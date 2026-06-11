@@ -1,7 +1,7 @@
 import 'package:crud_flutter/background/workmanager_callback.dart';
 import 'package:crud_flutter/background/workers/notification_worker.dart';
 import 'package:crud_flutter/core/api/api_client.dart';
-import 'package:crud_flutter/service/auto_cadastro/mock_auth_service.dart';
+import 'package:crud_flutter/service/cadastrar_produto/auto_cadastro/mock_auth_service.dart';
 import 'package:crud_flutter/service/cadastrar_categoria/categoria_service.dart';
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
@@ -100,16 +100,19 @@ class MyApp extends StatelessWidget {
           create: (context) => ListaViewModel(context.read<ListaService>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => ListaResumoViewModel(context.read<ListaResumoService>()),
+          create: (context) =>
+              ListaResumoViewModel(context.read<ListaResumoService>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => CategoriaViewModel(context.read<CategoriaService>()),
+          create: (context) =>
+              CategoriaViewModel(context.read<CategoriaService>()),
         ),
         ChangeNotifierProvider(
           create: (_) => UserViewModel(MockAuthService()),
         ),
         ChangeNotifierProvider(
-          create: (context) => RelatorioItemViewModel(context.read<RelatorioItemService>()),
+          create: (context) =>
+              RelatorioItemViewModel(context.read<RelatorioItemService>()),
         ),
       ],
       child: const MaterialApp(
