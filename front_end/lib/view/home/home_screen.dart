@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:crud_flutter/shared/widgets/navigation/app_navigation_bar.dart';
 import 'package:crud_flutter/view/categorias/categorias_screen.dart';
 import 'package:crud_flutter/view/home/widgets/home_content_container.dart';
+import 'package:crud_flutter/view/relatorio_item/relatorio_item_screen.dart'; // 👈 trocado
 
 import '../gerenciar_lista/criar_nova_lista_screen.dart';
 import '../gerenciar_lista/minhas_listas_screen.dart';
-import '../relatorio_financeiro/relatorio_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String? initialFilter;
@@ -25,9 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-
   bool _showSettingsFeedback = false;
-
   late final List<Widget> _pages;
 
   @override
@@ -86,26 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    void showSettingsFeedback() {
-      setState(() {
-        _showSettingsFeedback = true;
-      });
-
-      Future.delayed(const Duration(seconds: 2), () {
-        if (!mounted) return;
-
-        setState(() {
-          _showSettingsFeedback = false;
-        });
-      });
-    }
-
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  // 🔥 HEADER DINÂMICO
   AppHeaderWidget _buildHeader() {
     switch (_selectedIndex) {
       case 0:
@@ -115,29 +98,23 @@ class _HomeScreenState extends State<HomeScreen> {
           subtitle: "Organize suas compras no",
           
         );
-
       case 1:
         return const AppHeaderWidget(
           title: "Categorias",
           subtitle: "Organize por tipo",
         );
-
       case 3:
         return const AppHeaderWidget(
           title: "Minhas Listas",
           subtitle: "Gerencie suas compras",
         );
-
       case 4:
         return const AppHeaderWidget(
           title: "Relatório",
           subtitle: "Acompanhe seus gastos",
         );
-
       default:
-        return const AppHeaderWidget(
-          title: "TáNaLista",
-        );
+        return const AppHeaderWidget(title: "TáNaLista");
     }
   }
 
@@ -152,15 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
             : const Color(0xFFD32F2F),
       body: Stack(
         children: [
-          // 🔴 HEADER DINÂMICO
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: _buildHeader(),
           ),
-
-          // ⚪ CONTEÚDO
           AnimatedPositioned(
             duration: const Duration(milliseconds: 700),
             curve: Curves.easeInOutCubic,
@@ -191,8 +165,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
           ),
-
-          // 🔥 NAVBAR
           Positioned(
             bottom: 20,
             left: 20,

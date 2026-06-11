@@ -1,4 +1,4 @@
-import 'package:crud_flutter/service/auto_cadastro/auth_service.dart';
+import 'package:crud_flutter/service/cadastrar_produto/auto_cadastro/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crud_flutter/model/auto_cadastro/user.dart';

@@ -13,14 +13,12 @@ import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/item_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_service.dart';
-
 import 'package:crud_flutter/service/notifications/notification_service.dart';
 import 'package:crud_flutter/view/gerenciar_lista/minhas_listas_screen.dart';
 import 'package:crud_flutter/view/home/home_screen.dart';
 import 'package:crud_flutter/view/settings/settings_screen.dart';
 
 import 'package:crud_flutter/view/splash/splash_screen.dart';
-
 import 'package:crud_flutter/view_model/auto_cadastro/user_view_model.dart';
 import 'package:crud_flutter/view_model/cadastrar_categoria/categoria_view_model.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/item_view_model.dart';
@@ -63,51 +61,29 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-/// =========================
-/// INIT CORE
-/// =========================
 Future<void> _initCore() async {
-  print("⚙️ [MAIN] INIT CORE");
-
   await NotificationService.initialize();
-  print("🔔 [MAIN] NotificationService OK");
-
-  await Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: true,
-  );
-
-  print("⚙️ [MAIN] WorkManager initialized");
+  await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
   if (isTestMode) {
-    print("🧪 [MAIN] TEST MODE - DAILY JOB (FAST)");
-
     await Workmanager().registerPeriodicTask(
       notificationTaskId,
       notificationTaskName,
       frequency: const Duration(minutes: 15),
       initialDelay: const Duration(seconds: 5),
       existingWorkPolicy: ExistingWorkPolicy.replace,
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-      ),
+      constraints: Constraints(networkType: NetworkType.connected),
     );
   } else {
-    print("🚀 [MAIN] PRODUCTION MODE - DAILY JOB");
-
     await Workmanager().registerPeriodicTask(
       notificationTaskId,
       notificationTaskName,
       frequency: const Duration(hours: 24),
       initialDelay: _calculateInitialDelay(),
       existingWorkPolicy: ExistingWorkPolicy.replace,
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-      ),
+      constraints: Constraints(networkType: NetworkType.connected),
     );
   }
-
-  print("✅ [MAIN] WORKMANAGER READY");
 }
 
 /// =========='===============
@@ -126,13 +102,9 @@ Duration _calculateInitialDelay() {
   if (now.isAfter(target)) {
     return const Duration(hours: 24) - now.difference(target);
   }
-
   return target.difference(now);
 }
 
-/// =========================
-/// APP ROOT
-/// =========================
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -169,6 +141,9 @@ class MyApp extends StatelessWidget {
         Provider<CategoriaService>(
           create: (context) => CategoriaService(context.read<ApiClient>()),
         ),
+        Provider<RelatorioItemService>(
+          create: (context) => RelatorioItemService(context.read<ApiClient>()),
+        ),
         ChangeNotifierProvider(
           create: (context) => ItemViewModel(
             context.read<ItemService>(),
@@ -195,6 +170,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => UserViewModel(GoogleAuthService()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              RelatorioItemViewModel(context.read<RelatorioItemService>()),
         ),
       ],
       child: Consumer<ThemeProvider>(
