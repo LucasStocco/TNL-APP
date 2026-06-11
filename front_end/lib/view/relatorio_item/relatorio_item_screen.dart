@@ -272,25 +272,48 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
-  Widget _graficoPizza(List<MapEntry<String, double>> dados) {
-    final total = dados.fold<double>(0, (s, e) => s + e.value);
-    return PieChart(
-      PieChartData(
-        sections: dados.asMap().entries.map((e) {
-          final pct = e.value.value / total * 100;
-          return PieChartSectionData(
-            value: e.value.value,
-            title: '${pct.toStringAsFixed(1)}%',
-            color: _cor(e.key),
-            radius: 80,
-            titleStyle: const TextStyle(
-                fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
-          );
-        }).toList(),
-        centerSpaceRadius: 40,
-        sectionsSpace: 2,
-      ),
-    );
+Widget _graficoPizza(List<MapEntry<String, double>> dados) {
+
+  final ordenados = [...dados]
+    ..sort((a, b) => b.value.compareTo(a.value));
+
+  final principais = ordenados.take(4).toList();
+  final resto = ordenados.skip(4);
+
+  final somaOutros = resto.fold(
+    0.0,
+    (s, e) => s + e.value,
+  );
+
+  if (somaOutros > 0) {
+    principais.add(MapEntry('Outros', somaOutros));
+  }
+
+  final total = principais.fold<double>(
+    0,
+    (s, e) => s + e.value,
+  );
+
+  return PieChart(
+    PieChartData(
+      sections: principais.asMap().entries.map((e) {
+        final pct = e.value.value / total * 100;
+
+        return PieChartSectionData(
+          value: e.value.value,
+          title: '${pct.toStringAsFixed(1)}%',
+          color: _cor(e.key),
+          radius: 80,
+          titleStyle: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        );
+      }).toList(),
+    ),
+  );
+}
   }
 
   Widget _graficoBarra(List<MapEntry<String, double>> dados) {
