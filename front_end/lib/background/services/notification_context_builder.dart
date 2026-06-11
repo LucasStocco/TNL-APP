@@ -1,8 +1,7 @@
-import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
-import 'package:crud_flutter/core/utils/model/notification_context.dart';
 
+
+import 'package:crud_flutter/background/workers/notification_context.dart';
 import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
-import 'package:crud_flutter/core/utils/model/notification_context.dart';
 
 class NotificationContextBuilder {
   static NotificationContext build(
