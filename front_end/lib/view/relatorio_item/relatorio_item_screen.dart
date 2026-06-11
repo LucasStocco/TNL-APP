@@ -260,9 +260,8 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
           SizedBox(
             height: 240,
             child: _tipoGrafico == TipoGrafico.pizza
-                ? _graficoPizza(dados)
-                : _tipoGrafico == TipoGrafico.barra
-                    ? _graficoBarra(dados),
+              ? _graficoPizza(dados)
+              : _graficoBarra(dados),
           ),
           const SizedBox(height: 16),
           const Divider(),
