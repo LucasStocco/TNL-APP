@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'relatorio_financeiro_screen.dart';
 import 'relatorio_item_screen.dart';
 
+import 'package:crud_flutter/view/relatorio_item/relatorio_item_screen.dart';
+
 class RelatorioScreen extends StatelessWidget {
   const RelatorioScreen({super.key});
 

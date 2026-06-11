@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const CategoriasScreen(),
       const SizedBox(),
       const MinhasListasScreen(),
-      const RelatorioItemScreen(),
+      const RelatorioScreen(),
     ];
 
     if (widget.initialFilter != null) {
