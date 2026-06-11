@@ -14,7 +14,6 @@ dependencies:
   fl_chart: ^0.69.0
   # =========================
   # UI / UTILITIES
-  # =========================
   smooth_page_indicator: ^1.1.0
   intl: ^0.18.1
   shared_preferences: ^2.2.2
@@ -24,17 +23,14 @@ dependencies:
   google_fonts: ^6.2.1
   google_sign_in: ^6.2.1
   dio: ^5.9.2
+  fl_chart: ^0.69.0
   crypto: ^3.0.3
   audioplayers: ^6.0.0
 
-  # =========================
   # NOTIFICAÇÕES LOCAIS
-  # =========================
   flutter_local_notifications: ^17.2.1
 
-  # =========================
-  # TIMEZONE (OBRIGATÓRIO PARA SCHEDULE)
-  # =========================
+  # TIMEZONE
   timezone: ^0.9.4
   workmanager: ^0.7.0
   permission_handler: ^11.0.1

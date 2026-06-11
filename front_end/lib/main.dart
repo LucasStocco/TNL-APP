@@ -5,8 +5,6 @@ import 'package:crud_flutter/core/notificacoes_gamificacao/armazenamento_conquis
 import 'package:crud_flutter/core/notificacoes_gamificacao/conquista_engine.dart';
 import 'package:crud_flutter/core/notificacoes_gamificacao/conquista_service.dart';
 
-import 'package:crud_flutter/core/utils/notification_click_handler.dart';
-import 'package:crud_flutter/core/utils/notification_navigation_handler.dart';
 
 import 'package:crud_flutter/service/cadastrar_categoria/categoria_service.dart';
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
@@ -28,11 +26,13 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/google_auth_service.dart';
-import 'package:crud_flutter/view/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:workmanager/workmanager.dart';
+import 'package:crud_flutter/core/theme/theme_provider.dart';
+import 'package:crud_flutter/service/relatorio_item/relatorio_item_service.dart';
+import 'package:crud_flutter/view_model/relatorio_item/relatorio_item_view_model.dart';
 
 // demais imports...
 //remover depois de testar
@@ -62,51 +62,29 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-/// =========================
-/// INIT CORE
-/// =========================
 Future<void> _initCore() async {
-  print("⚙️ [MAIN] INIT CORE");
-
   await NotificationService.initialize();
-  print("🔔 [MAIN] NotificationService OK");
-
-  await Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: true,
-  );
-
-  print("⚙️ [MAIN] WorkManager initialized");
+  await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
   if (isTestMode) {
-    print("🧪 [MAIN] TEST MODE - DAILY JOB (FAST)");
-
     await Workmanager().registerPeriodicTask(
       notificationTaskId,
       notificationTaskName,
       frequency: const Duration(minutes: 15),
       initialDelay: const Duration(seconds: 5),
       existingWorkPolicy: ExistingWorkPolicy.replace,
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-      ),
+      constraints: Constraints(networkType: NetworkType.connected),
     );
   } else {
-    print("🚀 [MAIN] PRODUCTION MODE - DAILY JOB");
-
     await Workmanager().registerPeriodicTask(
       notificationTaskId,
       notificationTaskName,
       frequency: const Duration(hours: 24),
       initialDelay: _calculateInitialDelay(),
       existingWorkPolicy: ExistingWorkPolicy.replace,
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-      ),
+      constraints: Constraints(networkType: NetworkType.connected),
     );
   }
-
-  print("✅ [MAIN] WORKMANAGER READY");
 }
 
 /// =========='===============
@@ -125,13 +103,9 @@ Duration _calculateInitialDelay() {
   if (now.isAfter(target)) {
     return const Duration(hours: 24) - now.difference(target);
   }
-
   return target.difference(now);
 }
 
-/// =========================
-/// APP ROOT
-/// =========================
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -168,6 +142,9 @@ class MyApp extends StatelessWidget {
         Provider<CategoriaService>(
           create: (context) => CategoriaService(context.read<ApiClient>()),
         ),
+        Provider<RelatorioItemService>(
+          create: (context) => RelatorioItemService(context.read<ApiClient>()),
+        ),
         ChangeNotifierProvider(
           create: (context) => ItemViewModel(
             context.read<ItemService>(),
@@ -189,42 +166,69 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               CategoriaViewModel(context.read<CategoriaService>()),
         ),
+              ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
         ChangeNotifierProvider(
           create: (_) => UserViewModel(GoogleAuthService()),
         ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              RelatorioItemViewModel(context.read<RelatorioItemService>()),
+        ),
       ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/home':
-              final filter = settings.arguments as String?;
+      child: Consumer<ThemeProvider>(
+  builder: (context, themeProvider, child) {
+      print("THEME: ${themeProvider.themeMode}");
+      
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
 
-              return MaterialPageRoute(
-                builder: (_) => HomeScreen(
-                  initialFilter: filter,
-                ),
-              );
+      themeMode: themeProvider.themeMode,
 
-            case '/settings':
-              return MaterialPageRoute(
-                builder: (_) => const SettingsScreen(),
-              );
-
-            case '/listas':
-              return MaterialPageRoute(
-                builder: (_) => const MinhasListasScreen(),
-              );
-
-            default:
-              return MaterialPageRoute(
-                builder: (_) => const HomeScreen(),
-              );
-          }
-        },
+      theme: ThemeData(
+        brightness: Brightness.light,
+        useMaterial3: true,
       ),
+
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+      ),
+
+      home: SplashScreen(),
+
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/home':
+            final filter = settings.arguments as String?;
+
+            return MaterialPageRoute(
+              builder: (_) => HomeScreen(
+                initialFilter: filter,
+              ),
+            );
+
+          case '/settings':
+            return MaterialPageRoute(
+              builder: (_) => const SettingsScreen(),
+            );
+
+          case '/listas':
+            return MaterialPageRoute(
+              builder: (_) => const MinhasListasScreen(),
+            );
+
+                    default:
+            return MaterialPageRoute(
+              builder: (_) => const HomeScreen(),
+            );
+        }
+      },
+    );
+  },
+),
     );
   }
 }

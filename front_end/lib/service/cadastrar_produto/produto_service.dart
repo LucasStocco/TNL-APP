@@ -111,11 +111,11 @@ class ProdutoService {
 
     _logRes(res);
 
-    if (!res.success || res.data == null) {
+    if (!res.success) {
       throw Exception(res.message);
     }
 
-    return res.data!;
+    return res.data;
   }
 
   // =========================
@@ -134,11 +134,11 @@ class ProdutoService {
 
     _logRes(res);
 
-    if (!res.success || res.data == null) {
+    if (!res.success) {
       throw Exception(res.message);
     }
 
-    return res.data!;
+    return res.data;
   }
 
   // =========================

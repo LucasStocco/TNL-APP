@@ -115,7 +115,7 @@ class ProdutoViewModel extends ChangeNotifier {
 
     try {
       final atualizado = await _service.atualizar(
-        produto.id!,
+        produto.id,
         ProdutoUpdateDTO(
           nome: nome,
           descricao: descricao,

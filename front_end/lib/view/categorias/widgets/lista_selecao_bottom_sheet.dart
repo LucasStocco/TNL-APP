@@ -30,25 +30,30 @@ class ListaSelecaoBottomSheet {
             final listas = vm.listas;
 
             if (listas.isEmpty) {
-              return const Center(child: Text("Nenhuma lista encontrada"));
+              return Center(
+                child: Text(
+                  "Nenhuma lista encontrada",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              );
             }
 
             return ListView(
               shrinkWrap: true,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(16),
                   child: Text(
-                    "Escolha uma lista",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  "Escolha uma lista",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 ),
                 ...listas.map((lista) {
                   return ListTile(
-                      leading: const Icon(Icons.list),
+                      leading: Icon(
+                        Icons.list,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       title: Text(lista.nome),
                       onTap: () async {
                         final itemVM = context.read<ItemViewModel>();
@@ -86,7 +91,7 @@ class ListaSelecaoBottomSheet {
                                           0;
 
                                   await itemVM.criar(
-                                    listaId: lista.id!,
+                                    listaId: lista.id,
                                     idProduto: produtoId,
                                     quantidade: 1,
                                     preco: preco,

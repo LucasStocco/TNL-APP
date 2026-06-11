@@ -13,7 +13,9 @@ class SettingsSectionTitle extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        color: Colors.grey.shade700,
+        color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : Colors.black,
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),

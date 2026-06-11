@@ -80,7 +80,7 @@ class _HomeCarouselState extends State<HomeCarousel> {
     return Column(
       children: [
         SizedBox(
-          height: size.height * 0.50,
+            height: 355,
           child: PageView.builder(
             controller: _controller,
             itemCount: slides.length,

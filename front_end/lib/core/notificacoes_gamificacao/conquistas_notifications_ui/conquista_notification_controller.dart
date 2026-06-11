@@ -43,11 +43,6 @@ class ConquistaNotificationController {
       rootOverlay: true,
     );
 
-    if (overlay == null) {
-      print('❌ Overlay não encontrado');
-      return;
-    }
-
     final conquista = _queue.removeFirst();
     _isShowing = true;
 

@@ -19,7 +19,7 @@ class HomeContentContainer extends StatelessWidget {
     return IgnorePointer(
       ignoring: false,
       child: Material(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         elevation: 10,
         borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAlias,
