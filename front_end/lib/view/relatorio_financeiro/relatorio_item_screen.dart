@@ -1,3 +1,18 @@
+// Tela principal do relatório.
+//
+// Responsável por:
+// - Controlar estado da tela
+// - Carregar listas
+// - Selecionar lista
+// - Selecionar aba
+// - Selecionar tipo de gráfico
+// - Montar o layout geral
+//
+// Não contém lógica visual complexa.
+// Os widgets são delegados para arquivos específicos.
+
+
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -122,6 +137,8 @@ class _RelatorioItemScreenState extends State<RelatorioItemScreen> {
     );
   }
 
+
+//Porximo widgets
   Widget _buildBotoesAba() {
     final abas = [
       (
