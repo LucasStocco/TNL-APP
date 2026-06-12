@@ -13,8 +13,10 @@ import 'package:crud_flutter/service/gerenciar_lista/lista_resumo_service.dart';
 import 'package:crud_flutter/service/gerenciar_lista/lista_service.dart';
 
 import 'package:crud_flutter/service/notifications/notification_service.dart';
+import 'package:crud_flutter/service/relatorio_financeiro/financeiro_service.dart';
 import 'package:crud_flutter/view/gerenciar_lista/minhas_listas_screen.dart';
 import 'package:crud_flutter/view/home/home_screen.dart';
+import 'package:crud_flutter/view/relatorio_financeiro/relatorio_financeiro_screen.dart';
 import 'package:crud_flutter/view/settings/settings_screen.dart';
 
 import 'package:crud_flutter/view/splash/splash_screen.dart';
@@ -26,6 +28,7 @@ import 'package:crud_flutter/view_model/gerenciar_lista/lista_resumo_view_model.
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 
 import 'package:crud_flutter/service/auto_cadastro/google_auth_service.dart';
+import 'package:crud_flutter/view_model/relatorio_financeiro/financeiro_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -144,6 +147,17 @@ class MyApp extends StatelessWidget {
         ),
         Provider<RelatorioItemService>(
           create: (context) => RelatorioItemService(context.read<ApiClient>()),
+        ),
+        Provider<FinanceiroService>(
+          create: (context) => FinanceiroService(
+            context.read<ApiClient>(),
+          ),
+        ),
+
+                ChangeNotifierProvider(
+          create: (context) => FinanceiroViewModel(
+            context.read<FinanceiroService>(),
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) => ItemViewModel(

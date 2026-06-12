@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:crud_flutter/shared/widgets/navigation/app_navigation_bar.dart';
 import 'package:crud_flutter/view/categorias/categorias_screen.dart';
 import 'package:crud_flutter/view/home/widgets/home_content_container.dart';
-import 'package:crud_flutter/view/relatorio_item/relatorio_item_screen.dart'; // 👈 trocado
+import 'package:crud_flutter/view/relatorio_financeiro/relatorio_screen.dart';
 
 import '../gerenciar_lista/criar_nova_lista_screen.dart';
 import '../gerenciar_lista/minhas_listas_screen.dart';

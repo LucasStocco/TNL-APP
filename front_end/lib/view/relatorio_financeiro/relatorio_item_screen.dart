@@ -314,9 +314,8 @@ Widget _graficoPizza(List<MapEntry<String, double>> dados) {
     ),
   );
 }
-  }
 
-  Widget _graficoBarra(List<MapEntry<String, double>> dados) {
+Widget _graficoBarra(List<MapEntry<String, double>> dados) {
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
