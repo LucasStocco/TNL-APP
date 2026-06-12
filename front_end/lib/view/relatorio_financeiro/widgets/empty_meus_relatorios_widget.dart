@@ -62,7 +62,7 @@ class _EmptyMeusRelatoriosWidgetState extends State<EmptyMeusRelatoriosWidget>
             ),
             const SizedBox(height: 16),
             const Text(
-              "Você ainda não tem listas",
+              "Você ainda não possui listas",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -70,7 +70,7 @@ class _EmptyMeusRelatoriosWidgetState extends State<EmptyMeusRelatoriosWidget>
             ),
             const SizedBox(height: 8),
             const Text(
-              "Crie sua primeira lista para mostrar seus relatorios financeiros",
+              "Crie sua primeira lista para visualizar seus relatorios financeiros",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey),
             ),
