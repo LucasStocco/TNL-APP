@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../view_model/gerenciar_lista/lista_view_model.dart';
 import '../../view_model/relatorio_financeiro/financeiro_view_model.dart';
+import 'package:crud_flutter/view/relatorio_financeiro/widgets/empty_meus_relatorios_widget.dart';
 
 import 'widgets/relatorio_card.dart';
 import 'widgets/relatorio_grafico.dart';
@@ -46,6 +47,11 @@ class _RelatorioFinanceiroScreenState
               return const Center(
                 child: CircularProgressIndicator(),
               );
+            }
+           if (viewModel.total == 0 &&
+                viewModel.gastosPorLista.isEmpty &&
+                viewModel.gastosPorCategoria.isEmpty) {
+              return const EmptyMeusRelatoriosWidget();
             }
 
             return SingleChildScrollView(
