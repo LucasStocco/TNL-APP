@@ -1,6 +1,1 @@
-// Enum responsável pelas abas do relatório.
-//
-// Mais Comprados
-// Gasto por Categoria
-// Mais Caros
-// Mais Baratos
+enum RelatorioAba { maisComprados, porCategoria, maisCaros, maisBaratos }
