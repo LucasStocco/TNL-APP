@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:crud_flutter/view/relatorio_item/enums/tipo_grafico.dart';
 
-class Relatorio_Botoes_Grafico extends StatelessWidget {
+class RelatorioBotoesGrafico extends StatelessWidget {
   final TipoGrafico tipoGrafico;
   final ValueChanged<TipoGrafico> onChanged;
 

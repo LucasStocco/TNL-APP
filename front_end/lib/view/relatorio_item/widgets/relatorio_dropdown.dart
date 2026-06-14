@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:crud_flutter/model/gerenciar_lista/lista.dart';
 import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
 
-class Relatorio_Dropdown extends StatelessWidget {
+class RelatorioDropdown extends StatelessWidget {
   final ListaViewModel listaVm;
   final Lista? listaSelecionada;
   final ValueChanged<Lista?> onChanged;

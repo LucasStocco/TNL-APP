@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class RelatorioPlaceholder extends StatelessWidget {
-  const RelatorioPlaceholder({super.key});
+class RelatorioEstado extends StatelessWidget {
+  const RelatorioEstado({super.key});
 
   @override
   Widget build(BuildContext context) {
