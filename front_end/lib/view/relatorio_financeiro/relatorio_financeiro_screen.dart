@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../view_model/gerenciar_lista/lista_view_model.dart';
-import '../../view_model/relatorio_financeiro/financeiro_view_model.dart';
+import 'package:crud_flutter/view/relatorio_financeiro/widgets/empty_meus_relatorios_widget.dart';
+import 'package:crud_flutter/model/gerenciar_lista/lista.dart';
+import 'package:crud_flutter/view_model/gerenciar_lista/lista_view_model.dart';
+import 'package:crud_flutter/view_model/relatorio_financeiro/financeiro_view_model.dart';
 
 import 'widgets/relatorio_card.dart';
 import 'widgets/relatorio_grafico.dart';
@@ -16,18 +17,17 @@ class RelatorioFinanceiroScreen extends StatefulWidget {
       _RelatorioFinanceiroScreenState();
 }
 
-class _RelatorioFinanceiroScreenState  
-  extends State<RelatorioFinanceiroScreen> {
+class _RelatorioFinanceiroScreenState
+    extends State<RelatorioFinanceiroScreen> {
+  Lista? _listaSelecionada;
+
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      final listaAtual = context.read<ListaViewModel>().listaAtual;
-
-      context.read<FinanceiroViewModel>().carregarRelatorio(
-            listaId: listaAtual?.id,
-          );
+      context.read<ListaViewModel>().listar();
+      context.read<FinanceiroViewModel>().carregarRelatorio();
     });
   }
 
@@ -47,6 +47,9 @@ class _RelatorioFinanceiroScreenState
                 child: CircularProgressIndicator(),
               );
             }
+            if (listaVm.listas.isEmpty) {
+              return const EmptyMeusRelatoriosWidget();
+            } 
 
             return SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(24, 32, 24, 120),
@@ -56,6 +59,54 @@ class _RelatorioFinanceiroScreenState
                   const RelatorioHeader(),
 
                   const SizedBox(height: 32),
+
+                  Consumer<ListaViewModel>(
+                    builder: (context, listaVm, child) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<Lista>(
+                            isExpanded: true,
+                            hint: const Text('Selecione uma lista'),
+                            value: _listaSelecionada,
+                            items: listaVm.listas
+                                .map(
+                                  (lista) => DropdownMenuItem<Lista>(
+                                    value: lista,
+                                    child: Text(
+                                      lista.nome,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (lista) {
+                              if (lista == null) return;
+
+                              setState(() {
+                                _listaSelecionada = lista;
+                              });
+
+                              context
+                                  .read<FinanceiroViewModel>()
+                                  .carregarRelatorio(
+                                    listaId: lista.id,
+                                  );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
 
                   SizedBox(
                     width: double.infinity,
