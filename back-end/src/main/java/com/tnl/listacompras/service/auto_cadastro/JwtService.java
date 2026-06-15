@@ -17,14 +17,16 @@ public class JwtService {
     private String secret;
 
     public String gerarToken(String email) {
-
         return Jwts.builder()
-        .subject(email)
-        .issuedAt(new Date(System.currentTimeMillis()))
-        .expiration(new Date(System.currentTimeMillis() + 86400000))
-        .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
-        .compact();
-    }
+            .subject(email)
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + 86400000))
+            .signWith(
+                Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)),
+                Jwts.SIG.HS256
+            )
+            .compact();
+}
 
     public String extrairEmail(String token) {
 

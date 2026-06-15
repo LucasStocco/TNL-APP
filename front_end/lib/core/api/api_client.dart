@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_config.dart';
 import 'api_response.dart';
@@ -135,4 +136,17 @@ class ApiClient {
 
     return _parseResponse(response, fromJson);
   }
+
+  Future<http.Response> getWithToken(String path) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+
+  return await _client.get(
+    _uri(path),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+}
 }

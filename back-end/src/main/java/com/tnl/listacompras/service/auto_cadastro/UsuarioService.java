@@ -16,6 +16,11 @@ import com.tnl.listacompras.dto.responseDTO.auto_cadastro.UsuarioResponseDTO;
 import com.tnl.listacompras.model.auto_cadastro.Usuario;
 import com.tnl.listacompras.repository.auto_cadastro.UsuarioRepository;
 import com.tnl.listacompras.session.Session;
+import com.tnl.listacompras.service.auto_cadastro.JwtService;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;   
+import io.jsonwebtoken.security.Keys;
+
 
 @Service
 public class UsuarioService {

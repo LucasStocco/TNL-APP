@@ -47,8 +47,18 @@ class GoogleAuthService implements AuthService {
     final user = authResponse.usuario.toModel();
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user', jsonEncode(authResponse.usuario));
-    await prefs.setString('token', authResponse.token);
+
+    await prefs.setString(
+      _keyUser,
+      jsonEncode({
+        "id": authResponse.usuario.id,
+        "name": authResponse.usuario.name,
+        "email": authResponse.usuario.email,
+        "fotoUrl": authResponse.usuario.fotoUrl,
+      }),
+    );
+
+    await prefs.setString(_keyToken, authResponse.token);
 
     return user;
   }
@@ -72,9 +82,7 @@ class GoogleAuthService implements AuthService {
     final userJson = prefs.getString(_keyUser);
     final token = prefs.getString(_keyToken);
 
-    if (userJson == null || token == null) {
-      return null;
-    }
+    if (userJson == null || token == null) return null;
 
     final data = jsonDecode(userJson);
 
