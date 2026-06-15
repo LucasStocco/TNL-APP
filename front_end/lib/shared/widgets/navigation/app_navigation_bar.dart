@@ -16,7 +16,9 @@ class AppNavigationBar extends StatelessWidget {
       height: 60, // 🔥 mais compacto
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF121212)
+            : Colors.white,
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
@@ -52,8 +54,11 @@ class AppNavigationBar extends StatelessWidget {
           child: Icon(
             icon,
             size: 24, // 🔥 levemente menor
-            color: isSelected ? Colors.red : Colors.grey,
-          ),
+            color: isSelected
+                ? const Color(0xFFD32F2F)
+                : Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.grey,          ),
         ),
       ),
     );

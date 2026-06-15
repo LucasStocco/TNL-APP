@@ -1,9 +1,7 @@
 import 'dart:convert';
 
-import 'package:crud_flutter/core/utils/model/notification_decision.dart';
 import 'package:crud_flutter/core/utils/notification/rules/notification_frequency_rule.dart';
 import 'package:crud_flutter/core/utils/notification_click_handler.dart';
-import 'package:crud_flutter/model/sistema_notificações/notification_result.dart';
 import 'package:crud_flutter/service/notifications/notification_preferences_service.dart';
 import 'package:crud_flutter/service/notifications/notification_settings_service.dart';
 import 'package:flutter/material.dart';

@@ -11,7 +11,6 @@ import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.gerenciar_lista.ListaResponseResumoDTO;
 import com.tnl.listacompras.model.auto_cadastro.Usuario;
 import com.tnl.listacompras.model.gerenciar_lista.Lista;
-import com.tnl.listacompras.repository.gerenciar_lista.ItemRepository;
 import com.tnl.listacompras.repository.gerenciar_lista.ListaRepository;
 import com.tnl.listacompras.session.Session;
 
@@ -84,11 +83,10 @@ public class ListaService {
         Long userId = usuarioAtual();
 
         boolean existe =
-        listaRepository
-                .existsByNomeIgnoreCaseAndUsuarioIdAndDeletadoFalse(
-                        dto.getNome(),
-                        userId
-                );
+            listaRepository.existsByUsuarioIdAndNomeIgnoreCaseAndDeletadoFalse(
+                userId,
+                dto.getNome()
+            );
 
         if (existe) {
             throw new BusinessException("Já existe uma lista com esse nome");

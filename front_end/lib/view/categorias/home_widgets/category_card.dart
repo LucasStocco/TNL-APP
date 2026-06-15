@@ -22,11 +22,12 @@ class CategoryCard extends StatelessWidget {
         width: 70,
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black12,
+              // ignore: deprecated_member_use
+              color: Theme.of(context).shadowColor.withOpacity(0.2),              
               blurRadius: 5,
               offset: Offset(0, 3),
             ),
@@ -36,7 +37,13 @@ class CategoryCard extends StatelessWidget {
           children: [
             Image.asset(imagePath, width: 50, height: 50),
             const SizedBox(height: 8),
-            Text(label, style: const TextStyle(fontSize: 12)),
+            Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
           ],
         ),
       ),

@@ -44,7 +44,7 @@ class HomeLayoutWidget extends StatelessWidget {
                   child: HomeContentContainer(child: child),
                 )
               : Container(
-                  color: Colors.white,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   child: SafeArea(child: child),
                 ),
         ),

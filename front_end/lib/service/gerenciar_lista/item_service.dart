@@ -39,11 +39,11 @@ class ItemService {
       (data) => Item.fromJson(data),
     );
 
-    if (!result.success || result.data == null) {
+    if (!result.success) {
       throw Exception(result.message);
     }
 
-    return result.data!;
+    return result.data;
   }
 
   // =====================================================
@@ -62,11 +62,11 @@ class ItemService {
       (data) => Item.fromJson(data),
     );
 
-    if (!result.success || result.data == null) {
+    if (!result.success) {
       throw Exception(result.message);
     }
 
-    return result.data!;
+    return result.data;
   }
 
   // =====================================================
@@ -84,11 +84,11 @@ class ItemService {
       (data) => Item.fromJson(data),
     );
 
-    if (!result.success || result.data == null) {
+    if (!result.success) {
       throw Exception(result.message);
     }
 
-    return result.data!;
+    return result.data;
   }
 
   // =====================================================
