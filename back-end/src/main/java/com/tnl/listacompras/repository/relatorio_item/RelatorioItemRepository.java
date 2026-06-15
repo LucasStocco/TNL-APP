@@ -1,11 +1,12 @@
 package com.tnl.listacompras.repository.relatorio_item;
 
-import com.tnl.listacompras.model.gerenciar_lista.Item;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import com.tnl.listacompras.model.gerenciar_lista.Item;
 
 public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
 
@@ -22,18 +23,19 @@ public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
     List<Object[]> buscarItensMaisComprados(@Param("listaId") Long listaId);
 
     @Query("""
-        SELECT i.produto.subcategoria.nome,
-               COUNT(DISTINCT i.produto.id),
-               SUM(i.quantidade),
-               SUM(i.preco * i.quantidade)
-        FROM Item i
-        WHERE i.deletado = false
-          AND i.lista.id = :listaId
-        GROUP BY i.produto.subcategoria.id,
-                 i.produto.subcategoria.nome
-        ORDER BY SUM(i.preco * i.quantidade) DESC
-    """)
-    List<Object[]> buscarItensPorCategoria(@Param("listaId") Long listaId);
+    SELECT c.nome,
+           COUNT(DISTINCT i.produto.id),
+           SUM(i.quantidade),
+           SUM(i.preco * i.quantidade)
+    FROM Item i
+    JOIN i.produto.subcategoria s
+    JOIN s.categoria c
+    WHERE i.deletado = false
+      AND i.lista.id = :listaId
+    GROUP BY c.id, c.nome
+    ORDER BY SUM(i.preco * i.quantidade) DESC
+""")
+List<Object[]> buscarItensPorCategoria(@Param("listaId") Long listaId);
 
     @Query("""
         SELECT i.produto.nome,
