@@ -32,16 +32,24 @@ class ApiClient {
     print('   body: ${response.body}');
     print('   type: ${decoded.runtimeType}');
 
-    final apiResponse = ApiResponse<T>.fromJson(decoded, (data) {
-      return fromJson != null ? fromJson(data) : data;
-    });
+    // 🔥 CASO 1: ApiResponse padrão
+    if (decoded is Map<String, dynamic> &&
+        decoded.containsKey('success') &&
+        decoded.containsKey('data')) {
+      return ApiResponse<T>.fromJson(decoded, (data) {
+        return fromJson != null ? fromJson(data) : data;
+      });
+    }
 
-    print('🧠 [PARSED]');
-    print('   success: ${apiResponse.success}');
-    print('   message: ${apiResponse.message}');
-    print('   data: ${apiResponse.data}');
+    // 🔥 CASO 2: JSON puro (SEU CASO ATUAL)
+    final parsedData =
+        fromJson != null ? fromJson(decoded) : decoded;
 
-    return apiResponse;
+    return ApiResponse<T>(
+      success: true,
+      message: 'OK',
+      data: parsedData,
+    );
   }
 
   // =========================
@@ -52,8 +60,6 @@ class ApiClient {
     T Function(dynamic)? fromJson,
   ) async {
     final uri = _uri(path);
-
-    print('\n🟦 [GET] $path');
 
     final response = await _client.get(uri);
     return _parseResponse(response, fromJson);
@@ -68,9 +74,6 @@ class ApiClient {
     T Function(dynamic)? fromJson,
   ) async {
     final uri = _uri(path);
-
-    print('\n🟨 [POST] $path');
-    print('📦 body: ${jsonEncode(body)}');
 
     final response = await _client.post(
       uri,
@@ -91,9 +94,6 @@ class ApiClient {
   ) async {
     final uri = _uri(path);
 
-    print('\n🟧 [PUT] $path');
-    print('📦 body: ${jsonEncode(body)}');
-
     final response = await _client.put(
       uri,
       headers: {'Content-Type': 'application/json'},
@@ -113,9 +113,6 @@ class ApiClient {
   ) async {
     final uri = _uri(path);
 
-    print('\n🟪 [PATCH] $path');
-    print('📦 body: ${jsonEncode(body)}');
-
     final response = await _client.patch(
       uri,
       headers: {'Content-Type': 'application/json'},
@@ -126,15 +123,13 @@ class ApiClient {
   }
 
   // =========================
-  // 🟥 DELETE (FIX PRINCIPAL)
+  // 🟥 DELETE
   // =========================
   Future<ApiResponse<T>> delete<T>(
     String path, [
     T Function(dynamic)? fromJson,
   ]) async {
     final uri = _uri(path);
-
-    print('\n🟥 [DELETE] $path');
 
     final response = await _client.delete(uri);
 
