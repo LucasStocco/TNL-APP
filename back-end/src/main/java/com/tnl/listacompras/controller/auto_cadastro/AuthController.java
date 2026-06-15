@@ -25,9 +25,8 @@ public class AuthController {
 public ResponseEntity<AuthResponseDTO> loginGoogle(
         @RequestBody GoogleLoginRequestDTO request) {
 
-    AuthResponseDTO response =
-            usuarioService.loginWithGoogle(request.getIdToken());
-
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(
+            usuarioService.loginWithGoogle(request.getIdToken())
+    );
 }
     }
