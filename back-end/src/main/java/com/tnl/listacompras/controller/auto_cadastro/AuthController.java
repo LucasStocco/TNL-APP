@@ -22,11 +22,8 @@ public class AuthController {
     private UsuarioService usuarioService;
 
     @PostMapping("/google")
-public ResponseEntity<AuthResponseDTO> loginGoogle(
-        @RequestBody GoogleLoginRequestDTO request) {
-
-    return ResponseEntity.ok(
-            usuarioService.loginWithGoogle(request.getIdToken())
-    );
-}
+public ResponseEntity<AuthResponseDTO> loginGoogle(@RequestBody GoogleLoginRequestDTO request) {
+    return ResponseEntity.ok(usuarioService.loginWithGoogle(request.getIdToken()));
     }
+}
+
