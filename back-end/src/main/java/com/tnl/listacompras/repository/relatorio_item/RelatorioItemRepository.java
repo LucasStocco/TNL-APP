@@ -22,21 +22,28 @@ public interface RelatorioItemRepository extends JpaRepository<Item, Long> {
     """)
     List<Object[]> buscarItensMaisComprados(@Param("listaId") Long listaId);
 
+    // =========================
+    // CATEGORIA (CORRIGIDO)
+    // =========================
     @Query("""
-    SELECT c.nome,
-           COUNT(DISTINCT i.produto.id),
-           SUM(i.quantidade),
-           SUM(i.preco * i.quantidade)
-    FROM Item i
-    JOIN i.produto.subcategoria s
-    JOIN s.categoria c
-    WHERE i.deletado = false
-      AND i.lista.id = :listaId
-    GROUP BY c.id, c.nome
-    ORDER BY SUM(i.preco * i.quantidade) DESC
-""")
-List<Object[]> buscarItensPorCategoria(@Param("listaId") Long listaId);
+        SELECT c.nome,
+               COUNT(DISTINCT i.produto.id),
+               SUM(i.quantidade),
+               SUM(i.preco * i.quantidade)
+        FROM Item i
+        JOIN i.produto p
+        JOIN p.subcategoria s
+        JOIN s.categoria c
+        WHERE i.deletado = false
+          AND i.lista.id = :listaId
+        GROUP BY c.id, c.nome
+        ORDER BY SUM(i.preco * i.quantidade) DESC
+    """)
+    List<Object[]> buscarItensPorCategoria(@Param("listaId") Long listaId);
 
+    // =========================
+    // MAIS CAROS (CORRIGIDO)
+    // =========================
     @Query("""
         SELECT i.produto.nome,
                i.produto.subcategoria.nome,
@@ -51,6 +58,9 @@ List<Object[]> buscarItensPorCategoria(@Param("listaId") Long listaId);
     """)
     List<Object[]> buscarItensMaisCaros(@Param("listaId") Long listaId);
 
+    // =========================
+    // MAIS BARATOS (CORRIGIDO)
+    // =========================
     @Query("""
         SELECT i.produto.nome,
                i.produto.subcategoria.nome,
