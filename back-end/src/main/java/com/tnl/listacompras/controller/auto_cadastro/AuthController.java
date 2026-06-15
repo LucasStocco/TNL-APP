@@ -13,6 +13,7 @@ import com.tnl.listacompras.dto.responseDTO.auto_cadastro.AuthResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.auto_cadastro.UsuarioResponseDTO;
 import com.tnl.listacompras.service.auto_cadastro.UsuarioService;
 
+// teste para ver se está atualizando
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin("*")
