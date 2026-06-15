@@ -42,6 +42,7 @@ class _RelatorioFinanceiroScreenState
       body: SafeArea(
         child: Consumer<FinanceiroViewModel>(
           builder: (context, viewModel, child) {
+            final listaVm = context.watch<ListaViewModel>();
             if (viewModel.loading) {
               return const Center(
                 child: CircularProgressIndicator(),
