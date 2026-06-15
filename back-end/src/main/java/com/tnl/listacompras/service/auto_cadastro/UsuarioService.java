@@ -91,25 +91,27 @@ private JwtService jwtService;
     return new AuthResponseDTO(usuarioDTO, token);
 }
 
-    private GoogleIdToken.Payload verifyToken(String idTokenString) {
-        try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                    new NetHttpTransport(),
-                    new GsonFactory()
-            )
-            .setAudience(Collections.singletonList(clientId))
-            .build();
+    private final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+        new NetHttpTransport(),
+        new GsonFactory()
+)
+        .setAudience(Collections.singletonList(clientId))
+        .build();
 
-            GoogleIdToken idToken = verifier.verify(idTokenString);
+           private GoogleIdToken.Payload verifyToken(String idTokenString) {
 
-            if (idToken != null) {
-                return idToken.getPayload();
-            } else {
-                throw new RuntimeException("Token inválido");
-            }
+    try {
+        GoogleIdToken idToken = verifier.verify(idTokenString);
 
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao verificar token: " + e.getMessage());
+        if (idToken == null) {
+            throw new RuntimeException("Token inválido");
         }
+
+        return idToken.getPayload();
+
+    } catch (Exception e) {
+        throw new RuntimeException("Erro ao verificar token: " + e.getMessage());
     }
+}
+    
 }
