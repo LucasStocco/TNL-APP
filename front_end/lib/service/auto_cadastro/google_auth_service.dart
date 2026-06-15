@@ -29,7 +29,8 @@ class GoogleAuthService implements AuthService {
 
       // LOGIN GOOGLE
       final GoogleSignInAccount? googleUser =
-          await _googleSignIn.signIn();
+    await _googleSignIn.signIn();
+
 
       print("googleUser: $googleUser");
 
@@ -39,10 +40,13 @@ class GoogleAuthService implements AuthService {
       }
 
       // TOKEN GOOGLE
-      final GoogleSignInAuthentication auth =
-          await googleUser.authentication;
+      
+final GoogleSignInAuthentication auth =
+    await googleUser!.authentication;
 
-      print("ID TOKEN: ${auth.idToken}");
+    print("ID TOKEN: ${auth.idToken}");
+    print("ACCESS TOKEN: ${auth.accessToken}");
+    print("SERVER AUTH CODE: ${googleUser.serverAuthCode}");
 
       final idToken = auth.idToken;
 
@@ -51,12 +55,7 @@ class GoogleAuthService implements AuthService {
       final requestDTO = GoogleLoginRequestDTO(
         idToken: idToken!,
       );
-//
-//
-//    TROCAR O IP COM BASE NO DISPOSITIVO QUE VAI ACESSAR O BAGULHO, 
-//POR EXEMPLO O IP ABAIXO É DO MEU CELULAR, ACREDITO QUE IRA MUDAR QUANTO FOR NA WEB, AI SERIA O IP DA INSTÂNCIA
-//
-//
+
       // CHAMADA BACKEND
       final response = await http.post(
         Uri.parse("${ApiConfig.baseUrl}/auth/google"),
