@@ -118,7 +118,7 @@ class ApiClient {
 
     final response = await _client.patch(
       uri,
-      headers: {'Content-Type': 'application/json'},
+      headers: await _headers(),
       body: body != null ? jsonEncode(body) : null,
     );
 
@@ -147,10 +147,9 @@ class ApiClient {
 
   return await _client.get(
     _uri(path),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
+    headers: 
+      await _headers()
+    ,
   );
 }
 Future<Map<String, String>> _headers() async {
