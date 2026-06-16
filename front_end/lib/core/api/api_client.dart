@@ -62,7 +62,9 @@ class ApiClient {
   ) async {
     final uri = _uri(path);
 
-    final response = await _client.get(uri);
+    final response = await _client.get(uri,
+  headers: await _headers(),
+);
     return _parseResponse(response, fromJson);
   }
 
@@ -78,9 +80,9 @@ class ApiClient {
 
     final response = await _client.post(
       uri,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
+  headers: await _headers(),
+  body: jsonEncode(body),
+);
 
     return _parseResponse(response, fromJson);
   }
@@ -97,9 +99,9 @@ class ApiClient {
 
     final response = await _client.put(
       uri,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
+  headers: await _headers(),
+  body: jsonEncode(body),
+);
 
     return _parseResponse(response, fromJson);
   }
@@ -132,7 +134,9 @@ class ApiClient {
   ]) async {
     final uri = _uri(path);
 
-    final response = await _client.delete(uri);
+    final response = await _client.delete(uri,
+  headers: await _headers(),
+);
 
     return _parseResponse(response, fromJson);
   }
@@ -148,5 +152,14 @@ class ApiClient {
       'Authorization': 'Bearer $token',
     },
   );
+}
+Future<Map<String, String>> _headers() async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+
+  return {
+    'Content-Type': 'application/json',
+    if (token != null) 'Authorization': 'Bearer $token',
+  };
 }
 }
