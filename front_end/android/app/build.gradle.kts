@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.front_end"
+    namespace = "com.tnl.listacompras"
 
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.front_end"
+        applicationId = "com.tnl.listacompras"
 
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion

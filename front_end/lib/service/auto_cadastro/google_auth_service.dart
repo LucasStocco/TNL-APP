@@ -1,126 +1,92 @@
 import 'dart:convert';
 
+import 'package:crud_flutter/core/api/api_client.dart';
+import 'package:crud_flutter/dto/auto_cadastro/authResponsedto.dart';
+import 'package:crud_flutter/dto/auto_cadastro/google_login_request_dto.dart';
+import 'package:crud_flutter/dto/auto_cadastro/user_response_dto.dart';
 import 'package:crud_flutter/model/auto_cadastro/user.dart';
 import 'package:crud_flutter/service/auto_cadastro/auth_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:crud_flutter/dto/auto_cadastro/user_response_dto.dart';
-import 'package:crud_flutter/dto/auto_cadastro/google_login_request_dto.dart';
-import 'package:crud_flutter/core/api/api_config.dart';
 
 class GoogleAuthService implements AuthService {
-
   static const _keyUser = 'user';
+  static const _keyToken = 'token';
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: [
-    'email',
-    'profile',
-  ],
-  serverClientId:
-      '605363260040-q8s2e93017d9786n152lk4ufhm9gsibc.apps.googleusercontent.com',
-);
+    scopes: ['email', 'profile'],
+    serverClientId:
+        '605363260040-q8s2e93017d9786n152lk4ufhm9gsibc.apps.googleusercontent.com',
+  );
 
   @override
   Future<User?> login() async {
+    final googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) return null;
 
-    try {
+    final auth = await googleUser.authentication;
 
-      // LOGIN GOOGLE
-      final GoogleSignInAccount? googleUser =
-          await _googleSignIn.signIn();
-
-      print("googleUser: $googleUser");
-
-      if (googleUser == null) {
-        print("Usuário cancelou login");
-        return null;
-      }
-
-      // TOKEN GOOGLE
-      final GoogleSignInAuthentication auth =
-          await googleUser.authentication;
-
-      print("ID TOKEN: ${auth.idToken}");
-
-      final idToken = auth.idToken;
-
-
-            // DTO REQUEST
-      final requestDTO = GoogleLoginRequestDTO(
-        idToken: idToken!,
-      );
-//
-//
-//    TROCAR O IP COM BASE NO DISPOSITIVO QUE VAI ACESSAR O BAGULHO, 
-//POR EXEMPLO O IP ABAIXO É DO MEU CELULAR, ACREDITO QUE IRA MUDAR QUANTO FOR NA WEB, AI SERIA O IP DA INSTÂNCIA
-//
-//
-      // CHAMADA BACKEND
-      final response = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/auth/google"),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode(requestDTO.toJson()),
-      );
-
-      print("STATUS BACKEND: ${response.statusCode}");
-      print("BODY BACKEND: ${response.body}");
-
-      if (response.statusCode != 200) {
-        throw Exception("Erro no backend");
-      }
-
-  
-      final data = jsonDecode(response.body);
-
-      final dto = UserResponseDTO.fromJson(data);
-
-      final user = dto.toModel();
-
-      // SALVA LOCALMENTE
-      final prefs = await SharedPreferences.getInstance();
-
-      await prefs.setString(_keyUser, user.nome);
-
-      return user;
-
-    } catch (e) {
-
-      print("ERRO GOOGLE LOGIN:");
-      print(e);
-
-      rethrow;
+    final idToken = auth.idToken;
+    if (idToken == null) {
+      throw Exception("ID token nulo");
     }
+
+    final requestDTO = GoogleLoginRequestDTO(idToken: idToken);
+
+    final client = ApiClient(http.Client());
+
+    final response = await client.post(
+      "/auth/google",
+      requestDTO.toJson(),
+      (json) => AuthResponseDTO.fromJson(json),
+    );
+
+    final authResponse = response.data as AuthResponseDTO;
+
+    final user = authResponse.usuario.toModel();
+
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(
+      _keyUser,
+      jsonEncode({
+        "id": authResponse.usuario.id,
+        "name": authResponse.usuario.name,
+        "email": authResponse.usuario.email,
+        "fotoUrl": authResponse.usuario.fotoUrl,
+      }),
+    );
+
+    await prefs.setString(_keyToken, authResponse.token);
+
+    return user;
   }
 
   @override
   Future<void> logout() async {
-
     await _googleSignIn.signOut();
 
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.remove(_keyUser);
+    await Future.wait([
+      prefs.remove(_keyUser),
+      prefs.remove(_keyToken),
+    ]);
   }
 
   @override
   Future<User?> getCurrentUser() async {
+    final prefs = await SharedPreferences.getInstance();
 
-    final currentUser =
-        await _googleSignIn.signInSilently();
+    final userJson = prefs.getString(_keyUser);
+    final token = prefs.getString(_keyToken);
 
-    if (currentUser == null) {
-      return null;
-    }
+    if (userJson == null || token == null) return null;
 
-    return User(
-      id: 1,
-      nome: currentUser.displayName ?? "",
-      email: currentUser.email,
-      fotoUrl: currentUser.photoUrl,
-    );
+    final data = jsonDecode(userJson);
+
+    final dto = UserResponseDTO.fromJson(data);
+    return dto.toModel();
   }
 }

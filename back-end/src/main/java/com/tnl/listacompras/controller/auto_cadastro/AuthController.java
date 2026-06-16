@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tnl.listacompras.dto.requestDTO.auto_cadastro.GoogleLoginRequestDTO;
+import com.tnl.listacompras.dto.responseDTO.auto_cadastro.AuthResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.auto_cadastro.UsuarioResponseDTO;
 import com.tnl.listacompras.service.auto_cadastro.UsuarioService;
 
+// teste para ver se está atualizando
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin("*")
@@ -21,13 +23,18 @@ public class AuthController {
     private UsuarioService usuarioService;
 
     @PostMapping("/google")
-    public ResponseEntity<UsuarioResponseDTO> loginGoogle(
-            @RequestBody GoogleLoginRequestDTO request
-    ) {
+public ResponseEntity<AuthResponseDTO> loginGoogle(
+    @RequestBody GoogleLoginRequestDTO request) {
 
-        UsuarioResponseDTO usuario =
-                usuarioService.loginWithGoogle(request.getIdToken());
+System.out.println("🔥 CHEGOU NO CONTROLLER");
 
-        return ResponseEntity.ok(usuario);
+        AuthResponseDTO response =
+            usuarioService.loginWithGoogle(request.getIdToken());
+
+    System.out.println("TOKEN = " + response.getToken());
+    System.out.println("USUARIO = " + response.getUsuario().getEmail());
+
+    return ResponseEntity.ok(response);
     }
 }
+

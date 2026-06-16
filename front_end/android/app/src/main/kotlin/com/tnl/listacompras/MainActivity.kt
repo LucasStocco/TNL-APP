@@ -1,4 +1,4 @@
-package com.example.front_end
+package com.tnl.listacompras
 
 import io.flutter.embedding.android.FlutterActivity
 

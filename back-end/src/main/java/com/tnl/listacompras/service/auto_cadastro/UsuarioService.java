@@ -11,16 +11,24 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.tnl.listacompras.dto.responseDTO.auto_cadastro.AuthResponseDTO;
 import com.tnl.listacompras.dto.responseDTO.auto_cadastro.UsuarioResponseDTO;
 import com.tnl.listacompras.model.auto_cadastro.Usuario;
 import com.tnl.listacompras.repository.auto_cadastro.UsuarioRepository;
 import com.tnl.listacompras.session.Session;
+import com.tnl.listacompras.service.auto_cadastro.JwtService;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;   
+import io.jsonwebtoken.security.Keys;
+
 
 @Service
 public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+private JwtService jwtService;
 
     private final String clientId = "605363260040-q8s2e93017d9786n152lk4ufhm9gsibc.apps.googleusercontent.com";
 
@@ -61,50 +69,54 @@ public class UsuarioService {
     // 🔹 LOGIN COM GOOGLE
     // =========================
 
-    public UsuarioResponseDTO loginWithGoogle(String idTokenString) {
+    public AuthResponseDTO loginWithGoogle(String idTokenString) {
 
-        GoogleIdToken.Payload payload = verifyToken(idTokenString);
+    GoogleIdToken.Payload payload = verifyToken(idTokenString);
 
-        String googleId = payload.getSubject();
-        String email = payload.getEmail();
-        String nome = (String) payload.get("name");
-        String foto = (String) payload.get("picture");
+    String googleId = payload.getSubject();
+    String email = payload.getEmail();
+    String nome = (String) payload.get("name");
+    String foto = (String) payload.get("picture");
 
-        Usuario usuario = usuarioRepository.findByGoogleId(googleId)
-                .orElseGet(() -> {
-                    Usuario novo = new Usuario();
-                    novo.setGoogleId(googleId);
-                    novo.setEmail(email);
-                    novo.setNome(nome);
-                    novo.setFotoUrl(foto);
-                    return usuarioRepository.save(novo);
-                });
+    Usuario usuario = usuarioRepository.findByGoogleId(googleId)
+            .orElseGet(() -> {
+                Usuario novo = new Usuario();
+                novo.setGoogleId(googleId);
+                novo.setEmail(email);
+                novo.setNome(nome);
+                novo.setFotoUrl(foto);
+                return usuarioRepository.save(novo);
+            });
 
-                // salva a sessão do cabloco
-                Session.setUsuarioId(usuario.getId());
+    // 🔥 gera JWT
+    String token = jwtService.gerarToken(usuario.getEmail());
 
-        return new UsuarioResponseDTO(usuario);
-    }
+    // 🔥 retorna resposta correta
+    UsuarioResponseDTO usuarioDTO = new UsuarioResponseDTO(usuario);
+    return new AuthResponseDTO(usuarioDTO, token);
+}
 
-    private GoogleIdToken.Payload verifyToken(String idTokenString) {
-        try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                    new NetHttpTransport(),
-                    new GsonFactory()
-            )
-            .setAudience(Collections.singletonList(clientId))
-            .build();
+    private final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+        new NetHttpTransport(),
+        new GsonFactory()
+)
+        .setAudience(Collections.singletonList(clientId))
+        .build();
 
-            GoogleIdToken idToken = verifier.verify(idTokenString);
+           private GoogleIdToken.Payload verifyToken(String idTokenString) {
 
-            if (idToken != null) {
-                return idToken.getPayload();
-            } else {
-                throw new RuntimeException("Token inválido");
-            }
+    try {
+        GoogleIdToken idToken = verifier.verify(idTokenString);
 
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao verificar token: " + e.getMessage());
+        if (idToken == null) {
+            throw new RuntimeException("Token inválido");
         }
+
+        return idToken.getPayload();
+
+    } catch (Exception e) {
+        throw new RuntimeException("Erro ao verificar token: " + e.getMessage());
     }
+}
+    
 }
