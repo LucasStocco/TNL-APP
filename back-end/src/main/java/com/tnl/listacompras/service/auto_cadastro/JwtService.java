@@ -6,7 +6,6 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -16,27 +15,27 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
+    private javax.crypto.SecretKey getKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
     public String gerarToken(String email) {
+
         return Jwts.builder()
-            .subject(email)
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + 86400000))
-            .signWith(
-                Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)),
-                Jwts.SIG.HS256
-            )
-            .compact();
-}
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 86400000))
+                .signWith(getKey(), Jwts.SIG.HS256)
+                .compact();
+    }
 
     public String extrairEmail(String token) {
 
-    JwtParser parser = Jwts.parser()
-            .verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
-            .build();
-
-    return parser
-            .parseSignedClaims(token)
-            .getPayload()
-            .getSubject();
-}
+        return Jwts.parser()
+                .verifyWith(getKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
 }
