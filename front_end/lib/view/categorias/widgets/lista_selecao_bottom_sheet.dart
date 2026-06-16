@@ -30,71 +30,81 @@ class ListaSelecaoBottomSheet {
             final listas = vm.listas;
 
             if (listas.isEmpty) {
-              return const Center(child: Text("Nenhuma lista encontrada"));
+              return Center(
+                child: Text(
+                  "Nenhuma lista encontrada",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              );
             }
 
             return ListView(
               shrinkWrap: true,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(16),
                   child: Text(
-                    "Escolha uma lista",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  "Escolha uma lista",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 ),
                 ...listas.map((lista) {
                   return ListTile(
-                    leading: const Icon(Icons.list),
-                    title: Text(lista.nome),
-                    onTap: () async {
-                      final itemVM = context.read<ItemViewModel>();
+                      leading: Icon(
+                        Icons.list,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      title: Text(lista.nome),
+                      onTap: () async {
+                        final itemVM = context.read<ItemViewModel>();
+                        final precoController = TextEditingController();
 
-                      Navigator.pop(context);
+                        // 🔥 fecha bottom sheet
+                        Navigator.pop(context);
 
-                      // 🔥 agora o usuário define preço no fluxo
-                      final precoController = TextEditingController();
+                        // 🔥 garante flush da UI sem usar mounted
+                        await Future.delayed(const Duration(milliseconds: 100));
 
-                      await showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: const Text("Definir preço"),
-                          content: TextField(
-                            controller: precoController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              hintText: "Digite o preço",
+                        // 🔥 usa root context seguro
+                        if (!ctx.mounted) return;
+
+                        await showDialog(
+                          context: context,
+                          builder: (dialogContext) => AlertDialog(
+                            title: const Text("Definir preço"),
+                            content: TextField(
+                              controller: precoController,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                hintText: "Digite o preço",
+                              ),
                             ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext),
+                                child: const Text("Cancelar"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final preco =
+                                      double.tryParse(precoController.text) ??
+                                          0;
+
+                                  await itemVM.criar(
+                                    listaId: lista.id,
+                                    idProduto: produtoId,
+                                    quantidade: 1,
+                                    preco: preco,
+                                  );
+
+                                  Navigator.pop(dialogContext);
+                                },
+                                child: const Text("Adicionar"),
+                              ),
+                            ],
                           ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text("Cancelar"),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                final preco =
-                                    double.tryParse(precoController.text) ?? 0;
-
-                                await itemVM.criar(
-                                  listaId: lista.id!,
-                                  idProduto: produtoId,
-                                  quantidade: 1,
-                                  preco: preco,
-                                );
-
-                                Navigator.pop(context);
-                              },
-                              child: const Text("Adicionar"),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                        );
+                      });
                 }),
               ],
             );

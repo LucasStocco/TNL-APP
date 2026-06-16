@@ -8,7 +8,7 @@ class ServiceUtils {
     if (res.data == null) {
       throw Exception(res.message);
     }
-    return res.data as T;
+    return res.data;
   }
 
   // =========================

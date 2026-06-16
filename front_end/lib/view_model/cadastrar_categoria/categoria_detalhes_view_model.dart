@@ -1,4 +1,4 @@
-import 'package:crud_flutter/dto/item_create_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_create_dto.dart';
 import 'package:crud_flutter/model/cadastrar_categoria/subcategoria_mode.dart';
 import 'package:crud_flutter/model/cadastrar_produto/produto.dart';
 import 'package:crud_flutter/service/cadastrar_produto/produto_service.dart';
@@ -48,17 +48,8 @@ class CategoriaDetalhesViewModel extends ChangeNotifier {
       final categoria =
           await categoriaService.buscarCategoriaCompleta(idCategoria);
 
-      if (categoria == null) {
-        throw Exception("Categoria veio null do backend");
-      }
-
-      if (categoria.subcategorias == null) {
-        print("⚠️ subcategorias veio null → convertendo para []");
-        subcategorias = [];
-      } else {
-        subcategorias = categoria.subcategorias;
-      }
-
+      subcategorias = categoria.subcategorias;
+    
       print("✅ [VM] Subcategorias carregadas: ${subcategorias.length}");
     } catch (e, stack) {
       print("❌ [VM ERROR] $e");
@@ -78,15 +69,10 @@ class CategoriaDetalhesViewModel extends ChangeNotifier {
     double preco,
   ) async {
     try {
-      if (produto.id == null) {
-        _setError("Produto inválido (id null)");
-        return;
-      }
-
       await itemService.criar(
         idLista,
         ItemCreateDTO(
-          produtoId: produto.id!, // ✔ fix null safety
+          produtoId: produto.id, // ✔ fix null safety
           quantidade: 1,
           preco: preco,
         ),

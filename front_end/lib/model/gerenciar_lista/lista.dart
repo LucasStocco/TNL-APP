@@ -45,7 +45,7 @@ class Lista {
 
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
+      'id': id,
       'nome': nome,
       'idUsuario': idUsuario,
       'deletado': deletado,

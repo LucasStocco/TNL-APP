@@ -18,7 +18,7 @@ class CategoriaDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<Categoria>(
-      value: selected,
+      initialValue: selected,
       items: categorias
           .map<DropdownMenuItem<Categoria>>(
             (Categoria c) => DropdownMenuItem<Categoria>(

@@ -1,6 +1,6 @@
 class ApiConfig {
   // rodar com depuração USB
-  static const String baseUrl = 'http://localhost:8088';
+  static const String baseUrl = 'http://107.23.25.255:8088';
 
   // rodar com emulador
   //static const String baseUrl = 'http://10.0.2.2:8088';

@@ -1,0 +1,1 @@
+enum RelatorioAba { maisComprados, porCategoria, maisCaros, maisBaratos }

@@ -1,6 +1,7 @@
 import 'package:crud_flutter/core/api/api_client.dart';
-import 'package:crud_flutter/dto/item_create_dto.dart';
-import 'package:crud_flutter/dto/item_update_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/adicionar_produto_lista_request_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_create_dto.dart';
+import 'package:crud_flutter/dto/request/gerenciar_lista/item_request_update_dto.dart';
 import 'package:crud_flutter/model/gerenciar_lista/item.dart';
 
 class ItemService {
@@ -9,33 +10,15 @@ class ItemService {
   ItemService(this._client);
 
   // =====================================================
-  // 🧠 LOG HELPERS
-  // =====================================================
-  void _log(String msg) => print("[ITEM_SERVICE] $msg");
-
-  void _logReq(String method, String url, [dynamic body]) {
-    _log("➡️ $method $url");
-    if (body != null) _log("📦 BODY: $body");
-  }
-
-  void _logRes(dynamic res) {
-    _log("⬅️ RESPONSE: $res");
-  }
-
-  // =====================================================
   // 📥 LISTAR ITENS
   // =====================================================
   Future<List<Item>> listar(int listaId) async {
     final url = '/listas/$listaId/itens';
 
-    _logReq("GET", url);
-
     final result = await _client.get<List<Item>>(
       url,
       (data) => (data as List).map((e) => Item.fromJson(e)).toList(),
     );
-
-    _logRes(result);
 
     if (!result.success) {
       throw Exception(result.message);
@@ -50,21 +33,17 @@ class ItemService {
   Future<Item> criar(int listaId, ItemCreateDTO dto) async {
     final url = '/listas/$listaId/itens';
 
-    _logReq("POST", url, dto.toJson());
-
     final result = await _client.post<Item>(
       url,
       dto.toJson(),
       (data) => Item.fromJson(data),
     );
 
-    _logRes(result);
-
-    if (!result.success || result.data == null) {
+    if (!result.success) {
       throw Exception(result.message);
     }
 
-    return result.data!;
+    return result.data;
   }
 
   // =====================================================
@@ -77,51 +56,39 @@ class ItemService {
   ) async {
     final url = '/listas/$listaId/itens/$idItem';
 
-    _logReq("PUT", url, dto.toJson());
-
     final result = await _client.put<Item>(
       url,
       dto.toJson(),
       (data) => Item.fromJson(data),
     );
 
-    _logRes(result);
-
-    if (!result.success || result.data == null) {
+    if (!result.success) {
       throw Exception(result.message);
     }
 
-    return result.data!;
+    return result.data;
   }
 
   // =====================================================
-  // ADICIONAR PRODUTO NA LISTA
+  // ➕ ADICIONAR PRODUTO NA LISTA
   // =====================================================
-  Future<Item> adicionarProdutoNaLista({
-    required int listaId,
-    required int produtoId,
-    double preco = 0.0,
-    int quantidade = 1,
-  }) async {
+  Future<Item> adicionarProdutoNaLista(
+    int listaId,
+    AdicionarProdutoListaRequestDTO dto,
+  ) async {
     final url = '/listas/$listaId/itens';
-
-    final body = {
-      "produtoId": produtoId,
-      "preco": preco,
-      "quantidade": quantidade,
-    };
 
     final result = await _client.post<Item>(
       url,
-      body,
+      dto.toJson(),
       (data) => Item.fromJson(data),
     );
 
-    if (!result.success || result.data == null) {
+    if (!result.success) {
       throw Exception(result.message);
     }
 
-    return result.data!;
+    return result.data;
   }
 
   // =====================================================
@@ -130,36 +97,44 @@ class ItemService {
   Future<void> marcarComprado(int listaId, int idItem) async {
     final url = '/listas/$listaId/itens/$idItem/comprado';
 
-    _logReq("PATCH", url);
+    print("📡 [ITEM SERVICE] marcarComprado INICIO");
+    print("📡 [ITEM SERVICE] listaId=$listaId itemId=$idItem");
+    print("🌐 [ITEM SERVICE] URL=$url");
 
-    final result = await _client.patch<void>(
-      url,
-      {},
-      null,
-    );
+    try {
+      final result = await _client.patch<void>(
+        url,
+        {},
+        null,
+      );
 
-    _logRes(result);
+      print("📨 [ITEM SERVICE] resposta recebida");
+      print("📨 [ITEM SERVICE] success=${result.success}");
+      print("📨 [ITEM SERVICE] message=${result.message}");
 
-    if (!result.success) {
-      throw Exception(result.message);
+      if (!result.success) {
+        print("❌ [ITEM SERVICE] ERRO ao marcar como comprado");
+        throw Exception(result.message);
+      }
+
+      print("✅ [ITEM SERVICE] item marcado como comprado com sucesso");
+    } catch (e) {
+      print("💥 [ITEM SERVICE] EXCEPTION: $e");
+      rethrow;
     }
   }
 
   // =====================================================
-  // ❌ DESMARCAR
+  // ❌ DESMARCAR COMO COMPRADO
   // =====================================================
   Future<void> desmarcarComprado(int listaId, int idItem) async {
     final url = '/listas/$listaId/itens/$idItem/desmarcar';
 
-    _logReq("PATCH", url);
-
     final result = await _client.patch<void>(
       url,
       {},
       null,
     );
-
-    _logRes(result);
 
     if (!result.success) {
       throw Exception(result.message);
@@ -167,16 +142,12 @@ class ItemService {
   }
 
   // =====================================================
-  // 🗑 DELETAR
+  // 🗑 DELETAR ITEM
   // =====================================================
   Future<void> deletar(int listaId, int idItem) async {
     final url = '/listas/$listaId/itens/$idItem';
 
-    _logReq("DELETE", url);
-
     final result = await _client.delete<void>(url);
-
-    _logRes(result);
 
     if (!result.success) {
       throw Exception(result.message);

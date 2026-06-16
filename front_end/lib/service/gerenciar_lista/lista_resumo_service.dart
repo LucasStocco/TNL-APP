@@ -1,6 +1,6 @@
 import 'package:crud_flutter/core/api/api_client.dart';
+import 'package:crud_flutter/dto/response/gerenciar_lista/lista_resumo_response_dto.dart';
 import 'package:crud_flutter/model/gerenciar_lista/lista.dart';
-import 'package:crud_flutter/model/gerenciar_lista/lista_resumo.dart';
 
 class ListaResumoService {
   final ApiClient api;
@@ -10,7 +10,7 @@ class ListaResumoService {
   // =========================
   // RESUMO
   // =========================
-  Future<List<ListaResumo>> getResumo() async {
+  Future<List<ListaResumoResponseDTO>> getResumo() async {
     final response = await api.get(
       '/listas/resumo',
       (data) => data,
@@ -18,7 +18,11 @@ class ListaResumoService {
 
     final List list = response.data as List;
 
-    return list.map((e) => ListaResumo.fromJson(e)).toList();
+    return list
+        .map(
+          (e) => ListaResumoResponseDTO.fromJson(e),
+        )
+        .toList();
   }
 
   // =========================
