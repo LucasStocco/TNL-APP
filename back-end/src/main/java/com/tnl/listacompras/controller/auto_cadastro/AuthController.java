@@ -26,6 +26,8 @@ public class AuthController {
 public ResponseEntity<AuthResponseDTO> loginGoogle(
     @RequestBody GoogleLoginRequestDTO request) {
 
+System.out.println("🔥 CHEGOU NO CONTROLLER");
+
         AuthResponseDTO response =
             usuarioService.loginWithGoogle(request.getIdToken());
 
